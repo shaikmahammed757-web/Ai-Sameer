@@ -3,18 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ai Sameer</title>
+    <title>Ai Sameer - Personal AI Assistant</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0b0f19">
+    <meta name="theme-color" content="#070913">
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             margin: 0;
-            background-color: #0b0f19;
+            background: radial-gradient(circle at center, #111827 0%, #070913 100%);
             color: #ffffff;
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             flex-direction: column;
             height: 100vh;
@@ -24,9 +22,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            background-color: #0b0f19;
+            padding: 16px 22px;
+            background: rgba(7, 9, 19, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             flex-shrink: 0;
+            z-index: 10;
         }
         .menu-btn, .top-icon-btn {
             background: transparent;
@@ -35,9 +36,22 @@
             font-size: 22px;
             cursor: pointer;
         }
-        .header-title {
-            font-size: 18px;
-            font-weight: 500;
+        .header-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header-title-wrapper span {
+            font-size: 14px;
+            color: #64748b;
+            -webkit-text-fill-color: #64748b;
         }
         .main-container {
             flex: 1;
@@ -56,28 +70,48 @@
             align-items: center;
             justify-content: center;
             margin: auto;
+            animation: fadeIn 0.8s ease-out;
         }
-        .gemini-sparkle {
-            font-size: 40px;
-            margin-bottom: 12px;
-            background: linear-gradient(42deg, #4285F4, #9B72CB, #EA4335);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ai-brand-logo {
+            width: 85px;
+            height: 85px;
+            border-radius: 26px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            box-shadow: 0 0 35px rgba(59, 130, 246, 0.4);
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .center-title {
-            font-size: 28px;
-            font-weight: 400;
-            color: #ffffff;
-            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(42deg, #60a5fa, #c084fc, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .center-subtitle {
+            font-size: 15px;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            max-width: 400px;
+            line-height: 1.5;
         }
         .chat-history {
             display: none;
             width: 100%;
-            max-width: 650px;
+            max-width: 750px;
             flex: 1;
             overflow-y: auto;
             text-align: left;
-            padding: 10px;
+            padding: 15px;
             gap: 20px;
             flex-direction: column;
             margin-bottom: 10px;
@@ -85,7 +119,7 @@
         .chat-message-wrapper {
             display: flex;
             flex-direction: column;
-            max-width: 85%;
+            max-width: 90%;
         }
         .user-wrapper {
             align-self: flex-end;
@@ -96,22 +130,24 @@
             max-width: 100%;
         }
         .chat-message {
-            padding: 14px 18px;
-            border-radius: 18px;
-            font-size: 15px;
-            line-height: 1.5;
+            padding: 16px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            line-height: 1.6;
             word-wrap: break-word;
         }
         .user-msg {
-            background-color: #2b3b5e;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
         .ai-msg {
-            background-color: #161c2c;
+            background-color: rgba(22, 28, 44, 0.9);
             color: #e2e8f0;
-            border-bottom-left-radius: 4px;
-            border: 1px solid #2d3748;
+            border-bottom-left-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
         .ai-actions-bar {
             display: flex;
@@ -137,29 +173,35 @@
         .input-box-wrapper {
             position: relative;
             width: 92%;
-            max-width: 650px;
+            max-width: 750px;
             margin-bottom: 25px;
             flex-shrink: 0;
         }
         .input-box {
             display: flex;
             align-items: center;
-            background-color: #171c28;
-            border: 1px solid #2d3748;
-            padding: 10px 18px;
+            background: rgba(23, 28, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 12px 20px;
             border-radius: 35px;
             width: 100%;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
         .plus-btn {
             background: transparent;
             border: none;
             color: #ffffff;
-            font-size: 24px;
+            font-size: 26px;
             cursor: pointer;
             display: flex;
             align-items: center;
             flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        .plus-btn:hover {
+            transform: scale(1.1);
         }
         .input-box input {
             flex: 1;
@@ -171,12 +213,12 @@
             min-width: 0;
         }
         .input-box input::placeholder {
-            color: #94a3b8;
+            color: #64748b;
         }
         .action-btns {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             flex-shrink: 0;
         }
         .mic-btn, .send-btn {
@@ -190,46 +232,52 @@
             align-items: center;
         }
         .mic-btn.listening {
-            color: #4285F4;
-            animation: pulse 1.5s infinite;
+            color: #ef4444;
+            animation: pulse 1.2s infinite;
         }
         @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.4; }
-            100% { opacity: 1; }
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.15); }
+            100% { opacity: 1; transform: scale(1); }
         }
         .plus-popup {
             display: none;
             position: absolute;
-            bottom: 75px;
+            bottom: 80px;
             left: 0;
             right: 0;
             margin: 0 auto;
-            background-color: #161c2c;
-            border: 1px solid #2d3748;
-            border-radius: 24px;
-            width: 92%;
-            max-width: 420px;
-            max-height: 75vh;
+            background: rgba(18, 24, 38, 0.96);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 26px;
+            width: 95%;
+            max-width: 450px;
+            max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0px 15px 40px rgba(0,0,0,0.85);
+            box-shadow: 0px 20px 50px rgba(0,0,0,0.9);
             z-index: 1000;
             text-align: left;
-            padding: 12px;
+            padding: 16px;
         }
         .plus-popup.active {
             display: block;
+            animation: popUpAnim 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes popUpAnim {
+            from { opacity: 0; transform: translateY(15px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
         .popup-top-grid {
             display: flex;
             gap: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             justify-content: space-between;
         }
         .popup-card-btn {
             flex: 1;
-            background-color: #212c42;
-            border: none;
+            background: rgba(33, 44, 66, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 18px;
             padding: 16px 10px;
             color: white;
@@ -240,9 +288,10 @@
             align-items: center;
             gap: 8px;
             font-size: 13px;
+            transition: background 0.2s;
         }
         .popup-card-btn:hover {
-            background-color: #2c3a56;
+            background: rgba(44, 58, 86, 0.9);
         }
         .popup-card-btn span.icon {
             font-size: 22px;
@@ -252,14 +301,15 @@
             font-size: 14px;
             color: #ffffff;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             gap: 14px;
             margin-bottom: 4px;
+            transition: background 0.2s;
         }
         .popup-list-item:hover {
-            background-color: #222d44;
+            background: rgba(34, 45, 68, 0.8);
         }
         .popup-list-item .item-icon {
             font-size: 20px;
@@ -269,38 +319,94 @@
             color: #94a3b8;
             display: block;
         }
+        .labs-toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin-top: 12px;
+        }
+        .labs-info strong {
+            display: block;
+            font-size: 14px;
+        }
+        .labs-info span {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #334155;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #3b82f6; }
+        input:checked + .slider:before { transform: translateX(22px); }
         .sidebar {
             position: fixed;
             top: 0;
-            left: -280px;
-            width: 280px;
+            left: -310px;
+            width: 310px;
             height: 100%;
-            background-color: #121826;
-            transition: 0.3s;
+            background-color: #0b0f19;
+            transition: 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 2000;
-            padding: 20px;
+            padding: 22px;
             box-sizing: border-box;
-            border-right: 1px solid #1f293d;
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 10px 0 40px rgba(0,0,0,0.8);
         }
-        .sidebar.open {
-            left: 0;
-        }
+        .sidebar.open { left: 0; }
+        .sidebar-content { overflow-y: auto; flex: 1; }
         .sidebar-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
         .sidebar-menu li {
-            padding: 12px 0;
-            border-bottom: 1px solid #1f293d;
+            padding: 12px 10px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #cbd5e1;
+            transition: background 0.2s;
+        }
+        .sidebar-menu li:hover { background: rgba(255,255,255,0.06); color: white; }
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.08);
         }
     </style>
 </head>
@@ -308,27 +414,49 @@
 
     <header>
         <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-        <div class="header-title">Ai Sameer</div>
+        <div class="header-title-wrapper" onclick="location.reload()">
+            Ai Sameer <span>⌄</span>
+        </div>
         <button class="top-icon-btn" onclick="location.reload()">✏️</button>
     </header>
 
     <div id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <h3>Ai Sameer</h3>
-            <button class="menu-btn" onclick="toggleSidebar()">✕</button>
+        <div class="sidebar-content">
+            <div class="sidebar-header">
+                <h3 style="margin:0; font-size: 20px; background: linear-gradient(45deg, #60a5fa, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Ai Sameer</h3>
+                <button class="menu-btn" onclick="toggleSidebar()">✕</button>
+            </div>
+            <ul class="sidebar-menu">
+                <li onclick="alert('New chat started')"><span>➕</span> New chat</li>
+                <li onclick="alert('Search chats opened')"><span>🔍</span> Search chats</li>
+                <li onclick="alert('Opening Images')"><span>🖼️</span> Images & Video Studio</li>
+                <li onclick="alert('Library opened')"><span>📁</span> Library & Files</li>
+            </ul>
+            <h4 style="color: #64748b; font-size: 12px; margin: 25px 0 10px 10px; text-transform: uppercase; letter-spacing: 1px;">Workspaces</h4>
+            <ul class="sidebar-menu">
+                <li onclick="alert('New notebook opened')"><span>📓</span> New notebook</li>
+            </ul>
+            <h4 style="color: #64748b; font-size: 12px; margin: 25px 0 10px 10px; text-transform: uppercase; letter-spacing: 1px;">Recent Queries</h4>
+            <ul class="sidebar-menu" style="font-size: 14px;">
+                <li style="cursor:default;">✨ Advanced Text & Video AI</li>
+                <li style="cursor:default;">🎙️ Multilingual Voice Engine</li>
+                <li style="cursor:default;">🚀 PWA High Performance</li>
+            </ul>
         </div>
-        <ul class="sidebar-menu">
-            <li onclick="alert('New chat started')">➕ New chat</li>
-            <li onclick="alert('Opening Images')">🖼️ Images</li>
-            <li onclick="alert('Library opened')">📁 Library</li>
-            <li onclick="alert('New notebook opened')">📓 New notebook</li>
-        </ul>
+        <div class="sidebar-user">
+            <span style="font-size: 26px;">👤</span>
+            <div>
+                <strong style="font-size: 15px; display:block;">Shaik Mahammad</strong>
+                <span style="font-size: 12px; color: #10b981;">● Online Pro</span>
+            </div>
+        </div>
     </div>
 
     <div class="main-container" id="mainContainer">
         <div class="welcome-screen" id="welcomeScreen">
-            <div class="gemini-sparkle">✦</div>
+            <div class="ai-brand-logo">✦</div>
             <div class="center-title">Ai Sameer</div>
+            <div class="center-subtitle">Your Ultimate Personal AI Assistant for Advanced Text, Video, Voice & Creative Intelligence.</div>
         </div>
 
         <div class="chat-history" id="chatHistory"></div>
@@ -353,43 +481,54 @@
                 <div class="popup-list-item" onclick="selectOption('Images')">
                     <span class="item-icon">🎨</span>
                     <div>
-                        <strong>Images</strong>
-                        <span class="item-desc">Create and edit images</span>
+                        <strong>Images & Video Studio</strong>
+                        <span class="item-desc">High-limit text-to-image & video generation</span>
                     </div>
                 </div>
                 <div class="popup-list-item" onclick="selectOption('Music')">
                     <span class="item-icon">🎵</span>
                     <div>
-                        <strong>Music</strong>
-                        <span class="item-desc">Make audio tracks</span>
+                        <strong>Music Audio</strong>
+                        <span class="item-desc">Make immersive audio tracks</span>
                     </div>
                 </div>
                 <div class="popup-list-item" onclick="selectOption('Canvas')">
                     <span class="item-icon">📄</span>
                     <div>
-                        <strong>Canvas</strong>
-                        <span class="item-desc">Code, write or make slides</span>
+                        <strong>Canvas & Slides</strong>
+                        <span class="item-desc">Advanced code, writing & presentation</span>
                     </div>
                 </div>
                 <div class="popup-list-item" onclick="selectOption('Deep Research')">
                     <span class="item-icon">🌐</span>
                     <div>
                         <strong>Deep Research</strong>
-                        <span class="item-desc">Get detailed reports</span>
+                        <span class="item-desc">Get comprehensive analytical reports</span>
                     </div>
                 </div>
                 <div class="popup-list-item" onclick="selectOption('Guided Learning')">
                     <span class="item-icon">📖</span>
                     <div>
                         <strong>Guided Learning</strong>
-                        <span class="item-desc">Get step-by-step help</span>
+                        <span class="item-desc">Step-by-step master tutorial help</span>
                     </div>
+                </div>
+
+                <div class="labs-toggle-row">
+                    <div class="labs-info">
+                        <strong>Personal Intelligence <span style="font-size:10px; background:#1e3a8a; padding:2px 6px; border-radius:4px; color:#93c5fd;">Labs</span></strong>
+                        <span>Supercharge context & memory</span>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
 
             <div class="input-box">
                 <button class="plus-btn" onclick="togglePlusMenu(event)">＋</button>
-                <input type="text" id="userInput" placeholder="Ask Ai Sameer" onkeypress="handleKeyPress(event)">
+                <input type="text" id="userInput" placeholder="Ask Ai Sameer..." onkeypress="handleKeyPress(event)">
                 <div class="action-btns">
                     <button class="mic-btn" id="micBtn" onclick="startVoiceRecognition()" title="Voice Input">🎤</button>
                     <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
@@ -427,147 +566,4 @@
             }
         }
 
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
-            if (text === "") return;
-
-            document.getElementById('welcomeScreen').style.display = 'none';
-            const history = document.getElementById('chatHistory');
-            history.style.display = 'flex';
-
-            const userWrapper = document.createElement('div');
-            userWrapper.className = 'chat-message-wrapper user-wrapper';
-            const userMsg = document.createElement('div');
-            userMsg.className = 'chat-message user-msg';
-            userMsg.innerText = text;
-            userWrapper.appendChild(userMsg);
-            history.appendChild(userWrapper);
-
-            input.value = "";
-            history.scrollTop = history.scrollHeight;
-
-            setTimeout(() => {
-                const aiWrapper = document.createElement('div');
-                aiWrapper.className = 'chat-message-wrapper ai-wrapper';
-
-                const aiMsg = document.createElement('div');
-                aiMsg.className = 'chat-message ai-msg';
-                
-                let lowerText = text.toLowerCase();
-                let responseText = "";
-                let langCode = 'te-IN';
-
-                if (lowerText.includes('riding') || lowerText.includes('రైడింగ్') || lowerText.includes('sk md')) {
-                    responseText = "ఎస్.కె. ఎండి రైడింగ్ టీవీ (SK MD RIDING TV) యూట్యూబ్ ఛానెల్‌కి స్వాగతం! ఇక్కడ అద్భుతమైన రైడింగ్ కంటెంట్ అందుబాటులో ఉంది.";
-                } else if (lowerText.includes('delete') || lowerText.includes('డిలీట్')) {
-                    responseText = "యూట్యూబ్ ఛానెల్‌ని డిలీట్ చేయడానికి: YouTube Studio -> Settings -> Channel -> Advanced settings -> Remove YouTube content.";
-                } else if (/[\u0c00-\u0c7f]/.test(text)) {
-                    langCode = 'te-IN';
-                    responseText = "నమస్తే షైక్! నేను Ai Sameer ని. మీరు అడిగిన \"" + text + "\" అంశంపై పూర్తి వివరాలను అందిస్తున్నాను.";
-                } else if (/[\u0900-\u097f]/.test(text)) {
-                    langCode = 'hi-IN';
-                    responseText = "नमस्ते शेख! मैं Ai Sameer हूँ। आपके द्वारा पूछे गए प्रश्न \"" + text + "\" का उत्तर यह है।";
-                } else {
-                    langCode = 'en-US';
-                    responseText = "Hello Shaik! I am Ai Sameer. Here is the detailed information regarding \"" + text + "\".";
-                }
-
-                aiMsg.innerText = responseText;
-                aiWrapper.appendChild(aiMsg);
-
-                const actionsBar = document.createElement('div');
-                actionsBar.className = 'ai-actions-bar';
-                
-                const thumbsUp = document.createElement('button');
-                thumbsUp.className = 'ai-action-btn';
-                thumbsUp.innerHTML = '👍';
-                thumbsUp.onclick = () => alert('Feedback recorded: Helpful');
-
-                const thumbsDown = document.createElement('button');
-                thumbsDown.className = 'ai-action-btn';
-                thumbsDown.innerHTML = '👎';
-                thumbsDown.onclick = () => alert('Feedback recorded: Unhelpful');
-
-                const refreshBtn = document.createElement('button');
-                refreshBtn.className = 'ai-action-btn';
-                refreshBtn.innerHTML = '🔄';
-                refreshBtn.onclick = () => alert('Retrying response...');
-
-                const copyBtn = document.createElement('button');
-                copyBtn.className = 'ai-action-btn';
-                copyBtn.innerHTML = '📋';
-                copyBtn.onclick = () => {
-                    navigator.clipboard.writeText(responseText).then(() => {
-                        alert('Copied to clipboard!');
-                    });
-                };
-
-                const audioBtn = document.createElement('button');
-                audioBtn.className = 'ai-action-btn';
-                audioBtn.innerHTML = '🔊';
-                audioBtn.onclick = () => {
-                    if ('speechSynthesis' in window) {
-                        window.speechSynthesis.cancel();
-                        const utterance = new SpeechSynthesisUtterance(responseText);
-                        utterance.lang = langCode;
-                        window.speechSynthesis.speak(utterance);
-                    } else {
-                        alert('Audio speech not supported.');
-                    }
-                };
-
-                actionsBar.appendChild(thumbsUp);
-                actionsBar.appendChild(thumbsDown);
-                actionsBar.appendChild(refreshBtn);
-                actionsBar.appendChild(copyBtn);
-                actionsBar.appendChild(audioBtn);
-
-                aiWrapper.appendChild(actionsBar);
-                history.appendChild(aiWrapper);
-                history.scrollTop = history.scrollHeight;
-            }, 400);
-        }
-
-        function startVoiceRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const micBtn = document.getElementById('micBtn');
-
-            if (!SpeechRecognition) {
-                const spokenText = prompt("దయచేసి మీ సందేశాన్ని ఇక్కడ టైప్ చేయండి:");
-                if (spokenText) {
-                    document.getElementById('userInput').value = spokenText;
-                    sendMessage();
-                }
-                return;
-            }
-            
-            try {
-                const recognition = new SpeechRecognition();
-                recognition.lang = 'te-IN';
-                recognition.interimResults = false;
-                
-                recognition.onstart = function() {
-                    micBtn.classList.add('listening');
-                };
-
-                recognition.onresult = function(event) {
-                    document.getElementById('userInput').value = event.results[0][0].transcript;
-                    micBtn.classList.remove('listening');
-                    sendMessage();
-                };
-                
-                recognition.onerror = function(event) {
-                    micBtn.classList.remove('listening');
-                };
-
-                recognition.onend = function() {
-                    micBtn.classList.remove('listening');
-                };
-                
-                recognition.start();
-            } catch (e) {
-                micBtn.classList.remove('listening');
-                const spokenText = prompt("దయచేసి మీ సందేశాన్ని ఇక్కడ టైప్ చేయండి:");
-                if (spokenText) {
-                    
+        function 
