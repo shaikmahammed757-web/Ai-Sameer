@@ -7,6 +7,9 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b0f19">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             margin: 0;
             background-color: #0b0f19;
@@ -75,7 +78,6 @@
             overflow-y: auto;
             text-align: left;
             padding: 10px;
-            box-sizing: border-box;
             gap: 20px;
             flex-direction: column;
             margin-bottom: 10px;
@@ -147,7 +149,6 @@
             padding: 10px 18px;
             border-radius: 35px;
             width: 100%;
-            box-sizing: border-box;
             gap: 10px;
         }
         .plus-btn {
@@ -215,7 +216,6 @@
             z-index: 1000;
             text-align: left;
             padding: 12px;
-            box-sizing: border-box;
         }
         .plus-popup.active {
             display: block;
@@ -458,14 +458,10 @@
                 let responseText = "";
                 let langCode = 'te-IN';
 
-                if (lowerText.includes('sk md') || lowerText.includes('riding') || lowerText.includes('యూట్యూబ్') || lowerText.includes('డిలీట్')) {
-                    if (lowerText.includes('riding')) {
-                        responseText = "ఎస్.కె. ఎండి రైడింగ్ టీవీ (SK MD RIDING TV) యూట్యూబ్ ఛానెల్‌కి స్వాగతం! ఇక్కడ అద్భుతమైన రైడింగ్ కంటెంట్ అందుబాటులో ఉంది.";
-                    } else if (lowerText.includes('డిలీట్')) {
-                        responseText = "యూట్యూబ్ ఛానెల్‌ని డిలీట్ చేయడానికి: YouTube Studio -> Settings -> Channel -> Advanced settings -> Remove YouTube content.";
-                    } else {
-                        responseText = "ఎస్.కె. ఎండి రైడింగ్ టీవీ (SK MD RIDING TV) ఛానెల్ మరియు అప్‌డేట్స్ గురించి మీకు పూర్తి వివరాలు అందిస్తున్నాను!";
-                    }
+                if (lowerText.includes('riding') || lowerText.includes('రైడింగ్') || lowerText.includes('sk md')) {
+                    responseText = "ఎస్.కె. ఎండి రైడింగ్ టీవీ (SK MD RIDING TV) యూట్యూబ్ ఛానెల్‌కి స్వాగతం! ఇక్కడ అద్భుతమైన రైడింగ్ కంటెంట్ అందుబాటులో ఉంది.";
+                } else if (lowerText.includes('delete') || lowerText.includes('డిలీట్')) {
+                    responseText = "యూట్యూబ్ ఛానెల్‌ని డిలీట్ చేయడానికి: YouTube Studio -> Settings -> Channel -> Advanced settings -> Remove YouTube content.";
                 } else if (/[\u0c00-\u0c7f]/.test(text)) {
                     langCode = 'te-IN';
                     responseText = "నమస్తే షైక్! నేను Ai Sameer ని. మీరు అడిగిన \"" + text + "\" అంశంపై పూర్తి వివరాలను అందిస్తున్నాను.";
@@ -530,7 +526,7 @@
                 aiWrapper.appendChild(actionsBar);
                 history.appendChild(aiWrapper);
                 history.scrollTop = history.scrollHeight;
-            }, 500);
+            }, 400);
         }
 
         function startVoiceRecognition() {
@@ -566,4 +562,12 @@
                 };
 
                 recognition.onend = function() {
-                    micBtn.
+                    micBtn.classList.remove('listening');
+                };
+                
+                recognition.start();
+            } catch (e) {
+                micBtn.classList.remove('listening');
+                const spokenText = prompt("దయచేసి మీ సందేశాన్ని ఇక్కడ టైప్ చేయండి:");
+                if (spokenText) {
+                    
