@@ -231,15 +231,6 @@
             display: flex;
             align-items: center;
         }
-        .mic-btn.listening {
-            color: #ef4444;
-            animation: pulse 1.2s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.15); }
-            100% { opacity: 1; transform: scale(1); }
-        }
         .plus-popup {
             display: none;
             position: absolute;
@@ -566,4 +557,11 @@
             }
         }
 
-        function 
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (text === "") return;
+
+            document.getElementById('welcomeScreen').style.display = 'none';
+            const history = document.getElementById('chatHistory');
+    
