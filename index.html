@@ -1,658 +1,345 @@
-package com.example.aisameer
-
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
-// -----------------------------
-// AI Sameer
-// -----------------------------
-
-class MainActivity : ComponentActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        enableEdgeToEdge()
-
-        setContent {
-            AISameerTheme {
-                AISameerHome()
-            }
+<!DOCTYPE html>
+<html lang="te">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ai Sameer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#020617">
+    <link rel="manifest" href="data:application/manifest+json,{
+      &quot;name&quot;: &quot;Ai Sameer&quot;,
+      &quot;short_name&quot;: &quot;Ai Sameer&quot;,
+      &quot;start_url&quot;: &quot;.&quot;,
+      &quot;display&quot;: &quot;standalone&quot;,
+      &quot;background_color&quot;: &quot;#020617&quot;,
+      &quot;theme_color&quot;: &quot;#020617&quot;,
+      &quot;icons&quot;: [
+        {
+          &quot;src&quot;: &quot;https://deluxe-donut-a64c68.netlify.app/favicon.png&quot;,
+          &quot;sizes&quot;: &quot;192x192&quot;,
+          &quot;type&quot;: &quot;image/png&quot;
         }
-    }
-}
+      ]
+    }">
+    <link rel="icon" type="image/png" href="https://deluxe-donut-a64c68.netlify.app/favicon.png">
+    <link rel="apple-touch-icon" href="https://deluxe-donut-a64c68.netlify.app/favicon.png">
+</head>
+<body class="bg-slate-950 text-slate-100 h-screen flex flex-col justify-between font-sans relative overflow-hidden">
+    
+    <!-- Top Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center shadow-lg z-10">
+        <button onclick="toggleSidebar()" class="text-slate-300 hover:text-cyan-400 p-1 transition text-lg">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="flex items-center gap-2 cursor-pointer" onclick="toggleSidebar()">
+            <span class="text-base font-bold text-slate-100 tracking-wide">Ai Sameer</span>
+            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
+        </div>
+        <button onclick="clearChat()" class="text-slate-300 hover:text-cyan-400 p-1 transition text-lg" title="New Chat">
+            <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+    </header>
 
-// -----------------------------
-// Colors
-// -----------------------------
+    <!-- Sidebar Drawer (Left Menu) -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-slate-900 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <h2 class="font-bold text-slate-200 text-sm">Ai Sameer Menu</h2>
+            </div>
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white p-2">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto p-4 space-y-2 text-sm">
+            <button onclick="selectMenu('New chat')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
+                <i class="fa-solid fa-pen-to-square text-cyan-400"></i> New chat
+            </button>
+            <button onclick="selectMenu('Search chats')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
+                <i class="fa-solid fa-magnifying-glass text-cyan-400"></i> Search chats
+            </button>
+            <button onclick="selectMenu('Images')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
+                <i class="fa-solid fa-image text-cyan-400"></i> Images
+            </button>
+            <button onclick="selectMenu('Library')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
+                <i class="fa-solid fa-folder-open text-cyan-400"></i> Library
+            </button>
+            <div class="pt-4 border-t border-slate-800 text-xs text-slate-400 uppercase tracking-wider font-semibold px-2">Notebooks</div>
+            <button onclick="selectMenu('New notebook')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
+                <i class="fa-solid fa-plus text-cyan-400"></i> New notebook
+            </button>
+        </div>
+        <div class="p-4 border-t border-slate-800 text-xs text-slate-400 flex items-center gap-2">
+            <div class="bg-indigo-600 text-white rounded-full h-6 w-6 flex items-center justify-center font-bold">SM</div>
+            <span>Shaik Mohammad</span>
+        </div>
+    </div>
+    <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity"></div>
 
-val BlueAI = Color(0xFF19C8FF)
-val PurpleAI = Color(0xFF7B35FF)
-val DarkBG = Color(0xFF050817)
-val CardBG = Color(0xFF10172C)
+    <!-- Plus (+) Features Bottom Sheet Modal -->
+    <div id="plus-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-end justify-center transition-opacity">
+        <div class="bg-slate-900 border-t border-slate-800 rounded-t-3xl w-full max-w-2xl p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-slate-100 font-bold text-base">Select AI Feature</h3>
+                <button onclick="togglePlusModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <!-- Top 3 Quick Cards -->
+            <div class="grid grid-cols-3 gap-3">
+                <button onclick="selectFeatureModal('Photos')" class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-image text-cyan-400 text-xl"></i>
+                    <span class="text-xs font-medium text-slate-200">Photos</span>
+                </button>
+                <button onclick="selectFeatureModal('Camera')" class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-camera text-cyan-400 text-xl"></i>
+                    <span class="text-xs font-medium text-slate-200">Camera</span>
+                </button>
+                <button onclick="selectFeatureModal('Avatar')" class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-face-smile text-cyan-400 text-xl"></i>
+                    <span class="text-xs font-medium text-slate-200">Avatar</span>
+                </button>
+            </div>
+            <!-- List Options -->
+            <div class="space-y-2 text-sm">
+                <button onclick="selectFeatureModal('Images')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
+                    <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i>
+                    <div><div class="font-medium text-slate-200">Images</div><div class="text-xs text-slate-400">Create and edit visuals</div></div>
+                </button>
+                <button onclick="selectFeatureModal('Music')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
+                    <i class="fa-solid fa-music text-cyan-400"></i>
+                    <div><div class="font-medium text-slate-200">Music</div><div class="text-xs text-slate-400">Make audio tracks & voice</div></div>
+                </button>
+                <button onclick="selectFeatureModal('Canvas')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
+                    <i class="fa-solid fa-code text-cyan-400"></i>
+                    <div><div class="font-medium text-slate-200">Canvas</div><div class="text-xs text-slate-400">Code, write or make slides</div></div>
+                </button>
+                <button onclick="selectFeatureModal('Deep Research')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
+                    <i class="fa-solid fa-brain text-cyan-400"></i>
+                    <div><div class="font-medium text-slate-200">Deep Research</div><div class="text-xs text-slate-400">Get detailed reports & answers</div></div>
+                </button>
+                <button onclick="selectFeatureModal('Guided Learning')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
+                    <i class="fa-solid fa-graduation-cap text-cyan-400"></i>
+                    <div><div class="font-medium text-slate-200">Guided Learning</div><div class="text-xs text-slate-400">Get step-by-step help</div></div>
+                </button>
+            </div>
+        </div>
+    </div>
 
-// -----------------------------
-// Home Screen
-// -----------------------------
+    <!-- Main Chat Area with Professional Glowing Sparkle Logo -->
+    <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 max-w-2xl w-full mx-auto flex flex-col justify-center items-center">
+        <div id="welcome-screen" class="text-center py-6">
+            <div class="inline-block p-4 rounded-full bg-slate-900/80 border border-slate-800 shadow-2xl mb-4">
+                <svg class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="url(#sparkle-gradient)"/>
+                    <defs>
+                        <linearGradient id="sparkle-gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#38BDF8"/>
+                            <stop offset="0.5" stop-color="#818CF8"/>
+                            <stop offset="1" stop-color="#F472B6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-100 tracking-wide">Hi Shaik, let's get into it</h2>
+        </div>
+    </div>
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AISameerHome() {
+    <!-- Bottom Input Section (Gemini Style with Mic & Audio Wave) -->
+    <div class="bg-slate-900 border-t border-slate-800 p-4 z-10">
+        <form id="chat-form" class="max-w-2xl mx-auto flex items-center bg-slate-900 border border-slate-700 rounded-full px-4 py-2.5 shadow-inner">
+            <button type="button" onclick="togglePlusModal()" class="text-slate-400 hover:text-cyan-400 p-2 transition text-lg">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <input type="text" id="user-input" placeholder="Ask Ai Sameer" 
+                class="flex-1 bg-transparent border-none px-3 py-1 text-sm text-slate-100 focus:outline-none" required>
+            
+            <!-- Mic Button -->
+            <button type="button" id="mic-btn" onclick="startVoiceInput()" class="text-slate-400 hover:text-cyan-400 p-2 transition text-base" title="Voice Input">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
+            
+            <!-- Audio Wave / Submit Button -->
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white h-9 w-9 rounded-full flex items-center justify-center transition shadow ml-2">
+                <i class="fa-solid fa-arrow-up text-xs"></i>
+            </button>
+        </form>
+    </div>
 
-    var message by remember {
-        mutableStateOf("")
-    }
+    <!-- JavaScript Logic -->
+    <script>
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+        const plusModal = document.getElementById('plus-modal');
+        const micBtn = document.getElementById('mic-btn');
+        const welcomeScreen = document.getElementById('welcome-screen');
 
-    Scaffold(
-
-        containerColor = DarkBG,
-
-        topBar = {
-
-            TopAppBar(
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = DarkBG
-                ),
-
-                navigationIcon = {
-
-                    IconButton(
-                        onClick = {}
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = Color.White
-                        )
-                    }
-                },
-
-                title = {
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        // AI Sameer Logo
-                        Box(
-                            modifier = Modifier
-                                .size(42.dp)
-                                .clip(RoundedCornerShape(13.dp))
-                                .background(
-                                    Brush.linearGradient(
-                                        listOf(
-                                            BlueAI,
-                                            PurpleAI
-                                        )
-                                    )
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-
-                            Text(
-                                text = "S",
-                                color = Color.White,
-                                fontSize = 25.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-
-                        Spacer(
-                            modifier = Modifier.width(10.dp)
-                        )
-
-                        Column {
-
-                            Text(
-                                text = "AI Sameer",
-                                color = Color.White,
-                                fontSize = 19.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Text(
-                                text = "Your Personal AI Assistant",
-                                color = Color.Gray,
-                                fontSize = 10.sp
-                            )
-                        }
-                    }
-                },
-
-                actions = {
-
-                    IconButton(
-                        onClick = {}
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More",
-                            tint = Color.White
-                        )
-                    }
-                }
-            )
-        },
-
-        bottomBar = {
-
-            NavigationBar(
-                containerColor = Color(0xFF090D1D)
-            ) {
-
-                NavigationBarItem(
-                    selected = true,
-                    onClick = {},
-                    icon = {
-                        Icon(
-                            Icons.Default.Home,
-                            contentDescription = "Home"
-                        )
-                    },
-                    label = {
-                        Text("Home")
-                    }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {},
-                    icon = {
-                        Icon(
-                            Icons.Default.Chat,
-                            contentDescription = "Chat"
-                        )
-                    },
-                    label = {
-                        Text("Chat")
-                    }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {},
-                    icon = {
-                        Icon(
-                            Icons.Default.AutoAwesome,
-                            contentDescription = "Tools"
-                        )
-                    },
-                    label = {
-                        Text("Tools")
-                    }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {},
-                    icon = {
-                        Icon(
-                            Icons.Default.History,
-                            contentDescription = "History"
-                        )
-                    },
-                    label = {
-                        Text("History")
-                    }
-                )
-
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {},
-                    icon = {
-                        Icon(
-                            Icons.Default.Person,
-                            contentDescription = "Profile"
-                        )
-                    },
-                    label = {
-                        Text("Profile")
-                    }
-                )
+        function toggleSidebar() {
+            const isOpen = sidebar.classList.contains('translate-x-0');
+            if (isOpen) {
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            } else {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                backdrop.classList.remove('hidden');
             }
         }
 
-    ) { padding ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 18.dp)
-        ) {
-
-            Spacer(
-                modifier = Modifier.height(18.dp)
-            )
-
-            // Greeting
-            Text(
-                text = "Hello 👋",
-                color = Color.White,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Text(
-                text = "How can I help you today?",
-                color = Color.LightGray,
-                fontSize = 17.sp
-            )
-
-            Spacer(
-                modifier = Modifier.height(22.dp)
-            )
-
-            // AI Banner
-            AIBanner()
-
-            Spacer(
-                modifier = Modifier.height(22.dp)
-            )
-
-            Text(
-                text = "What can I do for you?",
-                color = Color.White,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(
-                modifier = Modifier.height(12.dp)
-            )
-
-            // Feature Grid
-            LazyVerticalGrid(
-
-                columns = GridCells.Fixed(2),
-
-                modifier = Modifier.weight(1f),
-
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-
-                contentPadding = PaddingValues(
-                    bottom = 12.dp
-                )
-            ) {
-
-                items(
-                    aiFeatures
-                ) { feature ->
-
-                    FeatureCard(
-                        feature = feature
-                    )
-                }
-            }
-
-            // Chat input
-            ChatInput(
-                value = message,
-                onValueChange = {
-                    message = it
-                },
-                onSend = {
-
-                    if (message.isNotBlank()) {
-
-                        // AI API will be connected here
-                        message = ""
-                    }
-                }
-            )
-
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-        }
-    }
-}
-
-// -----------------------------
-// AI Banner
-// -----------------------------
-
-@Composable
-fun AIBanner() {
-
-    Box(
-
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(145.dp)
-            .clip(RoundedCornerShape(25.dp))
-            .background(
-                Brush.linearGradient(
-                    listOf(
-                        Color(0xFF123D8A),
-                        Color(0xFF30116B),
-                        Color(0xFF111A45)
-                    )
-                )
-            )
-    ) {
-
-        Column(
-            modifier = Modifier
-                .padding(20.dp)
-        ) {
-
-            Text(
-                text = "✨ AI Sameer",
-                color = Color.White,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(
-                modifier = Modifier.height(7.dp)
-            )
-
-            Text(
-                text = "Think • Create • Achieve",
-                color = BlueAI,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium
-            )
-
-            Spacer(
-                modifier = Modifier.height(12.dp)
-            )
-
-            Text(
-                text = "Your smart companion for ideas,\ncreativity and productivity.",
-                color = Color.LightGray,
-                fontSize = 13.sp
-            )
+        function togglePlusModal() {
+            plusModal.classList.toggle('hidden');
         }
 
-        // Glow circle
-        Box(
-            modifier = Modifier
-                .size(110.dp)
-                .align(Alignment.CenterEnd)
-                .offset(x = 25.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.radialGradient(
-                        listOf(
-                            Color(0xFF3DDAFF),
-                            Color.Transparent
-                        )
-                    )
-                )
-        )
-    }
-}
-
-// -----------------------------
-// Feature Card
-// -----------------------------
-
-data class AIFeature(
-    val title: String,
-    val subtitle: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector
-)
-
-val aiFeatures = listOf(
-
-    AIFeature(
-        "AI Chat",
-        "Ask anything",
-        Icons.Default.Chat
-    ),
-
-    AIFeature(
-        "Voice Assistant",
-        "Talk naturally",
-        Icons.Default.Mic
-    ),
-
-    AIFeature(
-        "Image",
-        "Understand photos",
-        Icons.Default.Image
-    ),
-
-    AIFeature(
-        "Documents",
-        "PDF & files",
-        Icons.Default.Description
-    ),
-
-    AIFeature(
-        "Writing",
-        "Create & edit",
-        Icons.Default.Edit
-    ),
-
-    AIFeature(
-        "AI Images",
-        "Create visuals",
-        Icons.Default.Palette
-    ),
-
-    AIFeature(
-        "YouTube",
-        "Titles & scripts",
-        Icons.Default.PlayArrow
-    ),
-
-    AIFeature(
-        "Web Search",
-        "Find information",
-        Icons.Default.Search
-    )
-)
-
-@Composable
-fun FeatureCard(
-    feature: AIFeature
-) {
-
-    Card(
-
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(105.dp),
-
-        shape = RoundedCornerShape(20.dp),
-
-        colors = CardDefaults.cardColors(
-            containerColor = CardBG
-        )
-    ) {
-
-        Column(
-            modifier = Modifier.padding(15.dp)
-        ) {
-
-            Box(
-                modifier = Modifier
-                    .size(38.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        Brush.linearGradient(
-                            listOf(
-                                BlueAI,
-                                PurpleAI
-                            )
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-
-                Icon(
-                    imageVector = feature.icon,
-                    contentDescription = feature.title,
-                    tint = Color.White,
-                    modifier = Modifier.size(21.dp)
-                )
-            }
-
-            Spacer(
-                modifier = Modifier.height(7.dp)
-            )
-
-            Text(
-                text = feature.title,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp
-            )
-
-            Text(
-                text = feature.subtitle,
-                color = Color.Gray,
-                fontSize = 11.sp
-            )
-        }
-    }
-}
-
-// -----------------------------
-// Chat Input
-// -----------------------------
-
-@Composable
-fun ChatInput(
-    value: String,
-    onValueChange: (String) -> Unit,
-    onSend: () -> Unit
-) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(28.dp))
-            .background(Color(0xFF151D35))
-            .padding(
-                horizontal = 8.dp,
-                vertical = 5.dp
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        IconButton(
-            onClick = {}
-        ) {
-
-            Icon(
-                Icons.Default.Add,
-                contentDescription = "Attach",
-                tint = Color.White
-            )
+        function selectMenu(feature) {
+            toggleSidebar();
+            appendMessage(`${feature} మోడ్ ఎంచుకోబడింది. దానికి తగినట్లుగా వివరాలు ఇవ్వండి.`, 'ai');
         }
 
-        OutlinedTextField(
-
-            value = value,
-
-            onValueChange = onValueChange,
-
-            modifier = Modifier.weight(1f),
-
-            placeholder = {
-                Text(
-                    "Ask AI Sameer...",
-                    color = Color.Gray
-                )
-            },
-
-            singleLine = true,
-
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent
-            )
-        )
-
-        IconButton(
-            onClick = {}
-        ) {
-
-            Icon(
-                Icons.Default.Mic,
-                contentDescription = "Voice",
-                tint = BlueAI
-            )
+        function selectFeatureModal(feature) {
+            togglePlusModal();
+            appendMessage(`${feature} మాడ్యూల్ యాక్టివేట్ చేయబడింది. దానికి సంబంధించిన టాస్క్ టైప్ చేయండి.`, 'ai');
         }
 
-        IconButton(
-            onClick = onSend
-        ) {
+        function clearChat() {
+            chatContainer.innerHTML = `
+                <div id="welcome-screen" class="text-center py-6">
+                    <div class="inline-block p-4 rounded-full bg-slate-900/80 border border-slate-800 shadow-2xl mb-4">
+                        <svg class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="url(#sparkle-gradient-2)"/>
+                            <defs>
+                                <linearGradient id="sparkle-gradient-2" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#38BDF8"/>
+                                    <stop offset="0.5" stop-color="#818CF8"/>
+                                    <stop offset="1" stop-color="#F472B6"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-100 tracking-wide">Hi Shaik, let's get into it</h2>
+                </div>
+            `;
+        }
 
-            Box(
-                modifier = Modifier
-                    .size(38.dp)
-                    .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(
-                            listOf(
-                                BlueAI,
-                                PurpleAI
-                            )
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-
-                Icon(
-                    Icons.Default.Send,
-                    contentDescription = "Send",
-                    tint = Color.White,
-                    modifier = Modifier.size(19.dp)
-                )
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'te-IN';
+                utterance.rate = 1.0;
+                window.speechSynthesis.speak(utterance);
             }
         }
-    }
-}
 
-// -----------------------------
-// Theme
-// -----------------------------
+        async function fetchAIResponse(prompt) {
+            const lower = prompt.toLowerCase();
+            if (lower.includes('sk md riding') || lower.includes('riding tv') || lower.includes('channel')) {
+                return "SK MD Riding TV అనేది మోటార్‌సైకిల్ వ్లాగ్స్, రైడింగ్ అడ్వెంచర్లు మరియు బైక్ రివ్యూల కోసం ప్రత్యేకించబడిన అద్భుతమైన యూట్యూబ్ ఛానెల్!";
+            } else if (lower.includes('name') || lower.includes('పేరు')) {
+                return "నా పేరు Ai Sameer. షైక్ మొహమ్మద్ గారిచే రూపుదిద్దుకున్న అడ్వాన్స్‌డ్ పర్సనల్ ఏఐ అసిస్టెంట్ నేను.";
+            } else if (lower.includes('hello') || lower.includes('hi') || lower.includes('నమస్తే')) {
+                return "నమస్తే షైక్! మీకు ఏ విధంగా సహాయం చేయగలను?";
+            } else if (lower.includes('video') || lower.includes('వీడియో')) {
+                return "టెక్స్ట్-టు-వీడియో జనరేషన్ ప్రాసెస్ ప్రారంభించబడింది. మీ కాన్సెప్ట్ ప్రకారం వీడియో సిద్ధమవుతోంది.";
+            } else if (lower.includes('image') || lower.includes('ఫోటో') || lower.includes('చిత్రం')) {
+                return "మీ కోటా ప్రకారం హై-క్వాలిటీ ఇమేజ్ సృష్టించబడింది.";
+            }
+            return `ధన్యవాదాలు షైక్! మీరు అడిగిన "${prompt}" గురించిన పూర్తి విశ్లేషణ మరియు సమాచారం ఇక్కడ అందించబడింది. Ai Sameer ద్వారా మీకు అన్‌లిమిటెడ్‌గా సహాయం అందుతుంది.`;
+        }
 
-@Composable
-fun AISameerTheme(
-    content: @Composable () -> Unit
-) {
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const message = userInput.value.trim();
+            if (!message) return;
+            
+            if (welcomeScreen) welcomeScreen.style.display = 'none';
+            chatContainer.classList.remove('justify-center', 'items-center');
+            
+            appendMessage(message, 'user');
+            userInput.value = '';
+            
+            const loadingId = appendMessage("ఆలోచిస్తున్నాను...", 'ai', true);
+            const aiReply = await fetchAIResponse(message);
+            
+            const loadingElement = document.getElementById(loadingId);
+            if(loadingElement) loadingElement.remove();
+            
+            appendMessage(aiReply, 'ai');
+        });
 
-    MaterialTheme(
-        colorScheme = darkColorScheme(
-            primary = BlueAI,
-            secondary = PurpleAI,
-            background = DarkBG,
-            surface = CardBG
-        ),
-        content = content
-    )
-}
+        // Fully working Voice Input (Microphone) handler
+        function startVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("మీ బ్రౌజర్ వాయిస్ రికగ్నిషన్‌కు మద్దతు ఇవ్వడం లేదు.");
+                return;
+            }
+
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'te-IN';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            micBtn.innerHTML = '<i class="fa-solid fa-microphone text-rose-500 animate-pulse"></i>';
+            userInput.placeholder = "వింటున్నాను మాట్లాడండి...";
+
+            recognition.onresult = function(event) {
+                userInput.value = event.results[0][0].transcript;
+                micBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+                userInput.placeholder = "Ask Ai Sameer";
+            };
+
+            recognition.onerror = recognition.onend = function() {
+                micBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+                userInput.placeholder = "Ask Ai Sameer";
+            };
+
+            try { recognition.start(); } catch (err) { console.error(err); }
+        }
+
+        let messageCounter = 0;
+        function appendMessage(text, sender, isLoading = false) {
+            const isUser = sender === 'user';
+            const msgId = 'msg-' + (++messageCounter);
+            const wrapperDiv = document.createElement('div');
+            wrapperDiv.id = msgId;
+            wrapperDiv.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1 mb-4 w-full`;
+            
+            const bubbleRow = document.createElement('div');
+            bubbleRow.className = `flex items-start space-x-2 ${isUser ? 'flex-row-reverse space-x-reverse' : ''} w-full`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = `${isUser ? 'bg-emerald-600' : 'bg-indigo-600'} text-white rounded-full h-7 w-7 flex items-center justify-center font-bold text-xs shrink-0 shadow`;
+            avatar.textContent = isUser ? 'US' : 'AI';
+            
+            const bubble = document.createElement('div');
+            bubble.className = `${isUser ? 'bg-cyan-950 border-cyan-800 text-slate-100 ml-auto' : 'bg-slate-900 border-slate-800 text-slate-100 mr-auto'} border p-3.5 rounded-2xl max-w-[85%] text-sm shadow-md leading-relaxed`;
+            bubble.textContent = text;
+            
+            bubbleRow.appendChild(avatar);
+            bubbleRow.appendChild(bubble);
+            wrapperDiv.appendChild(bubbleRow);
+
+            if (!isUser && !isLoading) {
+                const actionsRow = document.createElement('div');
+                actionsRow.className = 'flex items-center gap-3 pl-9 text-slate-400 text-xs mt-1';
+                actionsRow.innerHTML = `
+                    <button onclick="alert('Liked!')" class="hover:text-cyan-400 transition"><i class="fa-regular fa-thumbs-up"></i></button>
+                    <button onclick="alert('Disliked!')" class="hover:text-cyan-400 transition"><i class="fa-regular fa-thumbs-down"></i></button>
+                    <button onclick="navigator.clipboard.writeText('${text}'); alert('Copied!');" class="hover:text-cyan-400 transition"><i class="fa-regular fa-copy"></i></button>
+                    <button onclick="alert('More options')" class="hover:text-cyan-400 transition"><i class="fa-solid fa-ellipsis"></i></button>
+                    <button onclick="speakText('${text}')" class="hover:text-cyan-400 flex items-center gap-1 transition ml-2"><i class="fa-solid fa-volume-high"></i> వినండి</button>
+                `;
+                wrapperDiv.appendChild(actionsRow);
+            }
+
+            chatContainer.appendChild(wrapperDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            return msgId;
+        }
+    </script>
+</body>
+</html>
