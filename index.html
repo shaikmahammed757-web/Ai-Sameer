@@ -1,345 +1,346 @@
 <!DOCTYPE html>
 <html lang="te">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ai Sameer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#020617">
-    <link rel="manifest" href="data:application/manifest+json,{
-      &quot;name&quot;: &quot;Ai Sameer&quot;,
-      &quot;short_name&quot;: &quot;Ai Sameer&quot;,
-      &quot;start_url&quot;: &quot;.&quot;,
-      &quot;display&quot;: &quot;standalone&quot;,
-      &quot;background_color&quot;: &quot;#020617&quot;,
-      &quot;theme_color&quot;: &quot;#020617&quot;,
-      &quot;icons&quot;: [
-        {
-          &quot;src&quot;: &quot;https://deluxe-donut-a64c68.netlify.app/favicon.png&quot;,
-          &quot;sizes&quot;: &quot;192x192&quot;,
-          &quot;type&quot;: &quot;image/png&quot;
-        }
-      ]
-    }">
-    <link rel="icon" type="image/png" href="https://deluxe-donut-a64c68.netlify.app/favicon.png">
-    <link rel="apple-touch-icon" href="https://deluxe-donut-a64c68.netlify.app/favicon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10111b">
+  <title>AI Sameer</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #10111b;
+      color: #f5f5ff;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .app { min-height: 100vh; display: flex; }
+    aside {
+      width: 245px; padding: 18px;
+      background: #171824; border-right: 1px solid #303142;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .brand { font-size: 23px; font-weight: 800; color: #a9a1ff; }
+    .new-chat, .history-item {
+      width: 100%; padding: 12px; border-radius: 12px;
+      border: 1px solid #37394c; background: #222433;
+      color: white; text-align: left;
+    }
+    .history-item { margin-top: 8px; overflow-wrap: anywhere; }
+    .side-label { color: #aaaabd; font-size: 13px; margin-top: 8px; }
+    .main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    header {
+      padding: 15px 18px; display: flex; justify-content: space-between;
+      align-items: center; gap: 12px; border-bottom: 1px solid #303142;
+    }
+    header strong { font-size: 19px; }
+    select {
+      max-width: 145px; background: #222433; color: white;
+      border: 1px solid #45465a; border-radius: 9px; padding: 9px;
+    }
+    #messages {
+      flex: 1; width: 100%; max-width: 850px; margin: 0 auto;
+      padding: 25px 18px 150px;
+    }
+    .welcome { text-align: center; padding: 13vh 0 25px; }
+    .orb {
+      margin: 0 auto 20px; width: 68px; height: 68px;
+      display: grid; place-items: center; border-radius: 22px;
+      font-size: 35px; background: linear-gradient(135deg,#7668ff,#24c8cf);
+    }
+    .welcome h1 { font-size: clamp(27px,5vw,42px); margin: 10px 0; }
+    .welcome p { color: #b3b3c8; line-height: 1.7; }
+    .suggestions {
+      display: grid; grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 10px; margin-top: 25px;
+    }
+    .suggestions button {
+      background: #1b1d2b; color: #eeeefa; border: 1px solid #35374b;
+      border-radius: 13px; padding: 15px; text-align: left;
+    }
+    .message { margin: 16px 0; line-height: 1.7; overflow-wrap: anywhere; }
+    .message .who { font-weight: bold; color: #b8b0ff; margin-bottom: 5px; }
+    .message .bubble { white-space: pre-wrap; }
+    .composer-wrap {
+      position: fixed; bottom: 0; left: 245px; right: 0;
+      padding: 16px; background: linear-gradient(transparent,#10111b 22%);
+    }
+    .composer { max-width: 850px; margin: 0 auto; }
+    .input-box {
+      display: flex; gap: 8px; align-items: flex-end;
+      background: #202231; border: 1px solid #414359;
+      border-radius: 18px; padding: 10px;
+    }
+    textarea {
+      flex: 1; min-width: 0; resize: vertical; max-height: 140px;
+      min-height: 45px; background: transparent; color: white;
+      border: 0; outline: none; padding: 12px 5px;
+    }
+    .icon-btn {
+      min-width: 43px; height: 43px; border: 0; border-radius: 12px;
+      background: #34364a; color: white;
+    }
+    .send { background: #8174ff; color: #fff; font-weight: bold; }
+    .hint { text-align: center; font-size: 11px; color: #9697ad; padding: 10px 0 0; }
+    #status { color: #a9a1ff; font-size: 12px; min-height: 17px; }
+    .menu-btn { display: none; }
+    @media(max-width:650px) {
+      aside { display: none; }
+      aside.open {
+        display: flex; position: fixed; z-index: 5; top: 0; bottom: 0;
+        left: 0; box-shadow: 10px 0 30px #0008;
+      }
+      .menu-btn { display: inline-block; }
+      header { padding: 12px; }
+      .composer-wrap { left: 0; padding: 10px; }
+      #messages { padding: 18px 13px 155px; }
+      .welcome { padding-top: 9vh; }
+      .suggestions { grid-template-columns: 1fr; }
+      .input-box { gap: 5px; }
+      .icon-btn { min-width: 39px; }
+    }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 h-screen flex flex-col justify-between font-sans relative overflow-hidden">
-    
-    <!-- Top Header -->
-    <header class="bg-slate-900 border-b border-slate-800 p-4 flex justify-between items-center shadow-lg z-10">
-        <button onclick="toggleSidebar()" class="text-slate-300 hover:text-cyan-400 p-1 transition text-lg">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-        <div class="flex items-center gap-2 cursor-pointer" onclick="toggleSidebar()">
-            <span class="text-base font-bold text-slate-100 tracking-wide">Ai Sameer</span>
-            <i class="fa-solid fa-chevron-down text-xs text-slate-400"></i>
-        </div>
-        <button onclick="clearChat()" class="text-slate-300 hover:text-cyan-400 p-1 transition text-lg" title="New Chat">
-            <i class="fa-solid fa-pen-to-square"></i>
-        </button>
+<body>
+<div class="app">
+  <aside id="sidebar">
+    <div class="brand">✦ AI SAMEER</div>
+    <button class="new-chat" id="newChat">＋ కొత్త చాట్ / New Chat</button>
+    <div class="side-label">చాట్ హిస్టరీ / History</div>
+    <div id="history"></div>
+    <div style="margin-top:auto;color:#999ab1;font-size:12px;line-height:1.6">
+      AI Sameer<br>మీ వ్యక్తిగత AI సహాయకుడు
+    </div>
+  </aside>
+
+  <main class="main">
+    <header>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="icon-btn menu-btn" id="menu" aria-label="Menu">☰</button>
+        <strong>✦ AI Sameer</strong>
+      </div>
+      <select id="language" aria-label="Language">
+        <option value="te">తెలుగు</option>
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="kn">ಕನ್ನಡ</option>
+        <option value="ur">اردو</option>
+      </select>
     </header>
 
-    <!-- Sidebar Drawer (Left Menu) -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-slate-900 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
-        <div class="p-4 border-b border-slate-800 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <h2 class="font-bold text-slate-200 text-sm">Ai Sameer Menu</h2>
-            </div>
-            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white p-2">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
+    <section id="messages" aria-live="polite">
+      <div class="welcome" id="welcome">
+        <div class="orb">✦</div>
+        <h1 id="greeting">నమస్కారం! 👋</h1>
+        <p id="subtitle">నేను AI Sameer. ఈరోజు మీకు ఎలా సహాయం చేయగలను?</p>
+        <div class="suggestions" id="suggestions">
+          <button data-prompt="నాకు ఒక మంచి YouTube వీడియో ఐడియా ఇవ్వండి">🎬 YouTube వీడియో ఐడియా</button>
+          <button data-prompt="నాకు ఒక ప్రొఫెషనల్ వెబ్‌సైట్ కోడ్ ఇవ్వండి">💻 వెబ్‌సైట్ కోడ్</button>
+          <button data-prompt="ఇంగ్లీష్ నేర్చుకోవడంలో సహాయం చేయండి">📚 ఇంగ్లీష్ నేర్చుకుందాం</button>
+          <button data-prompt="కృత్రిమ మేధస్సు అంటే ఏమిటి?">✨ AI గురించి తెలుసుకుందాం</button>
         </div>
-        <div class="flex-1 overflow-y-auto p-4 space-y-2 text-sm">
-            <button onclick="selectMenu('New chat')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
-                <i class="fa-solid fa-pen-to-square text-cyan-400"></i> New chat
-            </button>
-            <button onclick="selectMenu('Search chats')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
-                <i class="fa-solid fa-magnifying-glass text-cyan-400"></i> Search chats
-            </button>
-            <button onclick="selectMenu('Images')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
-                <i class="fa-solid fa-image text-cyan-400"></i> Images
-            </button>
-            <button onclick="selectMenu('Library')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
-                <i class="fa-solid fa-folder-open text-cyan-400"></i> Library
-            </button>
-            <div class="pt-4 border-t border-slate-800 text-xs text-slate-400 uppercase tracking-wider font-semibold px-2">Notebooks</div>
-            <button onclick="selectMenu('New notebook')" class="w-full text-left px-4 py-3 rounded-xl hover:bg-slate-800 flex items-center gap-3 transition text-slate-200">
-                <i class="fa-solid fa-plus text-cyan-400"></i> New notebook
-            </button>
+      </div>
+    </section>
+
+    <div class="composer-wrap">
+      <div class="composer">
+        <div class="input-box">
+          <textarea id="prompt" rows="1" placeholder="మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి..."></textarea>
+          <button class="icon-btn" id="voice" aria-label="Voice input" title="వాయిస్ ఇన్‌పుట్">🎙️</button>
+          <button class="icon-btn send" id="send" aria-label="Send">➤</button>
         </div>
-        <div class="p-4 border-t border-slate-800 text-xs text-slate-400 flex items-center gap-2">
-            <div class="bg-indigo-600 text-white rounded-full h-6 w-6 flex items-center justify-center font-bold">SM</div>
-            <span>Shaik Mohammad</span>
-        </div>
+        <div id="status"></div>
+        <div class="hint">AI సమాధానాల కోసం AI సర్వీస్‌ను కనెక్ట్ చేయాలి.</div>
+      </div>
     </div>
-    <div id="backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-40 hidden transition-opacity"></div>
+  </main>
+</div>
 
-    <!-- Plus (+) Features Bottom Sheet Modal -->
-    <div id="plus-modal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-end justify-center transition-opacity">
-        <div class="bg-slate-900 border-t border-slate-800 rounded-t-3xl w-full max-w-2xl p-6 space-y-4 max-h-[80vh] overflow-y-auto">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="text-slate-100 font-bold text-base">Select AI Feature</h3>
-                <button onclick="togglePlusModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <!-- Top 3 Quick Cards -->
-            <div class="grid grid-cols-3 gap-3">
-                <button onclick="selectFeatureModal('Photos')" class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-image text-cyan-400 text-xl"></i>
-                    <span class="text-xs font-medium text-slate-200">Photos</span>
-                </button>
-                <button onclick="selectFeatureModal('Camera')" class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-camera text-cyan-400 text-xl"></i>
-                    <span class="text-xs font-medium text-slate-200">Camera</span>
-                </button>
-                <button onclick="selectFeatureModal('Avatar')" class="bg-slate-950 border border-slate-800 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-slate-800 transition">
-                    <i class="fa-solid fa-face-smile text-cyan-400 text-xl"></i>
-                    <span class="text-xs font-medium text-slate-200">Avatar</span>
-                </button>
-            </div>
-            <!-- List Options -->
-            <div class="space-y-2 text-sm">
-                <button onclick="selectFeatureModal('Images')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
-                    <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i>
-                    <div><div class="font-medium text-slate-200">Images</div><div class="text-xs text-slate-400">Create and edit visuals</div></div>
-                </button>
-                <button onclick="selectFeatureModal('Music')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
-                    <i class="fa-solid fa-music text-cyan-400"></i>
-                    <div><div class="font-medium text-slate-200">Music</div><div class="text-xs text-slate-400">Make audio tracks & voice</div></div>
-                </button>
-                <button onclick="selectFeatureModal('Canvas')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
-                    <i class="fa-solid fa-code text-cyan-400"></i>
-                    <div><div class="font-medium text-slate-200">Canvas</div><div class="text-xs text-slate-400">Code, write or make slides</div></div>
-                </button>
-                <button onclick="selectFeatureModal('Deep Research')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
-                    <i class="fa-solid fa-brain text-cyan-400"></i>
-                    <div><div class="font-medium text-slate-200">Deep Research</div><div class="text-xs text-slate-400">Get detailed reports & answers</div></div>
-                </button>
-                <button onclick="selectFeatureModal('Guided Learning')" class="w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 flex items-center gap-3 transition">
-                    <i class="fa-solid fa-graduation-cap text-cyan-400"></i>
-                    <div><div class="font-medium text-slate-200">Guided Learning</div><div class="text-xs text-slate-400">Get step-by-step help</div></div>
-                </button>
-            </div>
-        </div>
-    </div>
+<script>
+  const $ = id => document.getElementById(id);
+  let chats = [];
+  let currentChat = [];
+  let recognition = null;
 
-    <!-- Main Chat Area with Professional Glowing Sparkle Logo -->
-    <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 max-w-2xl w-full mx-auto flex flex-col justify-center items-center">
-        <div id="welcome-screen" class="text-center py-6">
-            <div class="inline-block p-4 rounded-full bg-slate-900/80 border border-slate-800 shadow-2xl mb-4">
-                <svg class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="url(#sparkle-gradient)"/>
-                    <defs>
-                        <linearGradient id="sparkle-gradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                            <stop stop-color="#38BDF8"/>
-                            <stop offset="0.5" stop-color="#818CF8"/>
-                            <stop offset="1" stop-color="#F472B6"/>
-                        </linearGradient>
-                    </defs>
-                </svg>
-            </div>
-            <h2 class="text-2xl font-bold text-slate-100 tracking-wide">Hi Shaik, let's get into it</h2>
-        </div>
-    </div>
+  const words = {
+    te: {
+      greeting: "నమస్కారం! 👋",
+      subtitle: "నేను AI Sameer. ఈరోజు మీకు ఎలా సహాయం చేయగలను?",
+      placeholder: "మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...",
+      empty: "దయచేసి ముందుగా ఒక ప్రశ్న టైప్ చేయండి.",
+      noAI: "ఇది AI Sameer డెమో వెర్షన్. ప్రస్తుతం నిజమైన AI సమాధానాల సర్వీస్ కనెక్ట్ కాలేదు. AI సమాధానాల కోసం సురక్షితమైన బ్యాకెండ్‌ను జోడించాలి.",
+      you: "మీరు", assistant: "AI Sameer",
+      listening: "మీ మాట వింటున్నాను...", voiceError: "వాయిస్ ఇన్‌పుట్ అందుబాటులో లేదు. దయచేసి టైప్ చేయండి."
+    },
+    en: {
+      greeting: "Hello there! 👋",
+      subtitle: "I'm AI Sameer. How can I help you today?",
+      placeholder: "Type your question here...",
+      empty: "Please type a question first.",
+      noAI: "This is the AI Sameer demo. A real AI service is not connected yet. A secure backend is needed for AI-generated answers.",
+      you: "You", assistant: "AI Sameer",
+      listening: "Listening...", voiceError: "Voice input is unavailable. Please type instead."
+    },
+    hi: {
+      greeting: "नमस्ते! 👋",
+      subtitle: "मैं AI Sameer हूँ। आज आपकी क्या मदद करूँ?",
+      placeholder: "अपना सवाल यहाँ लिखें...",
+      empty: "कृपया पहले सवाल लिखें।",
+      noAI: "यह AI Sameer का डेमो है। असली AI उत्तरों के लिए सुरक्षित बैकएंड जोड़ना होगा।",
+      you: "आप", assistant: "AI Sameer",
+      listening: "सुन रहा हूँ...", voiceError: "वॉइस इनपुट उपलब्ध नहीं है। कृपया टाइप करें।"
+    },
+    kn: {
+      greeting: "ನಮಸ್ಕಾರ! 👋",
+      subtitle: "ನಾನು AI Sameer. ಇಂದು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?",
+      placeholder: "ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ...",
+      empty: "ದಯವಿಟ್ಟು ಮೊದಲು ಪ್ರಶ್ನೆ ಬರೆಯಿರಿ.",
+      noAI: "ಇದು AI Sameer ಡೆಮೊ. ನಿಜವಾದ AI ಉತ್ತರಗಳಿಗಾಗಿ ಸುರಕ್ಷಿತ ಬ್ಯಾಕೆಂಡ್ ಅಗತ್ಯವಿದೆ.",
+      you: "ನೀವು", assistant: "AI Sameer",
+      listening: "ಕೇಳುತ್ತಿದ್ದೇನೆ...", voiceError: "ಧ್ವನಿ ಇನ್‌ಪುಟ್ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ಟೈಪ್ ಮಾಡಿ."
+    },
+    ur: {
+      greeting: "السلام علیکم! 👋",
+      subtitle: "میں AI Sameer ہوں۔ آج میں آپ کی کیا مدد کر سکتا ہوں؟",
+      placeholder: "اپنا سوال یہاں لکھیں...",
+      empty: "براہ کرم پہلے سوال لکھیں۔",
+      noAI: "یہ AI Sameer کا ڈیمو ہے۔ حقیقی AI جوابات کے لیے محفوظ بیک اینڈ درکار ہے۔",
+      you: "آپ", assistant: "AI Sameer",
+      listening: "سن رہا ہوں...", voiceError: "وائس ان پٹ دستیاب نہیں۔ براہ کرم ٹائپ کریں۔"
+    }
+  };
 
-    <!-- Bottom Input Section (Gemini Style with Mic & Audio Wave) -->
-    <div class="bg-slate-900 border-t border-slate-800 p-4 z-10">
-        <form id="chat-form" class="max-w-2xl mx-auto flex items-center bg-slate-900 border border-slate-700 rounded-full px-4 py-2.5 shadow-inner">
-            <button type="button" onclick="togglePlusModal()" class="text-slate-400 hover:text-cyan-400 p-2 transition text-lg">
-                <i class="fa-solid fa-plus"></i>
-            </button>
-            <input type="text" id="user-input" placeholder="Ask Ai Sameer" 
-                class="flex-1 bg-transparent border-none px-3 py-1 text-sm text-slate-100 focus:outline-none" required>
-            
-            <!-- Mic Button -->
-            <button type="button" id="mic-btn" onclick="startVoiceInput()" class="text-slate-400 hover:text-cyan-400 p-2 transition text-base" title="Voice Input">
-                <i class="fa-solid fa-microphone"></i>
-            </button>
-            
-            <!-- Audio Wave / Submit Button -->
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white h-9 w-9 rounded-full flex items-center justify-center transition shadow ml-2">
-                <i class="fa-solid fa-arrow-up text-xs"></i>
-            </button>
-        </form>
-    </div>
+  function lang() { return words[$("language").value] || words.te; }
 
-    <!-- JavaScript Logic -->
-    <script>
-        const chatContainer = document.getElementById('chat-container');
-        const chatForm = document.getElementById('chat-form');
-        const userInput = document.getElementById('user-input');
-        const sidebar = document.getElementById('sidebar');
-        const backdrop = document.getElementById('backdrop');
-        const plusModal = document.getElementById('plus-modal');
-        const micBtn = document.getElementById('mic-btn');
-        const welcomeScreen = document.getElementById('welcome-screen');
+  function applyLanguage() {
+    const w = lang();
+    $("greeting").textContent = w.greeting;
+    $("subtitle").textContent = w.subtitle;
+    $("prompt").placeholder = w.placeholder;
+    document.documentElement.lang = $("language").value;
+  }
 
-        function toggleSidebar() {
-            const isOpen = sidebar.classList.contains('translate-x-0');
-            if (isOpen) {
-                sidebar.classList.remove('translate-x-0');
-                sidebar.classList.add('-translate-x-full');
-                backdrop.classList.add('hidden');
-            } else {
-                sidebar.classList.remove('-translate-x-full');
-                sidebar.classList.add('translate-x-0');
-                backdrop.classList.remove('hidden');
-            }
-        }
+  function addMessage(role, text) {
+    const welcome = $("welcome");
+    if (welcome) welcome.remove();
 
-        function togglePlusModal() {
-            plusModal.classList.toggle('hidden');
-        }
+    const box = document.createElement("div");
+    box.className = "message";
+    const who = document.createElement("div");
+    who.className = "who";
+    who.textContent = role === "user" ? lang().you : lang().assistant;
+    const body = document.createElement("div");
+    body.className = "bubble";
+    body.textContent = text;
+    box.append(who, body);
+    $("messages").appendChild(box);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }
 
-        function selectMenu(feature) {
-            toggleSidebar();
-            appendMessage(`${feature} మోడ్ ఎంచుకోబడింది. దానికి తగినట్లుగా వివరాలు ఇవ్వండి.`, 'ai');
-        }
+  function renderHistory() {
+    $("history").replaceChildren();
+    chats.slice().reverse().forEach((chat, index) => {
+      const btn = document.createElement("button");
+      btn.className = "history-item";
+      btn.textContent = chat.title || ("Chat " + (chats.length - index));
+      btn.onclick = () => {
+        currentChat = chat.messages.slice();
+        $("messages").replaceChildren();
+        currentChat.forEach(m => addMessage(m.role, m.text));
+        $("sidebar").classList.remove("open");
+      };
+      $("history").appendChild(btn);
+    });
+  }
 
-        function selectFeatureModal(feature) {
-            togglePlusModal();
-            appendMessage(`${feature} మాడ్యూల్ యాక్టివేట్ చేయబడింది. దానికి సంబంధించిన టాస్క్ టైప్ చేయండి.`, 'ai');
-        }
+  function saveChat() {
+    if (!currentChat.length) return;
+    const title = currentChat.find(m => m.role === "user")?.text.slice(0, 32) || "New chat";
+    const old = chats.findIndex(c => c.id === currentChat.id);
+    const id = currentChat.id || Date.now();
+    currentChat.id = id;
+    const item = { id, title, messages: currentChat.slice() };
+    const idx = chats.findIndex(c => c.id === id);
+    if (idx >= 0) chats[idx] = item;
+    else chats.push(item);
+    try { localStorage.setItem("sameerChats", JSON.stringify(chats)); } catch (e) {}
+    renderHistory();
+  }
 
-        function clearChat() {
-            chatContainer.innerHTML = `
-                <div id="welcome-screen" class="text-center py-6">
-                    <div class="inline-block p-4 rounded-full bg-slate-900/80 border border-slate-800 shadow-2xl mb-4">
-                        <svg class="w-10 h-10 mx-auto" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2Z" fill="url(#sparkle-gradient-2)"/>
-                            <defs>
-                                <linearGradient id="sparkle-gradient-2" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#38BDF8"/>
-                                    <stop offset="0.5" stop-color="#818CF8"/>
-                                    <stop offset="1" stop-color="#F472B6"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-100 tracking-wide">Hi Shaik, let's get into it</h2>
-                </div>
-            `;
-        }
+  function newChat() {
+    saveChat();
+    currentChat = [];
+    $("messages").innerHTML = "";
+    const welcome = document.createElement("div");
+    welcome.className = "welcome";
+    welcome.id = "welcome";
+    welcome.innerHTML = '<div class="orb">✦</div><h1 id="greeting"></h1><p id="subtitle"></p><div class="suggestions" id="suggestions"><button data-prompt="నాకు ఒక మంచి YouTube వీడియో ఐడియా ఇవ్వండి">🎬 YouTube వీడియో ఐడియా</button><button data-prompt="నాకు ఒక ప్రొఫెషనల్ వెబ్‌సైట్ కోడ్ ఇవ్వండి">💻 వెబ్‌సైట్ కోడ్</button><button data-prompt="ఇంగ్లీష్ నేర్చుకోవడంలో సహాయం చేయండి">📚 ఇంగ్లీష్ నేర్చుకుందాం</button><button data-prompt="కృత్రిమ మేధస్సు అంటే ఏమిటి?">✨ AI గురించి తెలుసుకుందాం</button></div>';
+    $("messages").appendChild(welcome);
+    applyLanguage();
+  }
 
-        function speakText(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'te-IN';
-                utterance.rate = 1.0;
-                window.speechSynthesis.speak(utterance);
-            }
-        }
+  function sendMessage(text) {
+    text = (text || $("prompt").value).trim();
+    if (!text) { $("status").textContent = lang().empty; return; }
+    $("status").textContent = "";
+    $("prompt").value = "";
+    currentChat.push({ role: "user", text });
+    addMessage("user", text);
+    const reply = lang().noAI;
+    currentChat.push({ role: "assistant", text: reply });
+    addMessage("assistant", reply);
+    saveChat();
+  }
 
-        async function fetchAIResponse(prompt) {
-            const lower = prompt.toLowerCase();
-            if (lower.includes('sk md riding') || lower.includes('riding tv') || lower.includes('channel')) {
-                return "SK MD Riding TV అనేది మోటార్‌సైకిల్ వ్లాగ్స్, రైడింగ్ అడ్వెంచర్లు మరియు బైక్ రివ్యూల కోసం ప్రత్యేకించబడిన అద్భుతమైన యూట్యూబ్ ఛానెల్!";
-            } else if (lower.includes('name') || lower.includes('పేరు')) {
-                return "నా పేరు Ai Sameer. షైక్ మొహమ్మద్ గారిచే రూపుదిద్దుకున్న అడ్వాన్స్‌డ్ పర్సనల్ ఏఐ అసిస్టెంట్ నేను.";
-            } else if (lower.includes('hello') || lower.includes('hi') || lower.includes('నమస్తే')) {
-                return "నమస్తే షైక్! మీకు ఏ విధంగా సహాయం చేయగలను?";
-            } else if (lower.includes('video') || lower.includes('వీడియో')) {
-                return "టెక్స్ట్-టు-వీడియో జనరేషన్ ప్రాసెస్ ప్రారంభించబడింది. మీ కాన్సెప్ట్ ప్రకారం వీడియో సిద్ధమవుతోంది.";
-            } else if (lower.includes('image') || lower.includes('ఫోటో') || lower.includes('చిత్రం')) {
-                return "మీ కోటా ప్రకారం హై-క్వాలిటీ ఇమేజ్ సృష్టించబడింది.";
-            }
-            return `ధన్యవాదాలు షైక్! మీరు అడిగిన "${prompt}" గురించిన పూర్తి విశ్లేషణ మరియు సమాచారం ఇక్కడ అందించబడింది. Ai Sameer ద్వారా మీకు అన్‌లిమిటెడ్‌గా సహాయం అందుతుంది.`;
-        }
+  $("send").addEventListener("click", () => sendMessage());
+  $("prompt").addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  $("newChat").addEventListener("click", newChat);
+  $("menu").addEventListener("click", () => $("sidebar").classList.toggle("open"));
+  $("language").addEventListener("change", applyLanguage);
 
-        chatForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const message = userInput.value.trim();
-            if (!message) return;
-            
-            if (welcomeScreen) welcomeScreen.style.display = 'none';
-            chatContainer.classList.remove('justify-center', 'items-center');
-            
-            appendMessage(message, 'user');
-            userInput.value = '';
-            
-            const loadingId = appendMessage("ఆలోచిస్తున్నాను...", 'ai', true);
-            const aiReply = await fetchAIResponse(message);
-            
-            const loadingElement = document.getElementById(loadingId);
-            if(loadingElement) loadingElement.remove();
-            
-            appendMessage(aiReply, 'ai');
-        });
+  $("suggestions").addEventListener("click", e => {
+    const button = e.target.closest("button[data-prompt]");
+    if (button) sendMessage(button.dataset.prompt);
+  });
+  $("messages").addEventListener("click", e => {
+    const button = e.target.closest("button[data-prompt]");
+    if (button) sendMessage(button.dataset.prompt);
+  });
 
-        // Fully working Voice Input (Microphone) handler
-        function startVoiceInput() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("మీ బ్రౌజర్ వాయిస్ రికగ్నిషన్‌కు మద్దతు ఇవ్వడం లేదు.");
-                return;
-            }
+  $("voice").addEventListener("click", () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      $("status").textContent = lang().voiceError;
+      return;
+    }
+    recognition = new SpeechRecognition();
+    recognition.lang = {
+      te: "te-IN", en: "en-IN", hi: "hi-IN", kn: "kn-IN", ur: "ur-PK"
+    }[$("language").value] || "te-IN";
+    recognition.onstart = () => $("status").textContent = lang().listening;
+    recognition.onresult = e => {
+      $("prompt").value = e.results[0][0].transcript;
+      $("status").textContent = "";
+    };
+    recognition.onerror = () => $("status").textContent = lang().voiceError;
+    recognition.onend = () => {
+      if ($("status").textContent === lang().listening) $("status").textContent = "";
+    };
+    recognition.start();
+  });
 
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'te-IN';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            micBtn.innerHTML = '<i class="fa-solid fa-microphone text-rose-500 animate-pulse"></i>';
-            userInput.placeholder = "వింటున్నాను మాట్లాడండి...";
-
-            recognition.onresult = function(event) {
-                userInput.value = event.results[0][0].transcript;
-                micBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
-                userInput.placeholder = "Ask Ai Sameer";
-            };
-
-            recognition.onerror = recognition.onend = function() {
-                micBtn.innerHTML = '<i class="fa-solid fa-microphone"></i>';
-                userInput.placeholder = "Ask Ai Sameer";
-            };
-
-            try { recognition.start(); } catch (err) { console.error(err); }
-        }
-
-        let messageCounter = 0;
-        function appendMessage(text, sender, isLoading = false) {
-            const isUser = sender === 'user';
-            const msgId = 'msg-' + (++messageCounter);
-            const wrapperDiv = document.createElement('div');
-            wrapperDiv.id = msgId;
-            wrapperDiv.className = `flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1 mb-4 w-full`;
-            
-            const bubbleRow = document.createElement('div');
-            bubbleRow.className = `flex items-start space-x-2 ${isUser ? 'flex-row-reverse space-x-reverse' : ''} w-full`;
-            
-            const avatar = document.createElement('div');
-            avatar.className = `${isUser ? 'bg-emerald-600' : 'bg-indigo-600'} text-white rounded-full h-7 w-7 flex items-center justify-center font-bold text-xs shrink-0 shadow`;
-            avatar.textContent = isUser ? 'US' : 'AI';
-            
-            const bubble = document.createElement('div');
-            bubble.className = `${isUser ? 'bg-cyan-950 border-cyan-800 text-slate-100 ml-auto' : 'bg-slate-900 border-slate-800 text-slate-100 mr-auto'} border p-3.5 rounded-2xl max-w-[85%] text-sm shadow-md leading-relaxed`;
-            bubble.textContent = text;
-            
-            bubbleRow.appendChild(avatar);
-            bubbleRow.appendChild(bubble);
-            wrapperDiv.appendChild(bubbleRow);
-
-            if (!isUser && !isLoading) {
-                const actionsRow = document.createElement('div');
-                actionsRow.className = 'flex items-center gap-3 pl-9 text-slate-400 text-xs mt-1';
-                actionsRow.innerHTML = `
-                    <button onclick="alert('Liked!')" class="hover:text-cyan-400 transition"><i class="fa-regular fa-thumbs-up"></i></button>
-                    <button onclick="alert('Disliked!')" class="hover:text-cyan-400 transition"><i class="fa-regular fa-thumbs-down"></i></button>
-                    <button onclick="navigator.clipboard.writeText('${text}'); alert('Copied!');" class="hover:text-cyan-400 transition"><i class="fa-regular fa-copy"></i></button>
-                    <button onclick="alert('More options')" class="hover:text-cyan-400 transition"><i class="fa-solid fa-ellipsis"></i></button>
-                    <button onclick="speakText('${text}')" class="hover:text-cyan-400 flex items-center gap-1 transition ml-2"><i class="fa-solid fa-volume-high"></i> వినండి</button>
-                `;
-                wrapperDiv.appendChild(actionsRow);
-            }
-
-            chatContainer.appendChild(wrapperDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            return msgId;
-        }
-    </script>
+  try {
+    chats = JSON.parse(localStorage.getItem("sameerChats") || "[]");
+  } catch (e) { chats = []; }
+  renderHistory();
+  applyLanguage();
+</script>
 </body>
 </html>
+
