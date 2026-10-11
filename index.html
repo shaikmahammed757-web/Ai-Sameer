@@ -3,488 +3,371 @@
 <html lang="te">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#101522">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101116">
 <title>AI Sameer</title>
 <style>
 :root {
-  --bg:#0c1020;
-  --panel:#151b2c;
-  --panel2:#20283b;
-  --text:#f4f6ff;
-  --muted:#a6b0c5;
-  --accent:#8b7cff;
-  --border:#303950;
+  color-scheme: dark;
+  --bg:#101116;
+  --panel:#1b1c22;
+  --panel2:#272830;
+  --text:#f4f4f6;
+  --muted:#a7a8b2;
+  --line:#34353e;
+  --accent:#a99bff;
 }
-* { box-sizing:border-box; }
-body {
-  margin:0;
-  font-family:Arial,"Noto Sans Telugu",sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  min-height:100vh;
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+font-family:Arial,"Noto Sans Telugu",sans-serif;min-height:100vh}
+button,textarea,select{font:inherit}
+button{cursor:pointer;color:inherit}
+.app{min-height:100vh}
+.topbar{height:62px;display:flex;align-items:center;justify-content:space-between;
+padding:0 16px;border-bottom:1px solid var(--line)}
+.top-left,.top-right{display:flex;align-items:center;gap:10px}
+.icon{border:0;background:transparent;width:42px;height:42px;border-radius:50%;
+font-size:22px;display:grid;place-items:center}
+.icon:hover{background:var(--panel2)}
+.brand{font-size:19px;font-weight:700}
+select{background:var(--panel);border:1px solid var(--line);color:var(--text);
+border-radius:20px;padding:9px;max-width:135px}
+.layout{display:flex;min-height:calc(100vh - 62px)}
+.sidebar{width:280px;flex-shrink:0;background:#17181d;border-right:1px solid var(--line);
+padding:16px;display:none;flex-direction:column;gap:10px}
+.sidebar.open{display:flex}
+.sidebutton{border:0;border-radius:12px;padding:13px;text-align:left;background:transparent}
+.sidebutton:hover{background:var(--panel2)}
+.sideheading{font-size:12px;color:var(--muted);padding:10px 5px 3px}
+.history{display:flex;flex-direction:column;gap:5px;overflow:auto}
+.history-item{display:flex;align-items:center;gap:8px}
+.history-open{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+text-align:left;border:0;background:transparent;border-radius:9px;padding:10px}
+.history-open:hover{background:var(--panel2)}
+.history-delete{border:0;background:transparent;padding:8px}
+.main{flex:1;min-width:0;display:flex;flex-direction:column;min-height:calc(100vh - 62px)}
+.chat{flex:1;width:100%;max-width:850px;margin:auto;padding:22px 18px 180px}
+.welcome{min-height:45vh;display:flex;flex-direction:column;align-items:center;
+justify-content:center;text-align:center;padding:25px 8px}
+.logo{width:74px;height:74px;border-radius:26px;display:grid;place-items:center;
+font-size:37px;font-weight:bold;color:#fff;background:linear-gradient(140deg,#a89aff,#54c8ee);
+box-shadow:0 8px 40px #9283ff25;margin-bottom:22px}
+.welcome h1{font-size:36px;letter-spacing:-1px;margin:0 0 10px}
+.welcome p{color:var(--muted);margin:0;line-height:1.7}
+.message{display:flex;gap:12px;margin:25px 0;align-items:flex-start}
+.avatar{width:35px;height:35px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;
+background:var(--panel2);font-weight:bold}
+.user .avatar{background:#6254ac}
+.message-body{flex:1;min-width:0;line-height:1.8;overflow-wrap:anywhere}
+.message-body p{margin:0;white-space:pre-wrap}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.action{border:1px solid var(--line);background:transparent;color:var(--muted);
+border-radius:9px;padding:7px 10px;font-size:12px}
+.action:hover,.action.active{background:var(--panel2);color:var(--text)}
+.composer-area{position:fixed;z-index:3;bottom:0;left:0;right:0;padding:12px 16px 10px;
+background:linear-gradient(transparent,var(--bg) 15%)}
+.composer{max-width:820px;margin:auto;background:var(--panel);border:1px solid #41424c;
+border-radius:26px;padding:10px;box-shadow:0 8px 40px #0003}
+textarea{display:block;width:100%;resize:none;max-height:150px;min-height:42px;
+border:0;outline:0;background:transparent;color:var(--text);padding:10px 8px;
+font-size:16px;line-height:1.5}
+textarea::placeholder{color:var(--muted)}
+.composer-tools{display:flex;align-items:center;gap:7px}
+.tool{width:40px;height:40px;border-radius:50%;border:0;background:transparent;
+font-size:20px;display:grid;place-items:center}
+.tool:hover{background:var(--panel2)}
+.tool.send{margin-left:auto;background:#eee9ff;color:#28213c;font-weight:bold}
+.tool.send:disabled{opacity:.4}
+.mode-label{font-size:12px;color:var(--muted);padding:8px}
+.note{text-align:center;color:var(--muted);font-size:11px;padding:8px 0 0}
+.status{max-width:820px;margin:0 auto;color:var(--muted);font-size:12px;padding:0 8px 5px}
+.popup{position:fixed;z-index:10;bottom:100px;left:16px;width:min(310px,calc(100vw - 32px));
+background:var(--panel2);border:1px solid var(--line);border-radius:18px;padding:10px;
+box-shadow:0 12px 35px #0008;display:none}
+.popup.open{display:block}
+.popup button{display:block;width:100%;text-align:left;background:transparent;border:0;
+border-radius:10px;padding:12px}
+.popup button:hover{background:#3a3b46}
+.attach-preview{display:flex;gap:8px;flex-wrap:wrap;padding:5px 8px}
+.file-chip{border:1px solid var(--line);border-radius:10px;padding:6px 9px;font-size:12px}
+#fileInput{display:none}
+@media(min-width:850px){
+ .sidebar.open{display:flex}
+ .composer-area{left:0}
+ .sidebar.open~.main .composer-area{left:280px}
 }
-.app { display:flex; min-height:100vh; }
-.sidebar {
-  width:255px;
-  padding:20px;
-  background:#101626;
-  border-right:1px solid var(--border);
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
-.brand {
-  font-size:25px;
-  font-weight:800;
-  background:linear-gradient(90deg,#a99cff,#61d9ff);
-  -webkit-background-clip:text;
-  color:transparent;
-}
-.new-chat,.side-btn {
-  width:100%;
-  padding:12px;
-  border:1px solid var(--border);
-  background:var(--panel);
-  color:var(--text);
-  border-radius:12px;
-  text-align:left;
-  cursor:pointer;
-  font-size:14px;
-}
-.side-label { color:var(--muted); font-size:12px; }
-.sidebar-bottom { margin-top:auto; color:var(--muted); font-size:12px; line-height:1.6; }
-.main { flex:1; min-width:0; display:flex; flex-direction:column; }
-.topbar {
-  height:66px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:12px 22px;
-  border-bottom:1px solid var(--border);
-  background:rgba(12,16,32,.94);
-  position:sticky;
-  top:0;
-  z-index:2;
-}
-.top-title { font-size:18px; font-weight:700; }
-select {
-  background:var(--panel2);
-  color:var(--text);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:9px;
-  max-width:145px;
-}
-.chat {
-  flex:1;
-  width:100%;
-  max-width:900px;
-  margin:0 auto;
-  padding:24px 20px 180px;
-}
-.welcome { text-align:center; padding:70px 8px 25px; }
-.logo {
-  width:72px;height:72px;border-radius:24px;
-  display:grid;place-items:center;margin:0 auto 20px;
-  background:linear-gradient(135deg,#8b7cff,#3bc6ef);
-  color:#fff;font-size:34px;font-weight:bold;
-  box-shadow:0 10px 40px #7565ff30;
-}
-h1 { font-size:34px; margin:0 0 12px; }
-.welcome p { color:var(--muted); line-height:1.7; }
-.suggestions {
-  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:12px;margin-top:28px;
-}
-.suggestion {
-  text-align:left;background:var(--panel);
-  border:1px solid var(--border);color:var(--text);
-  padding:16px;border-radius:15px;cursor:pointer;line-height:1.5;
-}
-.suggestion:hover,.side-btn:hover { border-color:var(--accent); }
-.message { display:flex; gap:12px; margin:26px 0; align-items:flex-start; }
-.avatar {
-  flex:0 0 34px;height:34px;border-radius:12px;
-  display:grid;place-items:center;font-size:15px;font-weight:bold;
-  background:var(--panel2);
-}
-.message.user .avatar { background:#5346b7; }
-.content { min-width:0; flex:1; line-height:1.8; overflow-wrap:anywhere; }
-.content p { margin:0 0 10px; white-space:pre-wrap; }
-.message-actions { display:flex;flex-wrap:wrap;gap:7px;margin-top:12px; }
-.action {
-  background:transparent;color:var(--muted);
-  border:1px solid var(--border);border-radius:8px;
-  padding:6px 10px;cursor:pointer;font-size:12px;
-}
-.action:hover,.action.active { color:white;background:var(--panel2); }
-.composer-wrap {
-  position:fixed;bottom:0;left:255px;right:0;
-  padding:16px 20px 12px;
-  background:linear-gradient(transparent,var(--bg) 18%);
-}
-.composer { max-width:860px;margin:0 auto; }
-.inputbox {
-  display:flex;align-items:flex-end;gap:8px;
-  padding:10px;background:var(--panel);
-  border:1px solid #3b4560;border-radius:20px;
-  box-shadow:0 8px 35px #0003;
-}
-textarea {
-  flex:1;min-width:0;resize:none;max-height:160px;
-  border:0;outline:0;background:transparent;color:var(--text);
-  font:16px/1.5 Arial,"Noto Sans Telugu",sans-serif;
-  padding:10px 6px;
-}
-textarea::placeholder { color:var(--muted); }
-.icon-btn {
-  width:40px;height:40px;flex:0 0 40px;
-  border:0;border-radius:13px;background:var(--panel2);
-  color:var(--text);cursor:pointer;font-size:18px;
-}
-.send { background:var(--accent);color:white;font-weight:bold; }
-.icon-btn:disabled { opacity:.45;cursor:default; }
-.disclaimer { text-align:center;color:var(--muted);font-size:11px;margin-top:10px; }
-.status { color:var(--muted);font-size:12px;min-height:18px;margin:5px 8px; }
-.mobile-menu { display:none; }
-@media(max-width:700px) {
-  .sidebar { display:none; }
-  .topbar { padding:10px 14px;height:60px; }
-  .top-title { font-size:16px; }
-  .mobile-menu { display:inline-block; }
-  .chat { padding:14px 14px 190px; }
-  .welcome { padding-top:55px; }
-  h1 { font-size:28px; }
-  .suggestions { grid-template-columns:1fr;gap:9px; }
-  .suggestion { padding:13px; }
-  .composer-wrap { left:0;right:0;padding:12px 10px 8px; }
-  .message { gap:9px; }
+@media(max-width:600px){
+ .topbar{padding:0 9px}
+ .brand{font-size:17px}
+ .chat{padding:10px 13px 180px}
+ .welcome{min-height:42vh}
+ .welcome h1{font-size:31px}
+ .composer-area{padding:10px 9px 8px}
+ .sidebar{position:fixed;z-index:8;top:62px;bottom:0;left:0;width:min(290px,85vw);
+ box-shadow:10px 0 35px #0006}
+ .sidebar.open{display:flex}
 }
 </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar">
+<header class="topbar">
+  <div class="top-left">
+    <button class="icon" id="menuBtn" aria-label="Menu">☰</button>
     <div class="brand">✦ AI Sameer</div>
-    <button class="new-chat" id="newChat">＋ కొత్త చాట్</button>
-    <div class="side-label">మీ AI సహాయకుడు</div>
-    <button class="side-btn" id="aboutBtn">✦ AI Sameer గురించి</button>
-    <button class="side-btn" id="clearBtn">▤ చాట్ క్లియర్ చేయండి</button>
-    <div class="sidebar-bottom">
-      AI Sameer<br>
-      మీ ఆలోచనలకు డిజిటల్ సహాయకుడు.<br><br>
-      గమనిక: AI సమాధానాల కోసం API కనెక్షన్ అవసరం.
+  </div>
+  <div class="top-right">
+    <select id="language" aria-label="Choose language">
+      <option value="te-IN">తెలుగు</option>
+      <option value="hi-IN">हिन्दी</option>
+      <option value="ta-IN">தமிழ்</option>
+      <option value="kn-IN">ಕನ್ನಡ</option>
+      <option value="ml-IN">മലയാളം</option>
+      <option value="bn-IN">বাংলা</option>
+      <option value="mr-IN">मराठी</option>
+      <option value="gu-IN">ગુજરાતી</option>
+      <option value="pa-IN">ਪੰਜਾਬੀ</option>
+      <option value="or-IN">ଓଡ଼ିଆ</option>
+      <option value="as-IN">অসমীয়া</option>
+      <option value="ur-IN">اردو</option>
+      <option value="en-IN">English</option>
+      <option value="ne-NP">नेपाली</option>
+      <option value="sa-IN">संस्कृतम्</option>
+      <option value="kok-IN">कोंकणी</option>
+      <option value="sd-IN">سنڌي</option>
+      <option value="ks-IN">کٲشُر</option>
+      <option value="doi-IN">डोगरी</option>
+      <option value="mai-IN">मैथिली</option>
+      <option value="mni-IN">মৈতৈলোন্</option>
+      <option value="sat-IN">Santali</option>
+      <option value="brx-IN">बड़ो</option>
+    </select>
+    <button class="icon" id="newChatBtn" title="New chat" aria-label="New chat">✏️</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebutton" id="sidebarNew">＋ &nbsp; New Chat</button>
+    <button class="sidebutton" id="settingsBtn">⚙️ &nbsp; Settings</button>
+    <div class="sideheading">Recent chats / చాట్ హిస్టరీ</div>
+    <div class="history" id="history"></div>
+    <button class="sidebutton" id="clearHistory">🗑️ &nbsp; Clear all history</button>
+    <div style="margin-top:auto;color:var(--muted);font-size:12px;line-height:1.7">
+      AI Sameer<br>మీ డిజిటల్ సహాయకుడు
     </div>
   </aside>
 
   <main class="main">
-    <header class="topbar">
-      <div style="display:flex;align-items:center;gap:10px">
-        <button class="icon-btn mobile-menu" id="menuBtn" aria-label="కొత్త చాట్">☰</button>
-        <div class="top-title">✦ AI Sameer</div>
-      </div>
-      <select id="language" aria-label="భాష ఎంపిక">
-        <option value="te">తెలుగు</option>
-        <option value="en">English</option>
-        <option value="hi">हिन्दी</option>
-        <option value="kn">ಕನ್ನಡ</option>
-      </select>
-    </header>
-
     <section class="chat" id="chat">
       <div class="welcome" id="welcome">
         <div class="logo">✦</div>
-        <h1 id="welcomeTitle">నమస్కారం! 👋</h1>
-        <p id="welcomeText">నేను AI Sameer. ఈరోజు మీకు ఎలా సహాయం చేయగలను?</p>
-        <div class="suggestions">
-          <button class="suggestion" data-prompt="నాకు ఒక మంచి YouTube వీడియో ఐడియా ఇవ్వండి">🎬 మంచి YouTube వీడియో ఐడియా ఇవ్వండి</button>
-          <button class="suggestion" data-prompt="నాకు ఒక వెబ్‌సైట్ తయారు చేయడంలో సహాయం చేయండి">💻 వెబ్‌సైట్ తయారీలో సహాయం చేయండి</button>
-          <button class="suggestion" data-prompt="నాకు ఇంగ్లీష్ నేర్పించండి">📚 ఇంగ్లీష్ నేర్పించండి</button>
-          <button class="suggestion" data-prompt="ఈరోజు కోసం ఒక మంచి ప్రేరణాత్మక సందేశం ఇవ్వండి">✨ ప్రేరణాత్మక సందేశం ఇవ్వండి</button>
-        </div>
+        <h1>Hey Sameer</h1>
       </div>
     </section>
-
-    <div class="composer-wrap">
-      <div class="composer">
-        <div class="status" id="status" aria-live="polite"></div>
-        <form class="inputbox" id="chatForm">
-          <button class="icon-btn" type="button" id="micBtn" title="వాయిస్‌తో ప్రశ్న అడగండి" aria-label="మైక్రోఫోన్">🎤</button>
-          <textarea id="prompt" rows="1" placeholder="మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి..." aria-label="మీ సందేశం"></textarea>
-          <button class="icon-btn send" id="sendBtn" type="submit" title="పంపండి" aria-label="పంపండి">➤</button>
-        </form>
-        <div class="disclaimer" id="disclaimer">AI సమాధానాల్లో తప్పులు ఉండవచ్చు. ముఖ్యమైన విషయాలను ధృవీకరించండి.</div>
-      </div>
-    </div>
   </main>
 </div>
+
+<div class="popup" id="plusMenu">
+  <button data-tool="photo">🖼️ &nbsp; Add photos and images</button>
+  <button data-tool="camera">📷 &nbsp; Take a photo</button>
+  <button data-tool="file">📎 &nbsp; Upload files / PDF</button>
+  <button data-tool="research">🔎 &nbsp; Deep Research / Web Search</button>
+  <button data-tool="image">🎨 &nbsp; AI Image Generation</button>
+  <button data-tool="voice">🎙️ &nbsp; Voice conversation</button>
+  <button data-tool="code">💻 &nbsp; Coding help</button>
+</div>
+
+<div class="composer-area">
+  <div class="status" id="status" aria-live="polite"></div>
+  <div class="composer">
+    <div class="attach-preview" id="attachments"></div>
+    <textarea id="prompt" rows="1" placeholder="Message AI Sameer..." aria-label="Message AI Sameer"></textarea>
+    <div class="composer-tools">
+      <button class="tool" id="plusBtn" title="Attachments" aria-label="Attachments">＋</button>
+      <button class="tool" id="micBtn" title="Speak" aria-label="Speak">🎤</button>
+      <span class="mode-label" id="modeLabel">AI Chat</span>
+      <button class="tool send" id="sendBtn" title="Send" aria-label="Send">↑</button>
+    </div>
+  </div>
+  <div class="note">AI can make mistakes. Verify important information.</div>
+</div>
+<input type="file" id="fileInput" accept="image/*,.pdf,.txt,.doc,.docx,.csv" multiple>
 
 <script>
 const $ = id => document.getElementById(id);
 const chat = $("chat");
-const promptInput = $("prompt");
-const statusBox = $("status");
+const promptBox = $("prompt");
+const lang = $("language");
+const popup = $("plusMenu");
 let busy = false;
+let mode = "chat";
+let attachedFiles = [];
+let conversations = [];
+let currentId = null;
 
-const translations = {
-  te: {
-    greeting:"నమస్కారం! 👋",
-    welcome:"నేను AI Sameer. ఈరోజు మీకు ఎలా సహాయం చేయగలను?",
-    placeholder:"మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి...",
-    disclaimer:"AI సమాధానాల్లో తప్పులు ఉండవచ్చు. ముఖ్యమైన విషయాలను ధృవీకరించండి.",
-    thinking:"ఆలోచిస్తోంది...",
-    copy:"📋 కాపీ",like:"👍",dislike:"👎",share:"📤 షేర్",
-    speak:"🔊 వినండి",stop:"⏹ ఆపండి",
-    copied:"కాపీ అయింది!",copyFail:"కాపీ చేయలేకపోయాను.",
-    micUnsupported:"మీ బ్రౌజర్‌లో వాయిస్ గుర్తింపు అందుబాటులో లేదు.",
-    listening:"వింటున్నాను... మాట్లాడండి.",
-    micError:"మైక్ పనిచేయలేదు. అనుమతులు తనిఖీ చేయండి.",
-    empty:"దయచేసి మీ ప్రశ్నను టైప్ చేయండి.",
-    failed:"క్షమించండి, సమాధానం పొందలేకపోయాను.",
-    newChat:"కొత్త చాట్ ప్రారంభించబడింది.",
-    about:"AI Sameer అనేది AI చాట్ ఇంటర్‌ఫేస్. AI సమాధానాల కోసం సురక్షితమైన సర్వర్/APIని కనెక్ట్ చేయాలి.",
-    user:"మీరు",assistant:"AI Sameer"
-  },
-  en: {
-    greeting:"Hello! 👋",welcome:"I'm AI Sameer. How can I help you today?",
-    placeholder:"Type your message here...",disclaimer:"AI can make mistakes. Verify important information.",
-    thinking:"Thinking...",copy:"📋 Copy",like:"👍",dislike:"👎",share:"📤 Share",
-    speak:"🔊 Listen",stop:"⏹ Stop",copied:"Copied!",copyFail:"Could not copy.",
-    micUnsupported:"Voice recognition is not supported in this browser.",
-    listening:"Listening... Speak now.",micError:"Microphone failed. Check permissions.",
-    empty:"Please type your question.",failed:"Sorry, I couldn't get a response.",
-    newChat:"New chat started.",about:"AI Sameer is a chat interface. Connect a secure server/API to enable AI answers.",
-    user:"You",assistant:"AI Sameer"
-  },
-  hi: {
-    greeting:"नमस्ते! 👋",welcome:"मैं AI Sameer हूँ। आज मैं आपकी कैसे मदद कर सकता हूँ?",
-    placeholder:"अपना संदेश यहाँ लिखें...",disclaimer:"AI से गलतियाँ हो सकती हैं। महत्वपूर्ण जानकारी जाँचें।",
-    thinking:"सोच रहा हूँ...",copy:"📋 कॉपी",like:"👍",dislike:"👎",share:"📤 शेयर",
-    speak:"🔊 सुनें",stop:"⏹ रोकें",copied:"कॉपी हो गया!",copyFail:"कॉपी नहीं हो सका।",
-    micUnsupported:"इस ब्राउज़र में वॉइस सुविधा उपलब्ध नहीं है।",
-    listening:"सुन रहा हूँ... बोलिए।",micError:"माइक काम नहीं कर रहा। अनुमति जाँचें।",
-    empty:"कृपया अपना प्रश्न लिखें।",failed:"माफ़ कीजिए, उत्तर नहीं मिल पाया।",
-    newChat:"नई चैट शुरू हुई।",about:"AI Sameer एक चैट इंटरफ़ेस है। AI उत्तरों के लिए सुरक्षित सर्वर/API जोड़ें।",
-    user:"आप",assistant:"AI Sameer"
-  },
-  kn: {
-    greeting:"ನಮಸ್ಕಾರ! 👋",welcome:"ನಾನು AI Sameer. ಇಂದು ನಿಮಗೆ ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?",
-    placeholder:"ನಿಮ್ಮ ಸಂದೇಶವನ್ನು ಇಲ್ಲಿ ಬರೆಯಿರಿ...",disclaimer:"AI ತಪ್ಪುಗಳನ್ನು ಮಾಡಬಹುದು. ಮುಖ್ಯ ಮಾಹಿತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ.",
-    thinking:"ಯೋಚಿಸುತ್ತಿದೆ...",copy:"📋 ನಕಲಿಸಿ",like:"👍",dislike:"👎",share:"📤 ಹಂಚಿಕೊಳ್ಳಿ",
-    speak:"🔊 ಕೇಳಿ",stop:"⏹ ನಿಲ್ಲಿಸಿ",copied:"ನಕಲಿಸಲಾಗಿದೆ!",copyFail:"ನಕಲಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.",
-    micUnsupported:"ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಲಭ್ಯವಿಲ್ಲ.",
-    listening:"ಕೇಳುತ್ತಿದ್ದೇನೆ... ಮಾತನಾಡಿ.",micError:"ಮೈಕ್ ಕೆಲಸ ಮಾಡಲಿಲ್ಲ. ಅನುಮತಿಗಳನ್ನು ಪರಿಶೀಲಿಸಿ.",
-    empty:"ದಯವಿಟ್ಟು ನಿಮ್ಮ ಪ್ರಶ್ನೆಯನ್ನು ಬರೆಯಿರಿ.",failed:"ಕ್ಷಮಿಸಿ, ಉತ್ತರ ಪಡೆಯಲಾಗಲಿಲ್ಲ.",
-    newChat:"ಹೊಸ ಚಾಟ್ ಪ್ರಾರಂಭಿಸಲಾಗಿದೆ.",about:"AI Sameer ಒಂದು ಚಾಟ್ ಇಂಟರ್ಫೇಸ್. AI ಉತ್ತರಗಳಿಗಾಗಿ ಸುರಕ್ಷಿತ ಸರ್ವರ್/API ಸಂಪರ್ಕಿಸಿ.",
-    user:"ನೀವು",assistant:"AI Sameer"
-  }
-};
-function t(key) {
-  return translations[$("language").value][key] || translations.en[key] || key;
+function id(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function sayStatus(s){$("status").textContent=s||""}
+function safeText(s){return String(s??"")}
+function loadHistory(){
+  try { conversations=JSON.parse(localStorage.getItem("sameer_history")||"[]"); }
+  catch { conversations=[]; }
+  renderHistory();
 }
-function setStatus(text) { statusBox.textContent = text || ""; }
-
-function updateLanguage() {
-  const lang = $("language").value;
-  document.documentElement.lang = lang;
-  $("welcomeTitle").textContent = t("greeting");
-  $("welcomeText").textContent = t("welcome");
-  promptInput.placeholder = t("placeholder");
-  $("disclaimer").textContent = t("disclaimer");
-  document.querySelectorAll("[data-prompt]").forEach((btn, i) => {
-    const options = {
-      te:["నాకు ఒక మంచి YouTube వీడియో ఐడియా ఇవ్వండి","నాకు ఒక వెబ్‌సైట్ తయారు చేయడంలో సహాయం చేయండి","నాకు ఇంగ్లీష్ నేర్పించండి","ఈరోజు కోసం ఒక మంచి ప్రేరణాత్మక సందేశం ఇవ్వండి"],
-      en:["Give me a great YouTube video idea","Help me build a website","Teach me English","Give me an inspirational message for today"],
-      hi:["मुझे एक अच्छा YouTube वीडियो आइडिया दें","वेबसाइट बनाने में मेरी मदद करें","मुझे अंग्रेज़ी सिखाएँ","आज के लिए प्रेरणादायक संदेश दें"],
-      kn:["ಒಳ್ಳೆಯ YouTube ವೀಡಿಯೊ ಕಲ್ಪನೆ ನೀಡಿ","ವೆಬ್‌ಸೈಟ್ ನಿರ್ಮಿಸಲು ಸಹಾಯ ಮಾಡಿ","ನನಗೆ ಇಂಗ್ಲಿಷ್ ಕಲಿಸಿ","ಇಂದಿನ ಪ್ರೇರಣಾದಾಯಕ ಸಂದೇಶ ನೀಡಿ"]
-    };
-    btn.dataset.prompt = options[lang][i];
-    btn.textContent = [
-      ["🎬 మంచి YouTube వీడియో ఐడియా ఇవ్వండి","💻 వెబ్‌సైట్ తయారీలో సహాయం చేయండి","📚 ఇంగ్లీష్ నేర్పించండి","✨ ప్రేరణాత్మక సందేశం ఇవ్వండి"],
-      ["🎬 YouTube video idea","💻 Website building help","📚 Learn English","✨ Daily inspiration"],
-      ["🎬 YouTube वीडियो आइडिया","💻 वेबसाइट बनाने में मदद","📚 अंग्रेज़ी सीखें","✨ प्रेरणादायक संदेश"],
-      ["🎬 YouTube ವೀಡಿಯೊ ಕಲ್ಪನೆ","💻 ವೆಬ್‌ಸೈಟ್ ಸಹಾಯ","📚 ಇಂಗ್ಲಿಷ್ ಕಲಿಯಿರಿ","✨ ಪ್ರೇರಣಾದಾಯಕ ಸಂದೇಶ"]
-    ][["te","en","hi","kn"].indexOf(lang)][i];
+function saveHistory(){
+  try { localStorage.setItem("sameer_history",JSON.stringify(conversations.slice(0,30))); }
+  catch { sayStatus("Storage is full. Older chats may not be saved."); }
+  renderHistory();
+}
+function newConversation(){
+  window.speechSynthesis?.cancel();
+  if(currentId){
+    const old=conversations.find(c=>c.id===currentId);
+    if(old && old.messages.length===0) conversations=conversations.filter(c=>c.id!==currentId);
+  }
+  currentId=id();
+  conversations.unshift({id:currentId,title:"New chat",messages:[],updated:Date.now()});
+  chat.innerHTML='<div class="welcome" id="welcome"><div class="logo">✦</div><h1>Hey Sameer</h1></div>';
+  promptBox.value="";
+  attachedFiles=[];
+  renderAttachments();
+  mode="chat";
+  $("modeLabel").textContent="AI Chat";
+  popup.classList.remove("open");
+  sayStatus("");
+  saveHistory();
+}
+function currentConversation(){
+  let c=conversations.find(x=>x.id===currentId);
+  if(!c){c={id:currentId||id(),title:"New chat",messages:[],updated:Date.now()};currentId=c.id;conversations.unshift(c);}
+  return c;
+}
+function renderHistory(){
+  const box=$("history");box.innerHTML="";
+  conversations.forEach(c=>{
+    const row=document.createElement("div");row.className="history-item";
+    const b=document.createElement("button");b.className="history-open";
+    b.textContent="💬 "+(c.title||"New chat");
+    b.onclick=()=>openConversation(c.id);
+    const d=document.createElement("button");d.className="history-delete";d.textContent="×";
+    d.title="Delete chat";
+    d.onclick=()=>{conversations=conversations.filter(x=>x.id!==c.id);if(currentId===c.id)newConversation();else saveHistory();};
+    row.append(b,d);box.appendChild(row);
   });
 }
-$("language").addEventListener("change", updateLanguage);
-
-function addMessage(role, text, options={}) {
+function openConversation(cid){
+  const c=conversations.find(x=>x.id===cid);if(!c)return;
+  currentId=cid;chat.innerHTML="";
+  if(!c.messages.length){
+    chat.innerHTML='<div class="welcome" id="welcome"><div class="logo">✦</div><h1>Hey Sameer</h1></div>';
+  }else c.messages.forEach(m=>addMessage(m.role,m.text,false));
+  $("sidebar").classList.remove("open");
+  sayStatus("");
+}
+function addMessage(role,text,store=true){
   $("welcome")?.remove();
-  const row = document.createElement("div");
-  row.className = "message " + role;
-  const avatar = document.createElement("div");
-  avatar.className = "avatar";
-  avatar.textContent = role === "user" ? "You" : "✦";
-  const content = document.createElement("div");
-  content.className = "content";
-  const paragraph = document.createElement("p");
-  paragraph.textContent = text;
-  content.appendChild(paragraph);
-  row.append(avatar, content);
-
-  if (role === "assistant" && !options.loading) {
-    const actions = document.createElement("div");
-    actions.className = "message-actions";
-    const makeButton = (label, handler) => {
-      const btn = document.createElement("button");
-      btn.className = "action";
-      btn.type = "button";
-      btn.textContent = label;
-      btn.addEventListener("click", handler);
-      actions.appendChild(btn);
-      return btn;
-    };
-    makeButton(t("copy"), async () => {
-      try {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(text);
-        } else {
-          const area = document.createElement("textarea");
-          area.value = text;
-          area.style.position = "fixed";
-          area.style.opacity = "0";
-          document.body.appendChild(area);
-          area.select();
-          const ok = document.execCommand("copy");
-          area.remove();
-          if (!ok) throw new Error("copy failed");
-        }
-        setStatus(t("copied"));
-      } catch { setStatus(t("copyFail")); }
-    });
-    makeButton(t("like"), e => {
-      e.currentTarget.classList.toggle("active");
-    });
-    makeButton(t("dislike"), e => {
-      e.currentTarget.classList.toggle("active");
-    });
-    makeButton(t("share"), async () => {
-      try {
-        if (navigator.share) {
-          await navigator.share({title:"AI Sameer", text});
-        } else if (navigator.clipboard) {
-          await navigator.clipboard.writeText(text);
-          setStatus(t("copied"));
-        } else {
-          setStatus(t("copyFail"));
-        }
-      } catch (err) {
-        if (err.name !== "AbortError") setStatus(t("copyFail"));
-      }
-    });
-    makeButton(t("speak"), e => {
-      if (!("speechSynthesis" in window)) {
-        setStatus("ఈ బ్రౌజర్‌లో వాయిస్ అందుబాటులో లేదు.");
-        return;
-      }
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      const voiceLang = {te:"te-IN",en:"en-IN",hi:"hi-IN",kn:"kn-IN"}[$("language").value];
-      utterance.lang = voiceLang;
-      utterance.onstart = () => { e.currentTarget.textContent = t("stop"); };
-      utterance.onend = () => { e.currentTarget.textContent = t("speak"); };
-      utterance.onerror = () => { e.currentTarget.textContent = t("speak"); };
-      if (window.speechSynthesis.speaking) {
-        window.speechSynthesis.cancel();
-        e.currentTarget.textContent = t("speak");
-      } else {
-        window.speechSynthesis.speak(utterance);
-      }
-    });
-    content.appendChild(actions);
+  const row=document.createElement("div");row.className="message "+role;
+  const av=document.createElement("div");av.className="avatar";av.textContent=role==="user"?"You":"✦";
+  const body=document.createElement("div");body.className="message-body";
+  const p=document.createElement("p");p.textContent=text;body.appendChild(p);
+  row.append(av,body);
+  if(role==="assistant"){
+    const actions=document.createElement("div");actions.className="actions";
+    const button=(label,fn)=>{const b=document.createElement("button");b.className="action";b.textContent=label;b.onclick=fn;actions.appendChild(b);};
+    button("📋 Copy",async()=>{try{await navigator.clipboard.writeText(text);sayStatus("Copied!");}catch{sayStatus("Copy failed. Try selecting the text.");}});
+    button("👍",e=>{});
+    button("👎",e=>{});
+    button("📤 Share",async()=>{try{if(navigator.share)await navigator.share({title:"AI Sameer",text});else{await navigator.clipboard.writeText(text);sayStatus("Copied to share.");}}catch{}});
+    button("🔊 Listen",()=>{if(!("speechSynthesis" in window)){sayStatus("Speech is not supported.");return;}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=lang.value;speechSynthesis.speak(u);});
+    body.appendChild(actions);
   }
   chat.appendChild(row);
-  window.scrollTo({top:document.body.scrollHeight, behavior:"smooth"});
-  return {row, paragraph};
+  if(store){const c=currentConversation();c.messages.push({role,text});c.updated=Date.now();if(role==="user"&&c.messages.length===1)c.title=text.slice(0,42);saveHistory();}
+  window.scrollTo({top:document.body.scrollHeight,behavior:"smooth"});
+  return row;
 }
+function renderAttachments(){
+  const box=$("attachments");box.innerHTML="";
+  attachedFiles.forEach((f,i)=>{
+    const chip=document.createElement("span");chip.className="file-chip";
+    chip.textContent="📎 "+f.name+" ";
+    const b=document.createElement("button");b.textContent="×";b.style.cssText="background:none;border:0;color:white";
+    b.onclick=()=>{attachedFiles.splice(i,1);renderAttachments();};
+    chip.appendChild(b);box.appendChild(chip);
+  });
+}
+function setMode(m,label){mode=m;$("modeLabel").textContent=label;sayStatus(label+" selected.");popup.classList.remove("open");}
+$("menuBtn").onclick=()=>{$("sidebar").classList.toggle("open");popup.classList.remove("open");};
+$("newChatBtn").onclick=newConversation;
+$("sidebarNew").onclick=()=>{newConversation();$("sidebar").classList.remove("open");};
+$("plusBtn").onclick=()=>{popup.classList.toggle("open");$("sidebar").classList.remove("open");};
+document.addEventListener("click",e=>{if(!popup.contains(e.target)&&e.target!==$("plusBtn"))popup.classList.remove("open");});
+$("clearHistory").onclick=()=>{if(confirm("Delete all saved chat history?")){conversations=[];saveHistory();newConversation();}};
+$("settingsBtn").onclick=()=>sayStatus("Choose your preferred language from the top-right language menu.");
+$("fileInput").onchange=e=>{attachedFiles.push(...Array.from(e.target.files));renderAttachments();e.target.value="";sayStatus("Files attached. File analysis requires an AI backend.");};
+$("plusMenu").querySelectorAll("[data-tool]").forEach(b=>b.onclick=()=>{
+  const tool=b.dataset.tool;
+  if(tool==="photo"){$("fileInput").accept="image/*";$("fileInput").click();}
+  else if(tool==="camera"){$("fileInput").accept="image/*";$("fileInput").setAttribute("capture","environment");$("fileInput").click();$("fileInput").removeAttribute("capture");}
+  else if(tool==="file"){$("fileInput").accept=".pdf,.txt,.doc,.docx,.csv,image/*";$("fileInput").click();}
+  else if(tool==="research")setMode("research","🔎 Deep Research");
+  else if(tool==="image")setMode("image","🎨 Image Generation");
+  else if(tool==="voice"){setMode("chat","🎙️ Voice Chat");$("micBtn").click();}
+  else if(tool==="code")setMode("code","💻 Coding");
+});
+promptBox.addEventListener("input",()=>{promptBox.style.height="auto";promptBox.style.height=Math.min(promptBox.scrollHeight,150)+"px";});
 
-async function getAIResponse(question) {
+async function getAIResponse(question){
   /*
-    IMPORTANT:
-    This demo has no AI backend connected yet.
-    Connect a secure backend endpoint here before using a real AI model.
-    Never put a private API key in this public HTML file.
+    BACKEND INTEGRATION REQUIRED:
+    Send question, selected mode, and uploaded files to your secure server.
+    Return the model's answer from that server.
+    Never place a private AI API key in this public file.
   */
-  return "మీ ప్రశ్న అందింది: " + question +
-    "\n\nAI Sameer‌కు నిజమైన AI సమాధానాలు అందించడానికి ఇంకా AI API ఉన్న సురక్షిత బ్యాకెండ్‌ను కనెక్ట్ చేయాలి. ప్రస్తుతం ఈ వెబ్‌సైట్ చాట్ ఇంటర్‌ఫేస్‌లోని Copy, Like, Dislike, Share, వాయిస్ ఫీచర్లను పరీక్షించవచ్చు.";
-}
-
-async function sendMessage(text) {
-  if (busy) return;
-  const question = (text || "").trim();
-  if (!question) { setStatus(t("empty")); return; }
-  setStatus("");
-  addMessage("user", question);
-  promptInput.value = "";
-  promptInput.style.height = "auto";
-  busy = true;
-  $("sendBtn").disabled = true;
-  const loading = addMessage("assistant", t("thinking"), {loading:true});
-  try {
-    const answer = await getAIResponse(question);
-    loading.paragraph.textContent = answer;
-    // Add response actions to this completed answer.
-    const textToReuse = answer;
-    const wrapper = document.createElement("div");
-    wrapper.style.display = "none";
-    chat.removeChild(loading.row);
-    const completed = addMessage("assistant", textToReuse);
-  } catch (err) {
-    loading.paragraph.textContent = t("failed");
-  } finally {
-    busy = false;
-    $("sendBtn").disabled = false;
-    promptInput.focus();
+  const names=attachedFiles.map(f=>f.name).join(", ");
+  if(mode==="research"){
+    return "Deep Research ఎంపిక చేశారు.\n\nనిజమైన వెబ్ పరిశోధన కోసం Search API మరియు AI backend కనెక్ట్ చేయాలి. ప్రస్తుతం ఇంటర్నెట్ శోధన చేయలేదు.";
   }
+  if(mode==="image"){
+    return "AI Image Generation ఎంపిక చేశారు.\n\nచిత్రం తయారు చేయడానికి ఇమేజ్ జనరేషన్ API కనెక్ట్ చేయాలి.";
+  }
+  return "మీ ప్రశ్న: "+question+
+    (names?"\n\nజోడించిన ఫైళ్లు: "+names:"")+
+    "\n\nAI Sameer ఇంటర్‌ఫేస్ సిద్ధంగా ఉంది. నిజమైన AI సమాధానాల కోసం సురక్షితమైన AI backend/API కనెక్షన్ ఇంకా ఏర్పాటు చేయాలి.";
 }
-$("chatForm").addEventListener("submit", e => {
-  e.preventDefault();
-  sendMessage(promptInput.value);
-});
-promptInput.addEventListener("input", () => {
-  promptInput.style.height = "auto";
-  promptInput.style.height = Math.min(promptInput.scrollHeight,160) + "px";
-});
-document.querySelectorAll("[data-prompt]").forEach(btn => {
-  btn.addEventListener("click", () => sendMessage(btn.dataset.prompt));
-});
-function resetChat() {
-  window.speechSynthesis?.cancel();
-  chat.innerHTML = "";
-  const welcome = document.createElement("div");
-  welcome.className = "welcome";
-  welcome.id = "welcome";
-  welcome.innerHTML = '<div class="logo">✦</div><h1 id="welcomeTitle"></h1><p id="welcomeText"></p><div class="suggestions"><button class="suggestion" data-prompt="Give me a YouTube video idea">🎬 YouTube video idea</button><button class="suggestion" data-prompt="Help me build a website">💻 Website building help</button><button class="suggestion" data-prompt="Teach me English">📚 Learn English</button><button class="suggestion" data-prompt="Give me an inspirational message">✨ Daily inspiration</button></div>';
-  chat.appendChild(welcome);
-  welcome.querySelectorAll("[data-prompt]").forEach(btn => btn.addEventListener("click", () => sendMessage(btn.dataset.prompt)));
-  updateLanguage();
-  setStatus(t("newChat"));
+async function send(){
+  if(busy)return;
+  const q=promptBox.value.trim();
+  if(!q&&!attachedFiles.length){sayStatus("Please type a message or attach a file.");return;}
+  sayStatus("");
+  const fileNames=attachedFiles.map(f=>f.name);
+  const fullQuestion=q+(fileNames.length?"\n[Attached files: "+fileNames.join(", ")+"]":"");
+  addMessage("user",fullQuestion);
+  promptBox.value="";promptBox.style.height="auto";
+  attachedFiles=[];renderAttachments();
+  busy=true;$("sendBtn").disabled=true;
+  const waiting=addMessage("assistant","Thinking...",false);
+  try{
+    const answer=await getAIResponse(q);
+    waiting.remove();
+    addMessage("assistant",answer);
+  }catch(err){
+    waiting.remove();addMessage("assistant","Sorry, something went wrong. Please try again.");
+  }finally{busy=false;$("sendBtn").disabled=false;promptBox.focus();}
 }
-$("newChat").addEventListener("click", resetChat);
-$("clearBtn").addEventListener("click", resetChat);
-$("menuBtn").addEventListener("click", resetChat);
-$("aboutBtn").addEventListener("click", () => setStatus(t("about")));
-
-$("micBtn").addEventListener("click", () => {
-  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!Recognition) { setStatus(t("micUnsupported")); return; }
-  const recognition = new Recognition();
-  recognition.lang = {te:"te-IN",en:"en-IN",hi:"hi-IN",kn:"kn-IN"}[$("language").value];
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-  recognition.onstart = () => setStatus(t("listening"));
-  recognition.onresult = event => {
-    promptInput.value = event.results[0][0].transcript;
-    promptInput.dispatchEvent(new Event("input"));
-    setStatus("");
-  };
-  recognition.onerror = () => setStatus(t("micError"));
-  recognition.onend = () => {};
-  recognition.start();
-});
-updateLanguage();
+$("sendBtn").onclick=send;
+promptBox.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});
+$("micBtn").onclick=()=>{
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){sayStatus("Voice recognition is not supported in this browser. Try Chrome and allow microphone access.");return;}
+  const rec=new SR();rec.lang=lang.value;rec.interimResults=false;rec.maxAlternatives=1;
+  rec.onstart=()=>sayStatus("Listening... Speak now.");
+  rec.onresult=e=>{promptBox.value+=(promptBox.value?" ":"")+e.results[0][0].transcript;promptBox.dispatchEvent(new Event("input"));sayStatus("Speech recognized. Press send to submit.");};
+  rec.onerror=()=>sayStatus("Microphone error. Check browser permissions.");
+  rec.start();
+};
+lang.onchange=()=>sayStatus("Selected speech language: "+lang.options[lang.selectedIndex].text+". Speech support depends on your browser.");
+loadHistory();
+newConversation();
 </script>
 </body>
 </html>
