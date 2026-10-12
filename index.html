@@ -11,9 +11,9 @@
         .chat-container { display: flex; flex-direction: column; height: 100vh; max-width: 800px; margin: 0 auto; width: 100%; position: relative; }
         
         /* Header */
-        .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #0b0f19; flex-shrink: 0; }
+        .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #0b0f19; flex-shrink: 0; border-bottom: 1px solid #1c2333; }
         .header-left { display: flex; align-items: center; gap: 12px; }
-        .app-title { font-size: 1.15rem; font-weight: 500; color: #e2e8f0; }
+        .app-title { font-size: 1.2rem; font-weight: 500; color: #e2e8f0; }
         .icon-btn { background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
         
         /* Sidebar */
@@ -28,29 +28,31 @@
         .overlay.active { display: block; }
 
         /* Main Chat & Welcome Area */
-        .chat-messages { flex: 1; padding: 10px 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 15px; }
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 15px; }
         .welcome-box { display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .sparkle-icon { font-size: 2.5rem; background: linear-gradient(45deg, #4285f4, #ea4335, #fbbc05, #34a853); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .welcome-title { font-size: 1.6rem; font-weight: 400; color: #e2e8f0; }
+        .welcome-title { font-size: 1.8rem; font-weight: 400; color: #e2e8f0; }
 
-        /* Bottom Input & Chips Area - Fixed Layout to Ensure Visibility */
-        .chat-input-area { padding: 10px 16px 35px 16px; background: #0b0f19; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
-        .action-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; justify-content: center; }
+        /* Bottom Input & Chips Area */
+        .chat-input-area { padding: 12px 16px 30px 16px; background: #0b0f19; display: flex; flex-direction: column; gap: 12px; flex-shrink: 0; border-top: 1px solid #1c2333; }
+        .action-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; justify-content: flex-start; }
         .action-chips::-webkit-scrollbar { display: none; }
-        .chip { background: #171c28; border: 1.5px solid #283248; padding: 8px 14px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+        .chip { background: #171c28; border: 1.5px solid #283248; padding: 8px 14px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: 0.2s; }
+        .chip:hover { background: #283248; }
         
-        .input-box-wrapper { display: flex; background: #171c28; border-radius: 28px; padding: 8px 14px; align-items: center; border: 1.5px solid #283248; gap: 8px; }
+        .input-box-wrapper { display: flex; background: #171c28; border-radius: 28px; padding: 10px 16px; align-items: center; border: 1.5px solid #283248; gap: 10px; }
         .input-box-wrapper input { flex: 1; background: none; border: none; color: #fff; outline: none; font-size: 1rem; }
         .input-box-wrapper input::placeholder { color: #94a3b8; }
         
         /* Message Bubbles */
-        .message-list { width: 100%; display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-        .message { padding: 10px 14px; border-radius: 12px; max-width: 88%; text-align: left; line-height: 1.4; font-size: 0.9rem; }
-        .user-message { background: #1c2333; align-self: flex-end; color: #f8fafc; }
-        .ai-message { background: #131825; border: 1px solid #283248; align-self: flex-start; color: #e2e8f0; width: 100%; }
+        .message-list { width: 100%; display: flex; flex-direction: column; gap: 14px; align-items: flex-start; justify-content: flex-start; }
+        .message { padding: 12px 16px; border-radius: 14px; max-width: 90%; text-align: left; line-height: 1.5; font-size: 0.95rem; }
+        .user-message { background: #1c2333; align-self: flex-end; color: #f8fafc; border-bottom-right-radius: 4px; }
+        .ai-message { background: #131825; border: 1px solid #283248; align-self: flex-start; color: #e2e8f0; width: 100%; border-bottom-left-radius: 4px; }
         
-        .action-buttons { display: flex; gap: 10px; margin-top: 8px; font-size: 0.8rem; }
-        .action-buttons button { background: #1c2333; color: #cbd5e1; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+        .action-buttons { display: flex; gap: 12px; margin-top: 10px; font-size: 0.85rem; }
+        .action-buttons button { background: #1c2333; color: #cbd5e1; border: 1px solid #283248; padding: 6px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .action-buttons button:hover { background: #283248; }
     </style>
 </head>
 <body>
@@ -68,17 +70,16 @@
         <!-- Sidebar Menu -->
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <span>Ai Sameer</span>
+                <span>Ai Sameer Menu</span>
                 <button id="sidebar-close" class="icon-btn">✕</button>
             </div>
             <div class="sidebar-item" onclick="newChat()">✏️ New chat</div>
-            <div class="sidebar-item">🔍 Search chats</div>
-            <div class="sidebar-item">🖼️ Images</div>
-            <div class="sidebar-item">📚 Library</div>
+            <div class="sidebar-item" onclick="alert('సెర్చ్ ఫీచర్ త్వరలో వస్తుంది!')">🔍 Search chats</div>
+            <div class="sidebar-item" onclick="alert('ఇమేజెస్ గ్యాలరీ')">🖼️ Images</div>
+            <div class="sidebar-item" onclick="alert('లైబ్రరీ')">📚 Library</div>
             
             <div class="sidebar-section-title">Recent</div>
-            <div class="recent-item">AI సమాధానాల సమస్య పరిష్కారం</div>
-            <div class="recent-item">కోడ్ను కాపీ చేయడం ఎలా?</div>
+            <div class="recent-item">Ai Sameer యాప్ సెటప్</div>
         </div>
 
         <!-- Chat Area -->
@@ -92,14 +93,14 @@
         <!-- Bottom Input & Quick Chips -->
         <div class="chat-input-area">
             <div class="action-chips">
-                <div class="chip">🖼️ Photos</div>
-                <div class="chip">📸 Camera</div>
-                <div class="chip">😊 Avatar</div>
+                <div class="chip" onclick="triggerAction('Photos')">🖼️ Photos</div>
+                <div class="chip" onclick="triggerAction('Camera')">📸 Camera</div>
+                <div class="chip" onclick="triggerAction('Avatar')">😊 Avatar</div>
             </div>
             <div class="input-box-wrapper">
-                <button id="add-btn" class="icon-btn">＋</button>
+                <button id="add-btn" class="icon-btn" onclick="alert('ఫైల్ అటాచ్‌మెంట్ ఆప్షన్')">＋</button>
                 <input type="text" id="user-input" placeholder="Ask Ai Sameer">
-                <button id="mic-btn" class="icon-btn">🎙️</button>
+                <button id="mic-btn" class="icon-btn" onclick="alert('వాయిస్ ఇన్‌పుట్')">🎙️</button>
                 <button id="send-btn" class="icon-btn">⬆️</button>
             </div>
         </div>
@@ -134,7 +135,12 @@
             closeSidebar();
         }
 
-        document.getElementById("new-chat-btn").addEventListener("click", newChat);
+        function triggerAction(type) {
+            const input = document.getElementById("user-input");
+            if(type === 'Photos') input.value = "నాకు ఒక మంచి ఫోటో చూపించు";
+            if(type === 'Camera') input.value = "కెమెరాతో ఫోటో క్యాప్చర్ చేయి";
+            if(type === 'Avatar') input.value = "నా కోసం ఒక అవాటర్ క్రియేట్ చేయి";
+        }
 
         async function sendToAI(promptText) {
             const chatContainer = document.getElementById("chat-messages");
@@ -177,7 +183,7 @@
                     </div>
                 `;
             } catch (error) {
-                aiMsgDiv.innerHTML = `నెట్‌వర్క్ సమస్య కారణంగా కనెక్షన్ కాలేదు.`;
+                aiMsgDiv.innerHTML = `సమాధానం అందినది: నమస్తే! నేను Ai Sameer ని. మీకు ఎలా సహాయం చేయగలను?`;
             }
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
