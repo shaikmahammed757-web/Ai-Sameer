@@ -3,7 +3,7 @@
 <html lang="te">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#07111f">
 <title>AI Sameer</title>
 
@@ -14,7 +14,7 @@
   --panel2:#142840;
   --line:#263d57;
   --text:#f3f7ff;
-  --muted:#9aafc8;
+  --muted:#96abc4;
   --blue:#48b9ff;
   --cyan:#55edda;
 }
@@ -25,195 +25,224 @@ body{
 }
 button,input,textarea,select{font:inherit}
 button{cursor:pointer}
-button:focus-visible,textarea:focus-visible,select:focus-visible{
+button:focus-visible,input:focus-visible,textarea:focus-visible{
   outline:2px solid var(--blue);outline-offset:2px
 }
 .app{height:100%;display:flex;flex-direction:column}
+
+/* Top two rows */
 .topbar{
-  height:64px;flex-shrink:0;display:flex;align-items:center;
-  justify-content:space-between;padding:0 14px;
-  border-bottom:1px solid var(--line);background:#091626
+  flex-shrink:0;background:#091626;
+  border-bottom:1px solid var(--line)
 }
-.brand{display:flex;align-items:center;gap:10px;font-weight:bold}
+.toprow{
+  min-height:53px;display:flex;align-items:center;
+  justify-content:space-between;padding:7px 13px;gap:10px
+}
+.toprow + .toprow{border-top:1px solid #1b2e43;min-height:43px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:bold}
 .logo{
-  height:38px;width:38px;display:grid;place-items:center;
-  border-radius:13px;background:linear-gradient(135deg,#168aff,#55edda);
-  color:#061323;font-size:23px
+  width:35px;height:35px;border-radius:12px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#168aff,#55edda);
+  color:#07111f;font-size:22px
 }
 .top-actions{display:flex;align-items:center;gap:8px}
-.icon-btn,.round{
-  border:1px solid var(--line);background:var(--panel2);
-  color:var(--text);display:grid;place-items:center
+.icon-btn{
+  width:39px;height:39px;display:grid;place-items:center;
+  background:var(--panel2);border:1px solid var(--line);
+  border-radius:12px;color:var(--text);font-size:19px
 }
-.icon-btn{width:42px;height:42px;border-radius:13px;font-size:20px}
 .model-select{
   background:var(--panel2);color:var(--text);
-  border:1px solid var(--line);border-radius:12px;padding:10px;
-  max-width:145px
+  border:1px solid var(--line);border-radius:10px;padding:8px;
+  max-width:150px
 }
+.status-text{font-size:12px;color:var(--muted)}
+.toprow2{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* Sidebar */
 .workspace{display:flex;flex:1;min-height:0;position:relative}
 .sidebar{
   width:255px;flex-shrink:0;background:#091626;
-  border-right:1px solid var(--line);padding:14px;
-  display:flex;flex-direction:column;gap:7px;overflow:auto
+  border-right:1px solid var(--line);padding:13px;
+  display:flex;flex-direction:column;gap:7px;overflow-y:auto
 }
-.side-brand{display:flex;align-items:center;gap:10px;padding:8px 4px 16px}
-.side-brand small{display:block;color:var(--muted);margin-top:4px}
 .side-btn{
-  display:flex;align-items:center;gap:12px;width:100%;
-  text-align:left;padding:12px;border-radius:12px;
+  display:flex;align-items:center;gap:11px;width:100%;
+  padding:12px;border-radius:12px;text-align:left;
   color:var(--text);background:transparent;border:1px solid transparent
 }
-.side-btn:hover,.side-btn.active{background:var(--panel2);border-color:var(--line)}
+.side-btn:hover{background:var(--panel2);border-color:var(--line)}
 .side-btn span:first-child{width:22px;text-align:center}
-.side-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:12px}
-.account{font-size:13px;color:var(--muted);padding:12px 8px}
-.main{flex:1;min-width:0;display:flex;flex-direction:column}
-.chat{flex:1;min-height:0;overflow-y:auto;padding:20px 14px}
-.welcome{
-  min-height:100%;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;padding:16px
+.side-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:10px}
+.account{color:var(--muted);font-size:13px;padding:10px}
+
+/* Center: banana only */
+.main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}
+.center-stage{
+  flex:1;min-height:0;display:flex;
+  align-items:center;justify-content:center;
+  overflow:hidden;position:relative
 }
 .banana{
-  font-size:76px;animation:bananaFloat 2s ease-in-out infinite;
-  filter:drop-shadow(0 0 22px #ffd54f30)
+  font-size:clamp(76px,15vw,120px);
+  line-height:1;
+  user-select:none;
+  animation:bananaFloat 2.5s ease-in-out infinite;
+  filter:drop-shadow(0 0 24px #ffd54f24)
 }
 @keyframes bananaFloat{
   0%,100%{transform:translateY(0) rotate(-4deg)}
-  50%{transform:translateY(-12px) rotate(4deg)}
+  50%{transform:translateY(-10px) rotate(4deg)}
 }
-.welcome h1{font-size:clamp(28px,4vw,44px);margin:18px 0 8px}
-.gradient{
-  background:linear-gradient(90deg,#51baff,#55edda);
-  color:transparent;background-clip:text;-webkit-background-clip:text
+
+/* Chat messages appear only after sending a message */
+.chat-log{
+  flex-shrink:0;max-height:42%;overflow-y:auto;padding:10px 14px
 }
-.welcome p{color:var(--muted);margin:0 0 24px}
-.suggestions{display:flex;flex-wrap:wrap;justify-content:center;gap:9px}
-.suggestion{
-  padding:11px 14px;border-radius:14px;background:var(--panel);
-  color:var(--text);border:1px solid var(--line)
-}
-.suggestion:hover{border-color:var(--blue)}
-.messages{max-width:850px;margin:auto;display:flex;flex-direction:column;gap:18px}
-.message{display:flex;flex-direction:column;gap:7px}
+.messages{max-width:850px;margin:auto;display:flex;flex-direction:column;gap:14px}
+.message{display:flex;flex-direction:column;gap:6px}
 .message.user{align-items:flex-end}
 .bubble{
-  max-width:min(90%,700px);padding:13px 16px;border-radius:17px;
-  white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65
+  max-width:min(90%,700px);padding:12px 15px;border-radius:16px;
+  white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6
 }
 .user .bubble{background:#123e62;border:1px solid #28618b}
-.assistant .bubble{background:#0d1b2d;border:1px solid var(--line)}
-.message img{max-width:280px;max-height:240px;object-fit:contain;border-radius:12px}
+.assistant .bubble{background:var(--panel);border:1px solid var(--line)}
+.message img{max-width:250px;max-height:220px;object-fit:contain;border-radius:12px}
 .message-actions{display:flex;gap:6px;flex-wrap:wrap}
 .message-actions button{
-  background:transparent;color:var(--muted);
-  border:1px solid var(--line);border-radius:9px;padding:6px 9px
+  color:var(--muted);background:transparent;
+  border:1px solid var(--line);border-radius:8px;padding:5px 9px
 }
-.composer-area{padding:10px 15px 15px}
+
+/* Composer */
+.composer-area{flex-shrink:0;padding:10px 13px 13px}
 .composer-wrap{max-width:850px;margin:auto;position:relative}
 .composer{
-  display:flex;align-items:flex-end;gap:9px;padding:10px;
-  background:#0e1d30;border:1px solid #2c4763;border-radius:24px
+  display:flex;align-items:flex-end;gap:8px;padding:9px;
+  background:#0e1d30;border:1px solid #2c4763;border-radius:23px
 }
 .composer textarea{
-  flex:1;min-width:0;max-height:140px;resize:none;
-  background:transparent;color:var(--text);border:0;outline:none;
-  padding:11px 2px;line-height:1.5
+  flex:1;min-width:0;max-height:125px;resize:none;
+  padding:11px 2px;background:transparent;color:var(--text);
+  border:0;outline:none;line-height:1.5
 }
 .composer textarea::placeholder{color:#8fa6bf}
-.round{width:43px;height:43px;flex-shrink:0;border-radius:50%;font-size:20px}
-.send{background:linear-gradient(135deg,#188aff,#55edda);color:#061323;border:0}
-.send:disabled{opacity:.5}
-.disclaimer{text-align:center;font-size:11px;color:#71869e;margin-top:9px}
-.menu{
-  position:absolute;bottom:68px;left:0;width:min(300px,90vw);
-  padding:8px;background:#102137;border:1px solid var(--line);
-  border-radius:16px;box-shadow:0 15px 50px #0008;z-index:25
+.round{
+  flex-shrink:0;width:42px;height:42px;border-radius:50%;
+  background:var(--panel2);border:1px solid var(--line);
+  color:var(--text);font-size:20px;display:grid;place-items:center
 }
-.menu button{
-  display:block;width:100%;text-align:left;padding:12px;
-  border:0;border-radius:10px;background:transparent;color:var(--text)
+.send{
+  background:linear-gradient(135deg,#188aff,#55edda);
+  color:#061323;border:0
 }
-.menu button:hover{background:var(--panel2)}
+.round:disabled{opacity:.5}
+.disclaimer{text-align:center;color:#71869e;font-size:11px;margin-top:8px}
+
+/* Plus menu */
+.plus-menu{
+  position:absolute;bottom:66px;left:0;width:min(310px,92vw);
+  padding:9px;background:#102137;border:1px solid var(--line);
+  border-radius:16px;box-shadow:0 15px 45px #0008;z-index:30
+}
+.plus-menu button{
+  width:100%;display:flex;align-items:center;gap:10px;
+  text-align:left;padding:12px;border:0;border-radius:10px;
+  color:var(--text);background:transparent
+}
+.plus-menu button:hover{background:var(--panel2)}
 .hidden{display:none!important}
+
+/* Dialogs */
 .overlay{
-  position:fixed;inset:0;background:#0009;z-index:50;
+  position:fixed;inset:0;z-index:60;background:#0009;
   display:flex;align-items:center;justify-content:center;padding:14px
 }
 .dialog{
-  width:min(560px,100%);max-height:85dvh;overflow:auto;
+  width:min(550px,100%);max-height:84dvh;overflow:auto;
   background:#0d1b2d;border:1px solid var(--line);
-  border-radius:19px;padding:20px
+  border-radius:18px;padding:19px
 }
-.dialog h2{margin:0 0 16px}
+.dialog h2{margin:0 0 14px}
 .dialog input,.dialog textarea{
-  width:100%;padding:12px;margin:7px 0;
-  background:var(--bg);color:var(--text);
-  border:1px solid var(--line);border-radius:10px
+  width:100%;padding:11px;margin:6px 0;
+  border:1px solid var(--line);border-radius:10px;
+  background:var(--bg);color:var(--text)
 }
-.primary,.secondary,.danger{
-  border-radius:10px;padding:10px 13px;
-  border:1px solid var(--line);color:var(--text);background:var(--panel2)
+.secondary,.primary,.danger{
+  padding:9px 12px;border:1px solid var(--line);
+  border-radius:10px;background:var(--panel2);color:var(--text)
 }
 .primary{background:#168aff;color:white}
 .danger{color:#ffb1b1}
 .list-item{
-  display:flex;gap:9px;align-items:center;
-  padding:11px 0;border-bottom:1px solid var(--line)
+  display:flex;align-items:center;gap:8px;
+  padding:10px 0;border-bottom:1px solid var(--line)
 }
 .item-title{flex:1;min-width:0;overflow-wrap:anywhere}
 .list-item small{display:block;color:var(--muted);margin-top:4px}
-.list-item img{width:48px;height:48px;object-fit:cover;border-radius:8px}
+.list-item img{width:45px;height:45px;object-fit:cover;border-radius:8px}
 .toast{
-  position:fixed;bottom:100px;left:50%;transform:translateX(-50%);
-  background:#e5f5ff;color:#07111f;padding:11px 16px;
-  border-radius:12px;z-index:100;max-width:90vw
+  position:fixed;z-index:100;bottom:100px;left:50%;
+  transform:translateX(-50%);max-width:90vw;
+  padding:11px 15px;border-radius:11px;
+  color:#07111f;background:#e5f5ff
 }
 @media(max-width:760px){
   .sidebar{
-    position:fixed;top:64px;bottom:0;left:0;width:min(285px,85vw);
-    z-index:40;transform:translateX(-110%);
+    position:fixed;top:0;bottom:0;left:0;z-index:50;
+    width:min(285px,85vw);transform:translateX(-110%);
     transition:transform .2s;box-shadow:10px 0 40px #0005
   }
   .sidebar.open{transform:translateX(0)}
-  .topbar{padding:0 9px}
-  .model-select{max-width:112px;padding:9px 4px}
-  .chat{padding:14px 10px}
-  .composer-area{padding:8px 9px 12px}
-  .bubble{max-width:95%}
+  .model-select{max-width:125px}
+  .toprow{padding:6px 9px}
+  .chat-log{max-height:44%;padding:8px 10px}
+  .composer-area{padding:8px 9px 11px}
+  .banana{font-size:clamp(76px,22vw,110px)}
 }
 </style>
 </head>
 
 <body>
 <div class="app">
+
   <header class="topbar">
-    <div class="top-actions">
-      <button class="icon-btn" id="sidebarToggle" aria-label="Menu">☰</button>
-      <div class="brand"><div class="logo">✦</div><span>AI Sameer</span></div>
+    <div class="toprow">
+      <div class="top-actions">
+        <button class="icon-btn" id="menuBtn" aria-label="Menu">☰</button>
+        <div class="brand"><div class="logo">✦</div><span>AI Sameer</span></div>
+      </div>
+      <button class="icon-btn" id="newChatBtn" title="కొత్త చాట్">＋</button>
     </div>
-    <div class="top-actions">
-      <select class="model-select" id="modelSelect" aria-label="Model">
-        <option value="default">AI Sameer ▾</option>
-        <option value="creative">Creative</option>
-        <option value="quick">Quick Answer</option>
-        <option value="learning">Learning</option>
-      </select>
-      <button class="icon-btn" id="newChatTop" title="New Chat">＋</button>
+
+    <div class="toprow toprow2">
+      <span class="status-text">AI Assistant</span>
+      <div class="top-actions">
+        <select class="model-select" id="modelSelect" aria-label="మోడల్ ఎంపిక">
+          <option value="default">AI Sameer</option>
+          <option value="creative">Creative</option>
+          <option value="quick">Quick Answer</option>
+          <option value="learning">Learning</option>
+        </select>
+      </div>
     </div>
   </header>
 
   <div class="workspace">
     <aside class="sidebar" id="sidebar">
-      <div class="side-brand">
+      <div class="brand" style="padding:7px 4px 14px">
         <div class="logo">✦</div>
-        <div><strong>AI Sameer</strong><small>Your AI companion</small></div>
+        <div>AI Sameer</div>
       </div>
 
       <button class="side-btn" data-action="new"><span>＋</span>New Chat</button>
       <button class="side-btn" data-action="search"><span>⌕</span>Search Chats</button>
       <button class="side-btn" data-action="contents"><span>▤</span>My Contents</button>
-      <button class="side-btn" data-action="images"><span>▧</span>Images / Photos</button>
+      <button class="side-btn" data-action="images"><span>▧</span>Photos / Images</button>
       <button class="side-btn" data-action="library"><span>▣</span>Library</button>
       <button class="side-btn" data-action="settings"><span>⚙</span>Settings</button>
       <button class="side-btn" data-action="help"><span>?</span>Help & Feedback</button>
@@ -225,43 +254,41 @@ button:focus-visible,textarea:focus-visible,select:focus-visible{
     </aside>
 
     <main class="main">
-      <section class="chat" id="chat">
-        <div class="welcome" id="welcome">
-          <div class="banana">🍌</div>
-          <h1>Hi! I am <span class="gradient">AI Sameer</span></h1>
-          <p>ఈరోజు మనం దేనిపై దృష్టి పెట్టాలి?</p>
-          <div class="suggestions">
-            <button class="suggestion" data-prompt="ఒక మంచి YouTube వీడియో ఐడియా ఇవ్వండి">🎬 వీడియో ఐడియా</button>
-            <button class="suggestion" data-prompt="నాకు ఒక మంచి కథ రాయండి">✍️ కథ రాయండి</button>
-            <button class="suggestion" data-prompt="నాకు ఇంగ్లీష్ నేర్పించండి">📚 నేర్చుకోవడం</button>
-            <button class="suggestion" data-prompt="ఒక AI ఫోటో కోసం మంచి prompt రాయండి">🖼️ AI Photo Prompt</button>
-          </div>
-        </div>
+
+      <!-- ఈ మధ్య భాగంలో బనానా ఒక్కటే ఉంటుంది -->
+      <section class="center-stage" id="centerStage">
+        <div class="banana" aria-label="Banana">🍌</div>
+      </section>
+
+      <section class="chat-log hidden" id="chatLog">
         <div class="messages" id="messages"></div>
       </section>
 
       <section class="composer-area">
         <div class="composer-wrap">
-          <div class="menu hidden" id="plusMenu">
-            <button data-plus="photos">🖼️ Photos / Images</button>
-            <button data-plus="camera">📷 Camera</button>
-            <button data-plus="avatar">👤 Avatar</button>
-            <button data-plus="music">🎵 Music</button>
-            <button data-plus="canvas">▧ Canvas</button>
-            <button data-plus="research">🔎 Deep Research</button>
-            <button data-plus="learning">📘 Guided Learning</button>
-            <button data-plus="personal">✦ Personal Intelligence</button>
+
+          <div class="plus-menu hidden" id="plusMenu">
+            <button data-plus="photos">🖼️ <span>Photos / Images</span></button>
+            <button data-plus="camera">📷 <span>Camera</span></button>
+            <button data-plus="music">🎵 <span>Music</span></button>
+            <button data-plus="canvas">▧ <span>Canvas</span></button>
+            <button data-plus="research">🔎 <span>Deep Research</span></button>
+            <button data-plus="learning">📘 <span>Guided Learning</span></button>
           </div>
 
           <div class="composer">
-            <button class="round" id="plusBtn" title="More options">＋</button>
-            <textarea id="messageInput" rows="1" placeholder="AI Sameer ని ఏదైనా అడగండి..." aria-label="Message"></textarea>
-            <button class="round" id="micBtn" title="Voice typing">🎙</button>
-            <button class="round send" id="sendBtn" title="Send">➤</button>
+            <button class="round" id="plusBtn" title="ఫీచర్లు">＋</button>
+            <textarea id="messageInput" rows="1"
+              placeholder="AI Sameer ని ఏదైనా అడగండి..."
+              aria-label="మీ సందేశం"></textarea>
+            <button class="round" id="micBtn" title="మైక్">🎙</button>
+            <button class="round send" id="sendBtn" title="పంపండి">➤</button>
           </div>
+
           <div class="disclaimer">AI Sameer తప్పులు చేయవచ్చు. ముఖ్యమైన సమాచారాన్ని తనిఖీ చేయండి.</div>
         </div>
       </section>
+
     </main>
   </div>
 </div>
@@ -274,362 +301,329 @@ button:focus-visible,textarea:focus-visible,select:focus-visible{
 <script>
 "use strict";
 
-/* Cloudflare Worker API URL */
+/* మీ Cloudflare API */
 const API_URL = "https://ai-sameer-api.shaikmahammed757.workers.dev";
 
 const $ = id => document.getElementById(id);
 const sidebar = $("sidebar");
-const chat = $("chat");
+const centerStage = $("centerStage");
+const chatLog = $("chatLog");
 const messages = $("messages");
-const welcome = $("welcome");
 const input = $("messageInput");
-const sendBtn = $("sendBtn");
 const plusMenu = $("plusMenu");
-const photoPicker = $("photoPicker");
-const cameraPicker = $("cameraPicker");
 const modalRoot = $("modalRoot");
 const toastEl = $("toast");
 
-const KEYS = {
-  chats: "ai_sameer_chats_v1",
-  images: "ai_sameer_images_v1"
-};
+const CHAT_KEY = "ai_sameer_chats_v2";
+const IMAGE_KEY = "ai_sameer_images_v2";
 
 let currentId = makeId();
 let currentMessages = [];
-let selectedImages = [];
+let pendingImage = null;
 let toastTimer;
 
-function makeId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function makeId(){
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 }
-
-function loadData(key, fallback) {
-  try {
-    return JSON.parse(localStorage.getItem(key)) || fallback;
-  } catch {
-    return fallback;
-  }
+function load(key){
+  try{return JSON.parse(localStorage.getItem(key)) || []}
+  catch{return []}
 }
-
-function saveData(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
+function save(key,value){
+  try{
+    localStorage.setItem(key,JSON.stringify(value));
     return true;
-  } catch {
-    showToast("స్టోరేజ్ నిండింది. కొన్ని పాత ఫోటోలను తొలగించండి.");
+  }catch{
+    notify("బ్రౌజర్ స్టోరేజ్ నిండిపోయింది.");
     return false;
   }
 }
-
-function showToast(text) {
-  toastEl.textContent = text;
+function notify(text){
+  toastEl.textContent=text;
   toastEl.classList.remove("hidden");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastEl.classList.add("hidden"), 3200);
+  toastTimer=setTimeout(()=>toastEl.classList.add("hidden"),3000);
 }
-
-function closeSidebar() {
-  sidebar.classList.remove("open");
-}
-
-$("sidebarToggle").addEventListener("click", () => {
-  sidebar.classList.toggle("open");
-});
-
-function closePlusMenu() {
-  plusMenu.classList.add("hidden");
-}
-
-$("plusBtn").addEventListener("click", event => {
+function hideSidebar(){sidebar.classList.remove("open")}
+$("menuBtn").addEventListener("click",()=>sidebar.classList.toggle("open"));
+$("plusBtn").addEventListener("click",event=>{
   event.stopPropagation();
   plusMenu.classList.toggle("hidden");
 });
-
-document.addEventListener("click", event => {
-  if (!plusMenu.contains(event.target) && event.target !== $("plusBtn")) {
-    closePlusMenu();
+document.addEventListener("click",event=>{
+  if(!plusMenu.contains(event.target)&&event.target!==$("plusBtn")){
+    plusMenu.classList.add("hidden");
   }
 });
 
-function saveCurrentChat() {
-  if (!currentMessages.length) return;
-
-  const chats = loadData(KEYS.chats, []);
-  const first = currentMessages.find(item => item.role === "user");
-
-  const record = {
-    id: currentId,
-    title: (first?.text || "కొత్త చాట్").slice(0, 70),
-    updatedAt: Date.now(),
-    messages: currentMessages
+function saveCurrentChat(){
+  if(!currentMessages.length)return;
+  const chats=load(CHAT_KEY);
+  const first=currentMessages.find(m=>m.role==="user");
+  const record={
+    id:currentId,
+    title:(first?.text||"కొత్త చాట్").slice(0,65),
+    updatedAt:Date.now(),
+    messages:currentMessages
   };
-
-  const index = chats.findIndex(item => item.id === currentId);
-  if (index >= 0) chats[index] = record;
+  const index=chats.findIndex(c=>c.id===currentId);
+  if(index>=0)chats[index]=record;
   else chats.unshift(record);
-
-  chats.sort((a, b) => b.updatedAt - a.updatedAt);
-  saveData(KEYS.chats, chats.slice(0, 80));
+  chats.sort((a,b)=>b.updatedAt-a.updatedAt);
+  save(CHAT_KEY,chats.slice(0,80));
 }
 
-function renderConversation() {
+function renderAll(){
   messages.replaceChildren();
-  welcome.classList.toggle("hidden", currentMessages.length > 0);
-  currentMessages.forEach(item => renderMessage(item, false));
-  chat.scrollTop = chat.scrollHeight;
+  currentMessages.forEach(item=>renderMessage(item,false));
+  chatLog.classList.toggle("hidden",currentMessages.length===0);
+  centerStage.classList.toggle("hidden",currentMessages.length>0);
+  chatLog.scrollTop=chatLog.scrollHeight;
 }
 
-function renderMessage(item, scroll = true) {
-  welcome.classList.add("hidden");
+function renderMessage(item,scroll=true){
+  const wrap=document.createElement("div");
+  wrap.className="message "+item.role;
 
-  const wrapper = document.createElement("div");
-  wrapper.className = "message " + item.role;
+  const bubble=document.createElement("div");
+  bubble.className="bubble";
+  bubble.textContent=item.text||"";
+  wrap.appendChild(bubble);
 
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.textContent = item.text || "";
-  wrapper.appendChild(bubble);
-
-  if (item.imageData) {
-    const image = document.createElement("img");
-    image.src = item.imageData;
-    image.alt = "ఎంచుకున్న ఫోటో";
-    wrapper.appendChild(image);
+  if(item.imageData){
+    const image=document.createElement("img");
+    image.src=item.imageData;
+    image.alt="ఎంచుకున్న ఫోటో";
+    wrap.appendChild(image);
   }
 
-  if (item.role === "assistant") {
-    const actions = document.createElement("div");
-    actions.className = "message-actions";
+  if(item.role==="assistant"){
+    const actions=document.createElement("div");
+    actions.className="message-actions";
 
-    const copy = document.createElement("button");
-    copy.textContent = "📋 Copy";
-    copy.addEventListener("click", () => copyText(item.text || ""));
+    const copy=document.createElement("button");
+    copy.textContent="📋 Copy";
+    copy.onclick=()=>copyText(item.text||"");
 
-    const like = document.createElement("button");
-    const dislike = document.createElement("button");
+    const like=document.createElement("button");
+    const dislike=document.createElement("button");
 
-    function updateFeedback() {
-      like.textContent = item.feedback === "like" ? "👍 Selected" : "👍";
-      dislike.textContent = item.feedback === "dislike" ? "👎 Selected" : "👎";
+    function refresh(){
+      like.textContent=item.feedback==="like"?"👍 Selected":"👍";
+      dislike.textContent=item.feedback==="dislike"?"👎 Selected":"👎";
     }
+    like.onclick=()=>{
+      item.feedback=item.feedback==="like"?"":"like";
+      refresh();saveCurrentChat();
+    };
+    dislike.onclick=()=>{
+      item.feedback=item.feedback==="dislike"?"":"dislike";
+      refresh();saveCurrentChat();
+    };
 
-    like.addEventListener("click", () => {
-      item.feedback = item.feedback === "like" ? "" : "like";
-      updateFeedback();
-      saveCurrentChat();
-    });
-
-    dislike.addEventListener("click", () => {
-      item.feedback = item.feedback === "dislike" ? "" : "dislike";
-      updateFeedback();
-      saveCurrentChat();
-    });
-
-    updateFeedback();
-    actions.append(copy, like, dislike);
-    wrapper.appendChild(actions);
+    refresh();
+    actions.append(copy,like,dislike);
+    wrap.appendChild(actions);
   }
 
-  messages.appendChild(wrapper);
-  if (scroll) chat.scrollTop = chat.scrollHeight;
+  messages.appendChild(wrap);
+  if(scroll)chatLog.scrollTop=chatLog.scrollHeight;
 }
 
-async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    showToast("కాపీ అయింది.");
-  } catch {
-    const temp = document.createElement("textarea");
-    temp.value = text;
-    document.body.appendChild(temp);
-    temp.select();
-    try {
-      document.execCommand("copy");
-      showToast("కాపీ అయింది.");
-    } catch {
-      showToast("కాపీ చేయలేకపోయాను.");
-    }
-    temp.remove();
-  }
-}
-
-function addMessage(role, text, imageData = null) {
-  const item = {
-    id: makeId(),
-    role,
-    text,
-    imageData,
-    time: Date.now()
-  };
+function addMessage(role,text,imageData=null){
+  const item={id:makeId(),role,text,imageData,time:Date.now()};
   currentMessages.push(item);
-  renderMessage(item);
+  renderAll();
   saveCurrentChat();
   return item;
 }
 
-async function askAISameer(message) {
-  const response = await fetch(API_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+async function copyText(text){
+  try{
+    await navigator.clipboard.writeText(text);
+    notify("కాపీ అయింది.");
+  }catch{
+    const t=document.createElement("textarea");
+    t.value=text;document.body.appendChild(t);t.select();
+    try{document.execCommand("copy");notify("కాపీ అయింది.");}
+    catch{notify("కాపీ చేయలేకపోయాను.");}
+    t.remove();
+  }
+}
+
+async function askAI(message){
+  const response=await fetch(API_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
       message,
-      model: $("modelSelect").value
+      model:$("modelSelect").value
     })
   });
 
   let data;
-  try {
-    data = await response.json();
-  } catch {
-    throw new Error("API నుంచి సరైన సమాధానం రాలేదు.");
-  }
+  try{data=await response.json();}
+  catch{throw new Error("API నుంచి సరైన సమాధానం రాలేదు.");}
 
-  if (!response.ok || data.success === false) {
-    throw new Error(data.error || "AI API లో సమస్య వచ్చింది.");
+  if(!response.ok||data.success===false){
+    throw new Error(data.error||"AI API లో సమస్య వచ్చింది.");
   }
-
-  const answer = data.answer || data.response || data.text;
-  if (!answer) throw new Error("AI సమాధానం ఖాళీగా వచ్చింది.");
+  const answer=data.answer||data.response||data.text;
+  if(!answer)throw new Error("AI సమాధానం ఖాళీగా వచ్చింది.");
   return String(answer);
 }
 
-async function sendMessage() {
-  const text = input.value.trim();
-
-  if (!text && !selectedImages.length) {
-    showToast("మెసేజ్ టైప్ చేయండి లేదా ఫోటో ఎంచుకోండి.");
+async function sendMessage(){
+  const text=input.value.trim();
+  if(!text&&!pendingImage){
+    notify("మెసేజ్ టైప్ చేయండి లేదా ప్లస్ ద్వారా ఫోటో ఎంచుకోండి.");
     return;
   }
 
-  const image = selectedImages.shift() || null;
-  const userText = text || "ఈ ఫోటోను చూడండి.";
-
-  input.value = "";
+  const image=pendingImage;
+  pendingImage=null;
+  input.value="";
   resizeInput();
-  closePlusMenu();
-  sendBtn.disabled = true;
+  plusMenu.classList.add("hidden");
+  $("sendBtn").disabled=true;
 
-  addMessage("user", userText, image);
+  addMessage("user",text||(image?"ఈ ఫోటోను చూడండి.":""),image);
 
-  const waiting = addMessage("assistant", "AI Sameer సమాధానం సిద్ధం చేస్తోంది…");
+  const waiting=addMessage("assistant","AI Sameer సమాధానం సిద్ధం చేస్తోంది…");
 
-  try {
-    let prompt = userText;
-
-    if (image) {
-      prompt += "\nగమనిక: ఒక ఫోటో జోడించబడింది. ప్రస్తుత Worker టెక్స్ట్‌ను మాత్రమే AI provider‌కు పంపుతుంది. ఫోటోను విశ్లేషించడానికి vision API కనెక్షన్ అవసరం.";
+  try{
+    let prompt=text;
+    if(image){
+      prompt+="\nగమనిక: యూజర్ ఫోటోను జోడించారు. ఈ Worker టెక్స్ట్‌ను మాత్రమే పంపుతుంది; ఫోటో విశ్లేషణకు vision API అవసరం.";
     }
-
-    waiting.text = await askAISameer(prompt);
-  } catch (error) {
-    waiting.text = "సమాధానం పొందలేకపోయాను.\n" +
-      error.message +
+    waiting.text=await askAI(prompt);
+  }catch(error){
+    waiting.text="సమాధానం పొందలేకపోయాను: "+error.message+
       "\n\nCloudflare Worker Deploy అయిందో, AI_API_KEY, AI_API_URL, AI_MODEL సెట్ చేశారో తనిఖీ చేయండి.";
   }
 
-  renderConversation();
+  renderAll();
   saveCurrentChat();
-  sendBtn.disabled = false;
+  $("sendBtn").disabled=false;
   input.focus();
 }
 
-$("sendBtn").addEventListener("click", sendMessage);
-
-input.addEventListener("keydown", event => {
-  if (event.key === "Enter" && !event.shiftKey) {
+$("sendBtn").addEventListener("click",sendMessage);
+input.addEventListener("keydown",event=>{
+  if(event.key==="Enter"&&!event.shiftKey){
     event.preventDefault();
     sendMessage();
   }
 });
-
-function resizeInput() {
-  input.style.height = "auto";
-  input.style.height = Math.min(input.scrollHeight, 140) + "px";
+input.addEventListener("input",resizeInput);
+function resizeInput(){
+  input.style.height="auto";
+  input.style.height=Math.min(input.scrollHeight,125)+"px";
 }
 
-input.addEventListener("input", resizeInput);
-
-function newChat() {
+function newChat(){
   saveCurrentChat();
-  currentId = makeId();
-  currentMessages = [];
-  selectedImages = [];
-  input.value = "";
+  currentId=makeId();
+  currentMessages=[];
+  pendingImage=null;
+  input.value="";
   resizeInput();
-  renderConversation();
-  closePlusMenu();
-  closeSidebar();
-  showToast("కొత్త చాట్ ప్రారంభమైంది.");
+  renderAll();
+  hideSidebar();
+  plusMenu.classList.add("hidden");
+  notify("కొత్త చాట్ ప్రారంభమైంది.");
 }
+$("newChatBtn").addEventListener("click",newChat);
 
-$("newChatTop").addEventListener("click", newChat);
-
-document.querySelectorAll("[data-prompt]").forEach(button => {
-  button.addEventListener("click", () => {
-    input.value = button.dataset.prompt;
-    resizeInput();
-    input.focus();
-  });
-});
-
-/* Photos and camera */
-function readImage(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("ఫోటో తెరవలేకపోయాను."));
+function readImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=()=>reject(new Error("ఫోటో తెరవలేకపోయాను."));
     reader.readAsDataURL(file);
   });
 }
+async function chooseFiles(files){
+  const file=Array.from(files||[]).find(f=>f.type.startsWith("image/"));
+  if(!file){notify("ఒక ఫోటోను ఎంచుకోండి.");return;}
 
-async function handleFiles(fileList) {
-  const files = Array.from(fileList || [])
-    .filter(file => file.type.startsWith("image/"));
-
-  if (!files.length) {
-    showToast("ఫోటోను ఎంచుకోండి.");
-    return;
-  }
-
-  for (const file of files) {
-    try {
-      const data = await readImage(file);
-      selectedImages.push(data);
-
-      // Save only smaller images to avoid filling browser storage.
-      if (data.length < 500000) {
-        const images = loadData(KEYS.images, []);
-        images.unshift({
-          id: makeId(),
-          name: file.name,
-          dataUrl: data,
-          time: Date.now()
-        });
-        saveData(KEYS.images, images.slice(0, 12));
-      }
-    } catch {
-      showToast("ఫోటో చదవలేకపోయాను.");
+  try{
+    pendingImage=await readImage(file);
+    if(pendingImage.length<450000){
+      const imgs=load(IMAGE_KEY);
+      imgs.unshift({id:makeId(),name:file.name,data:pendingImage,time:Date.now()});
+      save(IMAGE_KEY,imgs.slice(0,12));
     }
-  }
-
-  showToast("ఫోటో ఎంచుకున్నారు. మెసేజ్‌తో పాటు Send నొక్కండి.");
+    notify("ఫోటో జోడించబడింది. Send నొక్కండి.");
+  }catch(error){notify(error.message);}
 }
-
-$("photoPicker").addEventListener("change", async event => {
-  await handleFiles(event.target.files);
-  event.target.value = "";
+$("photoPicker").addEventListener("change",async event=>{
+  await chooseFiles(event.target.files);event.target.value="";
 });
-
-$("cameraPicker").addEventListener("change", async event => {
-  await handleFiles(event.target.files);
-  event.target.value = "";
+$("cameraPicker").addEventListener("change",async event=>{
+  await chooseFiles(event.target.files);event.target.value="";
 });
 
 /* Voice typing */
-$("micBtn").addEventListener("click", () => {
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
+$("micBtn").addEventListener("click",()=>{
+  const Speech=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!Speech){
+    notify("ఈ బ్రౌజర్‌లో మైక్ టైపింగ్ అందుబాటులో లేదు. Chrome లో ప్రయత్నించండి.");
+    return;
+  }
+  const recognition=new Speech();
+  recognition.lang="te-IN";
+  recognition.interimResults=true;
+  recognition.onstart=()=>notify("మాట్లాడండి…");
+  recognition.onresult=event=>{
+    let text="";
+    for(let i=event.resultIndex;i<event.results.length;i++){
+      text+=event.results[i][0].transcript;
+    }
+    input.value=text;resizeInput();
+  };
+  recognition.onerror=event=>notify("మైక్ సమస్య: "+event.error);
+  recognition.start();
+});
 
-  if (!SpeechRecognition) {
-    showToast("ఈ బ్రౌజర్‌లో వాయిస్ టైపింగ్ అందుబాటులో లేదు. C
+/* Plus menu */
+document.querySelectorAll("[data-plus]").forEach(button=>{
+  button.addEventListener("click",()=>{
+    const action=button.dataset.plus;
+    plusMenu.classList.add("hidden");
+
+    if(action==="photos"){$("photoPicker").click();return;}
+    if(action==="camera"){$("cameraPicker").click();return;}
+
+    const prompts={
+      music:"నాకు ఒక మంచి మ్యూజిక్ ఐడియా ఇవ్వండి.",
+      canvas:"నా ఐడియాకు ఒక ప్రాజెక్ట్ ప్లాన్ తయారు చేయండి.",
+      research:"ఈ అంశంపై పరిశోధన చేయడానికి ఒక ప్రణాళిక ఇవ్వండి.",
+      learning:"ఈ విషయాన్ని నాకు దశలవారీగా నేర్పించండి."
+    };
+    input.value=prompts[action]||"";
+    resizeInput();input.focus();
+    notify("మీ మెసేజ్ సిద్ధంగా ఉంది. Send నొక్కండి.");
+  });
+});
+
+/* Dialog helpers */
+function openDialog(title,build){
+  modalRoot.replaceChildren();
+  const overlay=document.createElement("div");
+  overlay.className="overlay";
+  const dialog=document.createElement("div");
+  dialog.className="dialog";
+  const h=document.createElement("h2");
+  h.textContent=title;
+  dialog.appendChild(h);
+  build(dialog);
+
+  const close=document.createElement("button");
+  close.className="secondary";
+  close.textContent="మూసివేయి";
+  close.onclick=()=>modalRoot.replaceChildren();
+  dialog.appendChild(document.createElement("br"));
+  dialog.appendChild(close);
+  overlay.appendChild(dialog);
+  over
