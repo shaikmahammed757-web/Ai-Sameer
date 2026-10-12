@@ -8,10 +8,10 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0b0f19; color: #ffffff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
         
-        .chat-container { display: flex; flex-direction: column; height: 100vh; max-width: 800px; margin: 0 auto; width: 100%; position: relative; }
+        .chat-container { display: flex; flex-direction: column; height: 100vh; max-width: 800px; margin: 0 auto; width: 100%; position: relative; overflow: hidden; }
         
         /* Header */
-        .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #0b0f19; flex-shrink: 0; border-bottom: 1px solid #1c2333; }
+        .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #0b0f19; flex-shrink: 0; border-bottom: 1px solid #1c2333; z-index: 10; }
         .header-left { display: flex; align-items: center; gap: 12px; }
         .app-title { font-size: 1.2rem; font-weight: 500; color: #e2e8f0; }
         .icon-btn { background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
@@ -26,26 +26,26 @@
         .overlay.active { display: block; }
 
         /* Main Chat & Welcome Area */
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; width: 100%; }
         .welcome-box { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%; gap: 10px; }
         .sparkle-icon { font-size: 2.5rem; background: linear-gradient(45deg, #4285f4, #ea4335, #fbbc05, #34a853); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .welcome-title { font-size: 1.8rem; font-weight: 400; color: #e2e8f0; }
 
-        /* Bottom Input Area matching Gemini exactly */
-        .chat-input-area { padding: 12px 16px 24px 16px; background: #0b0f19; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; position: relative; }
-        .action-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+        /* Bottom Input Area perfectly aligned */
+        .chat-input-area { padding: 10px 16px 16px 16px; background: #0b0f19; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; position: relative; z-index: 10; border-top: 1px solid #1c2333; }
+        .action-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
         .action-chips::-webkit-scrollbar { display: none; }
-        .chip { background: #171c28; border: 1.5px solid #283248; padding: 8px 14px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+        .chip { background: #171c28; border: 1.5px solid #283248; padding: 6px 12px; border-radius: 20px; color: #fff; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
         
-        .input-box-wrapper { display: flex; background: #1e2536; border-radius: 32px; padding: 8px 12px; align-items: center; border: 1.5px solid #283248; gap: 8px; }
-        .input-box-wrapper input { flex: 1; background: none; border: none; color: #fff; outline: none; font-size: 1rem; padding-left: 4px; }
+        .input-box-wrapper { display: flex; background: #1e2536; border-radius: 32px; padding: 6px 10px; align-items: center; border: 1.5px solid #283248; gap: 8px; }
+        .input-box-wrapper input { flex: 1; background: none; border: none; color: #fff; outline: none; font-size: 0.95rem; padding-left: 4px; }
         .input-box-wrapper input::placeholder { color: #94a3b8; }
         
-        .circle-btn { background: #3b82f6; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; flex-shrink: 0; }
-        .icon-action-btn { background: none; border: none; color: #cbd5e1; font-size: 1.3rem; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
+        .circle-btn { background: #3b82f6; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; flex-shrink: 0; }
+        .icon-action-btn { background: none; border: none; color: #cbd5e1; font-size: 1.2rem; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
 
         /* Plus Menu Popup */
-        .plus-menu { position: absolute; bottom: 85px; left: 16px; background: #1e2536; border: 1px solid #283248; border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 6px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5); width: 180px; }
+        .plus-menu { position: absolute; bottom: 95px; left: 16px; background: #1e2536; border: 1.5px solid #283248; border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 6px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.6); width: 180px; }
         .plus-menu.active { display: flex; }
         .plus-menu-item { padding: 10px 12px; border-radius: 8px; color: #e2e8f0; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 10px; background: transparent; border: none; text-align: left; width: 100%; }
         .plus-menu-item:hover { background: #283248; }
@@ -70,7 +70,7 @@
                 <button id="sidebar-toggle" class="icon-btn">☰</button>
                 <div class="app-title">Ai Sameer</div>
             </div>
-            <button id="new-chat-btn" class="icon-btn">✏️</button>
+            <button id="new-chat-btn" class="icon-btn" onclick="newChat()">✏️</button>
         </header>
 
         <!-- Sidebar Menu -->
@@ -94,22 +94,26 @@
 
         <!-- Plus Popup Menu -->
         <div id="plus-menu" class="plus-menu">
-            <button class="plus-menu-item" onclick="handlePlusAction('photo')">🖼️ Upload Photo</button>
-            <button class="plus-menu-item" onclick="handlePlusAction('drive')">📁 Google Drive</button>
-            <button class="plus-menu-item" onclick="handlePlusAction('docs')">📄 Add Document</button>
+            <button class="plus-menu-item" onclick="triggerUpload('photo')">🖼️ Upload Photo</button>
+            <button class="plus-menu-item" onclick="triggerUpload('camera')">📸 Take Photo</button>
+            <button class="plus-menu-item" onclick="sendToAI('కొత్త డాక్యుమెంట్ సృష్టించు')">📄 Add Document</button>
         </div>
+
+        <!-- Hidden file inputs for Camera & Gallery -->
+        <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;">
+        <input type="file" id="photo-upload" accept="image/*" style="display: none;">
 
         <!-- Bottom Input & Quick Chips -->
         <div class="chat-input-area">
             <div class="action-chips">
-                <div class="chip" onclick="sendToAI('నాకు ఒక మంచి ఫోటో చూపించు')">🖼️ Photos</div>
-                <div class="chip" onclick="sendToAI('కెమెరాతో ఫోటో క్యాప్చర్ చేయి')">📸 Camera</div>
+                <div class="chip" onclick="triggerUpload('photo')">🖼️ Photos</div>
+                <div class="chip" onclick="triggerUpload('camera')">📸 Camera</div>
                 <div class="chip" onclick="sendToAI('నా కోసం ఒక అవాటర్ క్రియేట్ చేయి')">😊 Avatar</div>
             </div>
             <div class="input-box-wrapper">
                 <button class="icon-action-btn" id="plus-btn">＋</button>
                 <input type="text" id="user-input" placeholder="Ask Ai Sameer">
-                <button class="icon-action-btn" onclick="alert('వాయిస్ ఇన్‌పుట్ వినబడుతోంది...')">🎙️</button>
+                <button class="icon-action-btn" onclick="startVoiceInput()">🎙️</button>
                 <button class="circle-btn" id="send-btn">⬆️</button>
             </div>
         </div>
@@ -145,11 +149,33 @@
             plusMenu.classList.remove("active");
         });
 
-        function handlePlusAction(type) {
-            if(type === 'photo') sendToAI("నా కోసం ఈ ఫోటోను విశ్లేషించు");
-            if(type === 'drive') sendToAI("నా గూగుల్ డ్రైవ్ ఫైల్స్ చూపించు");
-            if(type === 'docs') sendToAI("కొత్త డాక్యుమెంట్ సృష్టించు");
+        function triggerUpload(type) {
+            if(type === 'camera') {
+                document.getElementById("camera-input").click();
+            } else {
+                document.getElementById("photo-upload").click();
+            }
             plusMenu.classList.remove("active");
+        }
+
+        // Camera input change handler
+        document.getElementById("camera-input").addEventListener("change", function(e) {
+            handleFile(e.target.files[0], "కెమెరా ఫోటో");
+        });
+
+        // Photo upload change handler
+        document.getElementById("photo-upload").addEventListener("change", function(e) {
+            handleFile(e.target.files[0], "అప్‌లోడ్ చేసిన ఫోటో");
+        });
+
+        function handleFile(file, label) {
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    sendImageToAI(event.target.result, label);
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function newChat() {
@@ -215,6 +241,61 @@
                 `;
             }
             chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendImageToAI(imgSrc, caption) {
+            const chatContainer = document.getElementById("chat-messages");
+            let welcomeBox = document.getElementById("welcome-box");
+            
+            if (welcomeBox) {
+                chatContainer.innerHTML = `<div class="message-list" id="message-list"></div>`;
+            } else if (!document.getElementById("message-list")) {
+                chatContainer.innerHTML = `<div class="message-list" id="message-list"></div>`;
+            }
+
+            const messageList = document.getElementById("message-list");
+
+            const userMsgDiv = document.createElement("div");
+            userMsgDiv.className = "message user-message";
+            userMsgDiv.innerHTML = `${caption}<br><img src="${imgSrc}" style="max-width: 200px; border-radius: 8px; margin-top: 8px; display: block;">`;
+            messageList.appendChild(userMsgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            const aiMsgDiv = document.createElement("div");
+            aiMsgDiv.className = "message ai-message";
+            aiMsgDiv.innerHTML = `<div>ఫోటోను స్వీకరించాను, విశ్లేషిస్తున్నాను...</div>`;
+            messageList.appendChild(aiMsgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            setTimeout(() => {
+                aiMsgDiv.innerHTML = `
+                    <div>ఈ ఫోటో చాలా బాగుంది! దీనిని విజయవంతంగా అప్‌లోడ్ చేసారు.</div>
+                    <div class="response-actions">
+                        <button onclick="likeMsg(this)">👍</button>
+                        <button onclick="dislikeMsg(this)">👎</button>
+                        <button onclick="copyText(this)">📋</button>
+                    </div>
+                `;
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1000);
+        }
+
+        function startVoiceInput() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'te-IN';
+                recognition.onstart = () => { document.getElementById("user-input").placeholder = "వింటున్నాను మాట్లాడండి..."; };
+                recognition.onresult = (event) => {
+                    document.getElementById("user-input").value = event.results[0][0].transcript;
+                    document.getElementById("user-input").placeholder = "Ask Ai Sameer";
+                };
+                recognition.onerror = () => { document.getElementById("user-input").placeholder = "Ask Ai Sameer"; };
+                recognition.onend = () => { document.getElementById("user-input").placeholder = "Ask Ai Sameer"; };
+                recognition.start();
+            } else {
+                alert("మీ బ్రౌజర్ వాయిస్ రికగ్నిషన్‌కు సపోర్ట్ చేయదు.");
+            }
         }
 
         function likeMsg(btn) { btn.style.color = "#3b82f6"; alert("ధన్యవాదాలు!"); }
