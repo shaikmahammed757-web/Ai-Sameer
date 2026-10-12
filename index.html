@@ -1,530 +1,833 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="te">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#030817">
 <title>AI Sameer</title>
 
 <style>
-*{box-sizing:border-box}
-:root{
-  color-scheme:dark;
-  --bg:#000;
-  --panel:#1d1d1f;
-  --border:#303036;
-  --text:#f5f5f7;
-  --muted:#a1a1aa;
-  --blue:#536dfe;
+:root {
+  --bg:#030611;
+  --panel:#08152d;
+  --blue:#155dfb;
+  --cyan:#16caff;
+  --text:#f5f7ff;
+  --muted:#a5b3cf;
+  --border:#243b68;
 }
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;
-  min-height:100dvh;overflow:hidden;
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial, sans-serif;
+  min-height:100vh;
 }
-button,input,textarea{font:inherit}
-button{cursor:pointer;color:inherit}
-button:focus-visible,textarea:focus-visible{
-  outline:2px solid #8ca0ff;outline-offset:3px
+button,input,textarea { font:inherit; }
+button {
+  color:inherit;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
 }
-.topbar{
-  height:72px;display:flex;align-items:center;
-  padding:0 18px;gap:18px;border-bottom:1px solid #202024;
+button:focus-visible,input:focus-visible,textarea:focus-visible {
+  outline:2px solid var(--cyan);
 }
-.icon-btn{
-  border:0;background:transparent;border-radius:50%;
-  min-width:46px;min-height:46px;font-size:27px;
-  display:grid;place-items:center;
+.topbar {
+  height:65px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  background:#061027;
+  border-bottom:1px solid var(--border);
 }
-.brand{font-size:25px;font-weight:700;flex:1}
-.chat-area{
-  position:absolute;top:73px;bottom:205px;
-  left:0;right:0;overflow-y:auto;padding:20px 16px;
+.top-left,.top-right {
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
-.welcome{
-  position:absolute;left:18px;right:18px;top:50%;
-  transform:translateY(-50%);text-align:center;
-}
-.logo{
-  width:76px;height:76px;margin:0 auto 25px;
-  background:linear-gradient(135deg,#45d7a0,#4d91ff,#9a63ff);
-  clip-path:polygon(50% 0%,63% 37%,100% 50%,63% 63%,
-  50% 100%,37% 63%,0% 50%,37% 37%);
-}
-.welcome h1{font-size:34px;margin:0 0 14px;letter-spacing:-1px}
-.welcome p{color:var(--muted);font-size:16px;line-height:1.6}
-.message{margin:12px 0 22px;display:flex;flex-direction:column;gap:9px}
-.user-msg{
-  align-self:flex-end;background:#202638;border-radius:24px 24px 5px 24px;
-  padding:14px 17px;max-width:88%;white-space:pre-wrap;
-  overflow-wrap:anywhere;line-height:1.55
-}
-.answer{
-  align-self:stretch;line-height:1.75;white-space:pre-wrap;
-  overflow-wrap:anywhere;font-size:16px;padding:8px 2px;
-}
-.answer-actions{
-  display:flex;gap:12px;flex-wrap:wrap;
-  border-top:1px solid #29292d;padding-top:12px;
-}
-.small-btn{
-  border:0;background:transparent;padding:8px;font-size:20px;
+.icon-btn {
+  border:0;
+  background:transparent;
   border-radius:12px;
+  width:43px;
+  height:43px;
+  font-size:25px;
 }
-.small-btn:hover,.icon-btn:hover{background:#29292d}
-.composer{
-  position:absolute;bottom:20px;left:16px;right:16px;
-  background:var(--panel);border:1px solid var(--border);
-  border-radius:32px;padding:16px 14px 12px;
-  box-shadow:0 0 0 1px #171719;
+.icon-btn:active { background:#1b2d50; }
+.brand {
+  border:0;
+  background:transparent;
+  font-size:20px;
+  font-weight:700;
+  padding:10px;
 }
-#prompt{
-  display:block;width:100%;resize:none;min-height:48px;max-height:120px;
-  background:transparent;border:0;color:white;outline:none;
-  padding:8px 10px;font-size:17px;line-height:1.5;
+.brand span { color:var(--cyan); }
+.layout {
+  min-height:calc(100vh - 65px);
 }
-#prompt::placeholder{color:#a0a0a5}
-.controls{display:flex;align-items:center;gap:10px;margin-top:7px}
-.round{
-  flex:0 0 48px;width:48px;height:48px;border:0;
-  border-radius:50%;display:grid;place-items:center;
-  background:transparent;font-size:27px;
+.sidebar {
+  position:fixed;
+  top:65px;
+  bottom:0;
+  left:0;
+  z-index:40;
+  width:290px;
+  padding:18px 13px;
+  background:#061329;
+  border-right:1px solid var(--border);
+  transform:translateX(-105%);
+  transition:transform .22s ease;
+  overflow-y:auto;
 }
-.round:hover{background:#333338}
-#sendBtn{
-  margin-left:auto;background:var(--blue);color:#050714;
-  font-size:25px;font-weight:bold;
+.sidebar.open { transform:translateX(0); }
+.side-brand {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 10px 18px;
+  font-size:20px;
+  font-weight:bold;
 }
-#sendBtn:disabled{opacity:.55}
-#micBtn.listening{background:#633c43}
-.status{font-size:12px;color:var(--muted);padding:5px 10px}
-#fileInput{display:none}
-.overlay{
-  display:none;position:fixed;inset:0;background:#0009;z-index:5;
+.side-brand .spark { font-size:34px; }
+.side-item {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  border:0;
+  padding:13px 14px;
+  margin:3px 0;
+  text-align:left;
+  background:transparent;
+  border-radius:16px;
+  font-size:16px;
 }
-.overlay.open{display:block}
-.drawer{
-  position:absolute;left:0;right:0;bottom:0;max-height:82dvh;
-  overflow:auto;background:#1d1d1f;border:1px solid #39393e;
-  border-radius:30px 30px 0 0;padding:15px 18px 28px;
+.side-item .ico { width:25px; text-align:center; }
+.side-item:hover,.side-item.active { background:#1044a8; }
+.side-separator {
+  border:0;
+  border-top:1px solid var(--border);
+  margin:14px 4px;
 }
-.handle{width:64px;height:5px;border-radius:10px;background:#777;margin:0 auto 24px}
-.drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.drawer-head h2{font-size:21px;margin:0}
-.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.feature{
-  min-height:104px;border:0;border-radius:25px;background:#29292b;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:9px;font-size:15px;padding:10px 4px;
+.account {
+  margin-top:20px;
+  padding:12px 8px;
+  color:#dce8ff;
+  font-size:14px;
 }
-.feature span:first-child{font-size:29px}
-.feature-list{margin-top:15px;display:grid;gap:4px}
-.feature-row{
-  width:100%;display:flex;gap:18px;align-items:center;text-align:left;
-  background:transparent;border:0;border-radius:16px;padding:13px 10px;
+.scrim {
+  display:none;
+  position:fixed;
+  inset:65px 0 0;
+  z-index:30;
+  background:#0009;
 }
-.feature-row:hover{background:#29292b}
-.feature-icon{font-size:25px;width:38px;text-align:center}
-.feature-row strong{display:block;font-weight:500;font-size:16px}
-.feature-row small{display:block;color:var(--muted);margin-top:5px;font-size:13px}
-.toast{
-  position:fixed;bottom:190px;left:50%;transform:translateX(-50%);
-  background:#333;color:white;padding:11px 16px;border-radius:15px;
-  display:none;z-index:10;max-width:90%;text-align:center;
+.scrim.show { display:block; }
+main {
+  max-width:900px;
+  margin:auto;
+  padding:20px 17px 165px;
 }
-.toast.show{display:block}
-@media(min-width:700px){
-  .topbar{padding:0 28px}
-  .chat-area{left:calc((100% - 760px)/2);right:calc((100% - 760px)/2)}
-  .composer{max-width:760px;left:50%;right:auto;width:calc(100% - 32px);transform:translateX(-50%)}
+.welcome {
+  min-height:calc(100vh - 270px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+  padding:15px 0;
+}
+.banana {
+  font-size:105px;
+  line-height:1.2;
+  filter:drop-shadow(0 0 24px #087dff);
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%,100% { transform:translateY(0); }
+  50% { transform:translateY(-8px); }
+}
+.welcome h1 {
+  font-size:clamp(27px,6vw,43px);
+  line-height:1.2;
+  margin:22px 0 8px;
+}
+.welcome h1 span {
+  color:var(--cyan);
+}
+.welcome p {
+  color:var(--muted);
+  margin:0;
+  font-size:15px;
+}
+.messages {
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+.message {
+  max-width:95%;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  line-height:1.65;
+  font-size:16px;
+}
+.message.user {
+  align-self:flex-end;
+  background:#192849;
+  padding:13px 16px;
+  border-radius:20px 20px 5px 20px;
+}
+.message.assistant {
+  align-self:stretch;
+}
+.message.assistant .answer {
+  padding:3px 2px 12px;
+}
+.message-actions {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding-top:10px;
+  border-top:1px solid #25334c;
+}
+.message-actions button {
+  border:0;
+  background:transparent;
+  padding:7px 10px;
+  border-radius:10px;
+  font-size:17px;
+}
+.message-actions button:hover { background:#172744; }
+.composer-wrap {
+  position:fixed;
+  bottom:12px;
+  left:0;
+  right:0;
+  z-index:25;
+  padding:0 14px;
+}
+.composer {
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:5px;
+  max-width:860px;
+  min-height:72px;
+  margin:auto;
+  padding:8px;
+  border:1px solid #35568b;
+  border-radius:38px;
+  background:#0a1730;
+  box-shadow:0 0 18px #075cff36;
+}
+.plus-btn {
+  flex:0 0 48px;
+  width:48px;
+  height:48px;
+  border:1px solid #178cff;
+  border-radius:50%;
+  background:#092c70;
+  font-size:25px;
+  box-shadow:0 0 12px #087cff70;
+}
+.banana-mini { font-size:22px; }
+#prompt {
+  min-width:0;
+  flex:1;
+  resize:none;
+  height:42px;
+  max-height:110px;
+  padding:11px 5px;
+  border:0;
+  outline:none;
+  background:transparent;
+  color:white;
+  font-size:16px;
+}
+#prompt::placeholder { color:#91a4c8; }
+.mic-btn,.send-btn {
+  flex:0 0 44px;
+  width:44px;
+  height:44px;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  font-size:22px;
+}
+.send-btn {
+  flex-basis:48px;
+  width:48px;
+  height:48px;
+  background:var(--blue);
+  font-size:24px;
+}
+.send-btn:disabled { opacity:.55; }
+.voice-btn {
+  display:none;
+  flex:0 0 48px;
+  height:48px;
+  width:48px;
+  border:0;
+  border-radius:50%;
+  background:#155dfb;
+  font-size:24px;
+}
+.plus-menu {
+  display:none;
+  position:absolute;
+  left:0;
+  bottom:84px;
+  width:min(330px,calc(100vw - 28px));
+  max-height:min(62vh,520px);
+  overflow:auto;
+  padding:12px;
+  background:#1b1b1d;
+  border:1px solid #343941;
+  border-radius:28px;
+  box-shadow:0 12px 38px #0009;
+}
+.plus-menu.open { display:block; }
+.menu-handle {
+  width:65px;
+  height:5px;
+  margin:0 auto 14px;
+  background:#777;
+  border-radius:8px;
+}
+.quick-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:7px;
+  margin-bottom:12px;
+}
+.quick-option {
+  min-height:100px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:10px;
+  border:0;
+  border-radius:28px;
+  background:#111113;
+  font-size:14px;
+}
+.quick-option .big-icon { font-size:27px; }
+.quick-option:hover,.tool-option:hover { background:#29303d; }
+.tool-option {
+  display:flex;
+  align-items:center;
+  gap:16px;
+  width:100%;
+  border:0;
+  background:transparent;
+  text-align:left;
+  padding:13px 12px;
+  border-radius:14px;
+  font-size:16px;
+}
+.tool-option .tool-icon {
+  width:28px;
+  text-align:center;
+  font-size:23px;
+}
+.tool-option small {
+  display:block;
+  color:#a6a6ac;
+  font-size:12px;
+  margin-top:5px;
+}
+.model-menu {
+  display:none;
+  position:absolute;
+  top:58px;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(285px,90vw);
+  padding:8px;
+  border:1px solid #304c79;
+  border-radius:20px;
+  background:#08152d;
+  box-shadow:0 10px 35px #000b;
+}
+.model-menu.open { display:block; }
+.model-option {
+  width:100%;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+  text-align:left;
+  padding:12px;
+  font-size:15px;
+}
+.model-option.selected,.model-option:hover {
+  background:#1046aa;
+}
+.model-option .check { margin-left:auto; }
+.modal-backdrop {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:#000b;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal-backdrop.open { display:flex; }
+.modal {
+  width:min(400px,100%);
+  background:#0b1730;
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  text-align:center;
+}
+.modal h2 { margin-top:0; }
+.modal button {
+  border:0;
+  border-radius:12px;
+  background:#155dfb;
+  padding:11px 17px;
+  margin:6px;
+}
+.modal .secondary { background:#29354d; }
+.avatar-preview {
+  font-size:90px;
+  filter:drop-shadow(0 0 18px #087dff);
+}
+#status {
+  font-size:13px;
+  color:var(--muted);
+  text-align:center;
+  margin-top:8px;
+}
+@media(min-width:850px) {
+  body.sidebar-visible .sidebar { transform:translateX(0); }
+  body.sidebar-visible main { margin-left:290px; }
+  body.sidebar-visible .composer-wrap { left:290px; }
+}
+@media(max-width:480px) {
+  .topbar { padding:0 9px; }
+  .brand { font-size:18px; }
+  main { padding-left:14px; padding-right:14px; }
+  .banana { font-size:85px; }
+  .welcome h1 { font-size:30px; }
+  .composer-wrap { bottom:10px; padding:0 10px; }
+  .composer { min-height:66px; padding:6px; gap:3px; }
+  .plus-btn { flex-basis:43px; width:43px; height:43px; }
+  #prompt { font-size:15px; }
+  .mic-btn { flex-basis:36px; width:36px; font-size:20px; }
+  .send-btn { flex-basis:43px; width:43px; height:43px; }
 }
 </style>
 </head>
 
 <body>
-
 <header class="topbar">
-  <button class="icon-btn" id="menuBtn" aria-label="Open menu">☰</button>
-  <div class="brand">AI Sameer</div>
-  <button class="icon-btn" id="newChatBtn" aria-label="New chat">✎</button>
+  <div class="top-left">
+    <button class="icon-btn" id="menuToggle"
+      aria-label="Open menu">☰</button>
+    <button class="brand" id="brandToggle">
+      AI Sameer <span>⌄</span>
+    </button>
+  </div>
+  <div class="top-right">
+    <button class="icon-btn" id="newChat" aria-label="New chat">✎</button>
+  </div>
+  <div class="model-menu" id="modelMenu">
+    <button class="model-option selected" data-model="AI Sameer">
+      ✨ AI Sameer <span class="check">✓</span>
+    </button>
+    <button class="model-option" data-model="Fast">
+      ⚡ Fast
+    </button>
+    <button class="model-option" data-model="Creative">
+      👑 Creative
+    </button>
+    <button class="model-option" data-model="Reasoning">
+      ◈ Reasoning
+    </button>
+    <button class="model-option" data-model="Research">
+      ✺ Research
+    </button>
+  </div>
 </header>
 
-<main class="chat-area" id="chatArea">
+<div class="scrim" id="scrim"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="side-brand">
+    <span class="spark">✨</span> AI Sameer
+  </div>
+  <button class="side-item active" data-action="new">
+    <span class="ico">▣</span> New chat
+  </button>
+  <button class="side-item" data-action="search">
+    <span class="ico">⌕</span> Search chats
+  </button>
+  <button class="side-item" data-action="images">
+    <span class="ico">▧</span> Images
+  </button>
+  <button class="side-item" data-action="library">
+    <span class="ico">▦</span> Library
+  </button>
+  <hr class="side-separator">
+  <button class="side-item" data-action="settings">
+    <span class="ico">⚙</span> Settings
+  </button>
+  <button class="side-item" data-action="help">
+    <span class="ico">ⓘ</span> Help & feedback
+  </button>
+  <hr class="side-separator">
+  <div class="account">👤 Shaik Mahammad</div>
+</aside>
+
+<main>
   <section class="welcome" id="welcome">
-    <div class="logo" aria-label="AI Sameer logo"></div>
-    <h1>AI Sameer</h1>
-    <p>Ask anything. Let's figure it out together.</p>
+    <div class="banana" id="mainBanana">🍌</div>
+    <h1>Hi! I am <span>AI Sameer</span></h1>
+    <p>What should we focus on?</p>
   </section>
-  <div id="messages"></div>
+
+  <section class="messages" id="messages"></section>
 </main>
 
-<section class="composer" aria-label="Message composer">
-  <textarea id="prompt" rows="1" placeholder="Ask AI Sameer..."
-    aria-label="Ask AI Sameer"></textarea>
+<div class="composer-wrap">
+  <div class="composer">
+    <button class="plus-btn" id="plusToggle"
+      aria-label="Add to chat"><span class="banana-mini">🍌</span></button>
 
-  <div class="controls">
-    <button class="round" id="plusBtn" aria-label="Add content" title="Add content">+</button>
-    <button class="round" id="micBtn" aria-label="Voice input" title="Voice input">🎙️</button>
-    <button class="round" id="shareBtn" aria-label="Share" title="Share">↗</button>
-    <button class="round" id="sendBtn" aria-label="Send message" title="Send">➤</button>
+    <textarea id="prompt" rows="1"
+      placeholder="Ask AI Sameer..." aria-label="Message"></textarea>
+
+    <button class="mic-btn" id="micButton"
+      aria-label="Voice typing">🎙</button>
+
+    <button class="send-btn" id="sendButton"
+      aria-label="Send message">➤</button>
+
+    <button class="voice-btn" id="voiceButton"
+      aria-label="Voice mode">〽</button>
+
+    <div class="plus-menu" id="plusMenu">
+      <div class="menu-handle"></div>
+
+      <div class="quick-grid">
+        <button class="quick-option" data-tool="Photos">
+          <span class="big-icon">▧</span>Photos
+        </button>
+        <button class="quick-option" data-tool="Camera">
+          <span class="big-icon">◎</span>Camera
+        </button>
+        <button class="quick-option" data-tool="Avatar">
+          <span class="big-icon">☻</span>Avatar
+        </button>
+      </div>
+
+      <button class="tool-option" data-tool="Images">
+        <span class="tool-icon">▧</span>
+        <span>Images<small>Create and edit</small></span>
+      </button>
+      <button class="tool-option" data-tool="Music">
+        <span class="tool-icon">♫</span>
+        <span>Music<small>Make audio tracks</small></span>
+      </button>
+      <button class="tool-option" data-tool="Canvas">
+        <span class="tool-icon">▣</span>
+        <span>Canvas<small>Code, write or make slides</small></span>
+      </button>
+      <button class="tool-option" data-tool="Deep Research">
+        <span class="tool-icon">◎</span>
+        <span>Deep Research<small>Get detailed reports</small></span>
+      </button>
+      <button class="tool-option" data-tool="Guided Learning">
+        <span class="tool-icon">♧</span>
+        <span>Guided Learning<small>Get step-by-step help</small></span>
+      </button>
+      <button class="tool-option" data-tool="Personal Intelligence">
+        <span class="tool-icon">♙</span>
+        <span>Personal Intelligence<small>Personalise chat if helpful</small></span>
+      </button>
+    </div>
   </div>
-  <div class="status" id="status" aria-live="polite"></div>
-</section>
-
-<input id="fileInput" type="file" accept="image/*,.pdf,.txt,.doc,.docx" multiple>
-<input id="cameraInput" type="file" accept="image/*" capture="environment" hidden>
-
-<div class="overlay" id="featureOverlay">
-  <section class="drawer" role="dialog" aria-modal="true" aria-label="AI Sameer features">
-    <div class="handle"></div>
-    <div class="drawer-head">
-      <h2>AI Sameer</h2>
-      <button class="icon-btn" id="closeFeatures" aria-label="Close">✕</button>
-    </div>
-
-    <div class="feature-grid">
-      <button class="feature" data-feature="Photos"><span>🖼️</span><span>Photos</span></button>
-      <button class="feature" data-feature="Camera"><span>📸</span><span>Camera</span></button>
-      <button class="feature" data-feature="Avatar"><span>😊</span><span>Avatar</span></button>
-    </div>
-
-    <div class="feature-list">
-      <button class="feature-row" data-feature="Images">
-        <span class="feature-icon">🎨</span>
-        <span><strong>Images</strong><small>Create and edit images with an image AI backend</small></span>
-      </button>
-      <button class="feature-row" data-feature="Music">
-        <span class="feature-icon">🎵</span>
-        <span><strong>Music</strong><small>Music creation feature</small></span>
-      </button>
-      <button class="feature-row" data-feature="Canvas">
-        <span class="feature-icon">▣</span>
-        <span><strong>Canvas</strong><small>Code, write or make slides</small></span>
-      </button>
-      <button class="feature-row" data-feature="Deep Research">
-        <span class="feature-icon">◎</span>
-        <span><strong>Deep Research</strong><small>Research with reliable sources</small></span>
-      </button>
-      <button class="feature-row" data-feature="Guided Learning">
-        <span class="feature-icon">📖</span>
-        <span><strong>Guided Learning</strong><small>Get step-by-step help</small></span>
-      </button>
-    </div>
-  </section>
+  <div id="status"></div>
 </div>
 
-<div class="toast" id="toast" role="status"></div>
+<input type="file" id="photoInput"
+  accept="image/*" hidden>
+<input type="file" id="cameraInput"
+  accept="image/*" capture="environment" hidden>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h2 id="modalTitle">AI Sameer</h2>
+    <div class="avatar-preview" id="avatarPreview">🍌</div>
+    <p id="modalText">Welcome to AI Sameer!</p>
+    <div id="modalExtra"></div>
+    <button id="modalClose">Close</button>
+  </div>
+</div>
 
 <script>
-"use strict";
-
-/*
- IMPORTANT:
- This is the FRONTEND. For real AI answers, connect your secure
- Cloudflare Worker endpoint below. Never put an OpenAI API key here.
- Your Worker must accept POST JSON {message:"..."} and return JSON
- containing {answer:"..."} or {choices:[{message:{content:"..."}}]}.
-*/
-const API_URL = "PASTE_YOUR_CLOUDFLARE_WORKER_CHAT_URL_HERE";
-
 const $ = id => document.getElementById(id);
+
+const sidebar = $("sidebar");
+const scrim = $("scrim");
+const plusMenu = $("plusMenu");
+const modelMenu = $("modelMenu");
 const promptBox = $("prompt");
 const messages = $("messages");
 const welcome = $("welcome");
 const statusBox = $("status");
-let selectedFiles = [];
-let lastAnswer = "";
-let busy = false;
+const modalBackdrop = $("modalBackdrop");
+
+let currentModel = "AI Sameer";
+let selectedImage = null;
 let recognition = null;
 
-function toast(message){
-  const el = $("toast");
-  el.textContent = message;
-  el.classList.add("show");
-  clearTimeout(toast.timer);
-  toast.timer = setTimeout(()=>el.classList.remove("show"),3000);
+/*
+  IMPORTANT:
+  Add your deployed Cloudflare Worker URL below.
+  Example: https://your-worker.your-subdomain.workers.dev
+  Do not put a secret API key in this public HTML.
+*/
+const WORKER_URL = "";
+
+function showStatus(text) {
+  statusBox.textContent = text || "";
 }
 
-function openFeatures(){
-  $("featureOverlay").classList.add("open");
-}
-function closeFeatures(){
-  $("featureOverlay").classList.remove("open");
-}
-$("plusBtn").addEventListener("click",openFeatures);
-$("closeFeatures").addEventListener("click",closeFeatures);
-$("featureOverlay").addEventListener("click",e=>{
-  if(e.target === $("featureOverlay")) closeFeatures();
-});
-$("menuBtn").addEventListener("click",openFeatures);
-
-function addMessage(text, type){
-  welcome.style.display = "none";
-  const wrap = document.createElement("article");
-  wrap.className = "message";
-
-  if(type === "user"){
-    const bubble = document.createElement("div");
-    bubble.className = "user-msg";
-    bubble.textContent = text;
-    wrap.appendChild(bubble);
-  } else {
-    const answer = document.createElement("div");
-    answer.className = "answer";
-    answer.textContent = text;
-    wrap.appendChild(answer);
-
-    const actions = document.createElement("div");
-    actions.className = "answer-actions";
-
-    const copy = document.createElement("button");
-    copy.className = "small-btn";
-    copy.textContent = "📋";
-    copy.title = "Copy answer";
-    copy.addEventListener("click",async()=>{
-      try{
-        await navigator.clipboard.writeText(text);
-        toast("Answer copied");
-      }catch{
-        toast("Copy unavailable. Please select the answer and copy it.");
-      }
-    });
-
-    const like = document.createElement("button");
-    like.className = "small-btn";
-    like.textContent = "👍";
-    like.title = "Helpful";
-    like.addEventListener("click",()=>toast("Thank you for your feedback"));
-
-    const dislike = document.createElement("button");
-    dislike.className = "small-btn";
-    dislike.textContent = "👎";
-    dislike.title = "Not helpful";
-    dislike.addEventListener("click",()=>toast("Feedback received"));
-
-    const speak = document.createElement("button");
-    speak.className = "small-btn";
-    speak.textContent = "🔊";
-    speak.title = "Read answer aloud";
-    speak.addEventListener("click",()=>{
-      if(!("speechSynthesis" in window)){
-        toast("Speech is not supported in this browser");return;
-      }
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-    });
-
-    const share = document.createElement("button");
-    share.className = "small-btn";
-    share.textContent = "↗";
-    share.title = "Share answer";
-    share.addEventListener("click",()=>shareText(text));
-
-    actions.append(copy,like,dislike,speak,share);
-    wrap.appendChild(actions);
-    lastAnswer = text;
-  }
-
-  messages.appendChild(wrap);
-  $("chatArea").scrollTop = $("chatArea").scrollHeight;
+function closeMenus() {
+  plusMenu.classList.remove("open");
+  modelMenu.classList.remove("open");
 }
 
-async function shareText(text){
-  try{
-    if(navigator.share){
-      await navigator.share({title:"AI Sameer",text});
-    }else if(navigator.clipboard){
-      await navigator.clipboard.writeText(text);
-      toast("Copied. You can paste and share it.");
-    }else{
-      toast("Sharing is not available in this browser");
-    }
-  }catch(err){
-    if(err.name !== "AbortError") toast("Unable to share right now");
+function toggleSidebar() {
+  const open = !sidebar.classList.contains("open");
+  sidebar.classList.toggle("open", open);
+  scrim.classList.toggle("show", open);
+
+  if (window.innerWidth >= 850) {
+    document.body.classList.toggle("sidebar-visible", open);
   }
 }
-$("shareBtn").addEventListener("click",()=>{
-  const text = lastAnswer || promptBox.value.trim();
-  if(!text){toast("Ask a question first, then share it");return;}
-  shareText(text);
+
+$("menuToggle").addEventListener("click", toggleSidebar);
+
+scrim.addEventListener("click", () => {
+  sidebar.classList.remove("open");
+  scrim.classList.remove("show");
+  document.body.classList.remove("sidebar-visible");
 });
 
-function setBusy(value){
-  busy = value;
-  $("sendBtn").disabled = value;
-  $("sendBtn").textContent = value ? "…" : "➤";
-  statusBox.textContent = value ? "AI Sameer is thinking…" : "";
-}
+$("brandToggle").addEventListener("click", () => {
+  plusMenu.classList.remove("open");
+  modelMenu.classList.toggle("open");
+});
 
-function extractAnswer(data){
-  if(typeof data.answer === "string") return data.answer;
-  if(typeof data.output_text === "string") return data.output_text;
-  if(data.choices && data.choices[0] &&
-     data.choices[0].message &&
-     typeof data.choices[0].message.content === "string"){
-    return data.choices[0].message.content;
-  }
-  if(data.error){
-    return typeof data.error === "string" ? data.error :
-      (data.error.message || "The AI service returned an error.");
-  }
-  return "";
-}
+$("plusToggle").addEventListener("click", () => {
+  modelMenu.classList.remove("open");
+  plusMenu.classList.toggle("open");
+});
 
-async function sendMessage(){
-  if(busy) return;
-  const question = promptBox.value.trim();
-  if(!question && selectedFiles.length === 0){
-    toast("Please type a question or attach a file");return;
+document.addEventListener("click", event => {
+  if (!event.target.closest("#brandToggle") &&
+      !event.target.closest("#modelMenu") &&
+      !event.target.closest("#plusToggle") &&
+      !event.target.closest("#plusMenu")) {
+    closeMenus();
   }
+});
 
-  let displayQuestion = question;
-  if(selectedFiles.length){
-    displayQuestion += (displayQuestion ? "\n" : "") +
-      "Attachments: " + selectedFiles.map(f=>f.name).join(", ");
-  }
-  addMessage(displayQuestion,"user");
+document.querySelectorAll(".model-option").forEach(button => {
+  button.addEventListener("click", () => {
+    currentModel = button.dataset.model;
+    $("brandToggle").innerHTML =
+      currentModel + ' <span>⌄</span>';
+
+    document.querySelectorAll(".model-option").forEach(item => {
+      item.classList.remove("selected");
+      item.querySelector(".check")?.remove();
+    });
+
+    button.classList.add("selected");
+    const check = document.createElement("span");
+    check.className = "check";
+    check.textContent = "✓";
+    button.appendChild(check);
+    modelMenu.classList.remove("open");
+    showStatus("ఎంచుకున్న మోడ్: " + currentModel);
+  });
+});
+
+function newChat() {
+  messages.innerHTML = "";
+  welcome.style.display = "flex";
   promptBox.value = "";
-  promptBox.style.height = "48px";
-  setBusy(true);
-
-  if(!API_URL || API_URL.includes("PASTE_YOUR_")){
-    addMessage(
-      "AI backend is not connected yet. The buttons and chat interface are working, but real AI answers require your deployed Cloudflare Worker URL. Configure the worker endpoint in index.html before sending questions.",
-      "assistant"
-    );
-    setBusy(false);
-    selectedFiles = [];
-    return;
-  }
-
-  try{
-    const response = await fetch(API_URL,{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        message:question,
-        files:selectedFiles.map(f=>({name:f.name,type:f.type,size:f.size}))
-      })
-    });
-
-    const raw = await response.text();
-    let data;
-    try{data=JSON.parse(raw)}
-    catch{throw new Error("The AI server returned an invalid response. Check your Worker URL and server configuration.")}
-
-    if(!response.ok){
-      throw new Error(data.error?.message || data.error ||
-        "AI server error ("+response.status+"). Check the Worker logs and API credits.");
-    }
-
-    const answer = extractAnswer(data);
-    if(!answer) throw new Error("The server responded but did not return an answer. Check the Worker response format.");
-    addMessage(answer,"assistant");
-  }catch(err){
-    addMessage("AI connection error: "+err.message,"assistant");
-  }finally{
-    selectedFiles = [];
-    setBusy(false);
-  }
+  selectedImage = null;
+  showStatus("");
+  closeMenus();
 }
 
-$("sendBtn").addEventListener("click",sendMessage);
-promptBox.addEventListener("keydown",e=>{
-  if(e.key === "Enter" && !e.shiftKey){
-    e.preventDefault();
-    sendMessage();
-  }
-});
-promptBox.addEventListener("input",()=>{
-  promptBox.style.height = "48px";
-  promptBox.style.height = Math.min(promptBox.scrollHeight,120)+"px";
-});
+$("newChat").addEventListener("click", newChat);
 
-$("newChatBtn").addEventListener("click",()=>{
-  if(busy){toast("Please wait for the current response");return;}
-  messages.replaceChildren();
-  welcome.style.display = "block";
-  promptBox.value = "";
-  lastAnswer = "";
-  selectedFiles = [];
-  statusBox.textContent = "";
-  toast("New chat started");
-});
+document.querySelector('[data-action="new"]')
+  .addEventListener("click", () => {
+    newChat();
+    sidebar.classList.remove("open");
+    scrim.classList.remove("show");
+    document.body.classList.remove("sidebar-visible");
+  });
 
-function chooseFiles(){
-  $("fileInput").click();
-}
-$("fileInput").addEventListener("change",e=>{
-  const files = Array.from(e.target.files || []);
-  selectedFiles.push(...files);
-  if(files.length) toast(files.length+" file(s) selected");
-  e.target.value = "";
-});
-$("cameraInput").addEventListener("change",e=>{
-  const files = Array.from(e.target.files || []);
-  selectedFiles.push(...files);
-  if(files.length) toast("Photo selected");
-  e.target.value = "";
-});
+document.querySelectorAll("[data-action]").forEach(button => {
+  if (button.dataset.action === "new") return;
 
-document.querySelectorAll("[data-feature]").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    const feature = btn.dataset.feature;
-    closeFeatures();
+  button.addEventListener("click", () => {
+    const action = button.dataset.action;
+    sidebar.classList.remove("open");
+    scrim.classList.remove("show");
+    document.body.classList.remove("sidebar-visible");
 
-    if(feature === "Photos" || feature === "Images"){
-      chooseFiles();
-    }else if(feature === "Camera"){
-      $("cameraInput").click();
-    }else if(feature === "Avatar"){
-      toast("Avatar creation needs an image-generation service");
-    }else{
-      promptBox.value = feature + ": ";
-      promptBox.focus();
-      toast("Describe what you want to do, then press Send");
+    if (action === "search") {
+      showModal("Search chats",
+        "మీ చాట్‌ను వెతకడానికి ప్రశ్న లేదా పదాన్ని టైప్ చేయండి.",
+        "search");
+    } else if (action === "settings") {
+      showModal("Settings",
+        "AI Sameer సెట్టింగ్స్. మోడల్‌ను పైన ఎంచుకోవచ్చు.");
+    } else if (action === "help") {
+      showModal("Help & feedback",
+        "మీ సమస్యను AI Sameer చాట్‌లో టైప్ చేయండి.");
+    } else if (action === "images") {
+      $("photoInput").click();
+    } else if (action === "library") {
+      showModal("Library",
+        "ఈ డెమోలో గత చాట్‌ల శాశ్వత నిల్వ ఇంకా అమర్చలేదు.");
     }
   });
 });
 
-$("micBtn").addEventListener("click",()=>{
-  const SpeechRecognition = window.SpeechRecognition ||
-                            window.webkitSpeechRecognition;
-  if(!SpeechRecognition){
-    toast("Voice input is not supported in this browser. Try Chrome.");
-    return;
-  }
-  if(recognition){
-    recognition.stop();
-    return;
-  }
-  recognition = new SpeechRecognition();
-  recognition.lang = "te-IN";
-  recognition.interimResults = true;
-  recognition.continuous = false;
-  $("micBtn").classList.add("listening");
-  statusBox.textContent = "Listening… Speak now";
+function showModal(title, text, mode) {
+  $("modalTitle").textContent = title;
+  $("modalText").textContent = text;
+  $("modalExtra").innerHTML = "";
 
-  recognition.onresult = event=>{
-    let text = "";
-    for(let i=0;i<event.results.length;i++){
-      text += event.results[i][0].transcript;
-    }
-    promptBox.value = text;
-    promptBox.dispatchEvent(new Event("input"));
-  };
-  recognition.onerror = ()=>{
-    toast("Microphone failed. Allow microphone permission in Chrome.");
-  };
-  recognition.onend = ()=>{
-    recognition = null;
-    $("micBtn").classList.remove("listening");
-    statusBox.textContent = "";
-  };
-  try{recognition.start();}
-  catch{recognition=null;$("micBtn").classList.remove("listening");}
+  if (mode === "search") {
+    const input = document.createElement("input");
+    input.placeholder = "Search...";
+    input.style.cssText =
+      "width:100%;padding:12px;border-radius:10px;" +
+      "background:#101c32;color:white;border:1px solid #345";
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        promptBox.value = input.value;
+        modalBackdrop.classList.remove("open");
+        promptBox.focus();
+      }
+    });
+    $("modalExtra").appendChild(input);
+  }
+
+  modalBackdrop.classList.add("open");
+}
+
+$("modalClose").addEventListener("click", () => {
+  modalBackdrop.classList.remove("open");
 });
-</script>
-</body>
-</html>
+
+modalBackdrop.addEventListener("click", event => {
+  if (event.target === modalBackdrop) {
+    modalBackdrop.classList.remove("open");
+  }
+});
+
+document.querySelectorAll("[data-tool]").forEach(button => {
+  button.addEventListener("click", () => {
+    const tool = button.dataset.tool;
+    closeMenus();
+
+    if (tool === "Photos" || tool === "Images") {
+      $("photoInput").click();
+      return;
+    }
+
+    if (tool === "Camera") {
+      $("cameraInput").click();
+      return;
+    }
+
+    if (tool === "Avatar") {
+      showModal("AI Sameer Avatar",
+        "🍌 మీ అవతార్ ఫీచర్. మీ ఫోటోను ఎంచుకోవడానికి Photos బటన్ ఉపయోగించండి.");
+      $("avatarPreview").textContent = "🍌";
+      return;
+    }
+
+    const prompts = {
+      "Music":"నా కోసం ఒక మ్యూజిక్ ఐడియా తయారు చేయి.",
+      "Canvas":"ఒక Canvas తయారు చేయడంలో సహాయం చేయి.",
+      "Deep Research":"ఈ అంశంపై వివరంగా పరిశోధన చేయి.",
+      "Guided Learning":"ఈ విషయాన్ని దశలవారీగా నేర్పించు.",
+      "Personal Intelligence":"నా ప్రశ్నకు వ్యక్తిగతీకరించిన సహాయం ఇవ్వు."
+    };
+
+    promptBox.value = prompts[tool] || tool;
+    promptBox.focus();
+    showStatus(tool + " ఎంపికైంది. పంపడానికి Send నొక్కండి.");
+  });
+});
+
+function handleImage(file) {
+  if (!file) return;
+
+  if (!file.type.startsWith("image/")) {
+    showStatus("దయచేసి ఇమేజ్ ఫైల్ ఎంచుకోండి.");
+    return;
+  }
+
+  selectedImage = file;
+  promptBox.placeholder = "ఫోటో గురించి అడగండి...";
+  showStatus("ఫోటో ఎంచుకున్నారు: " + file.name +
+    ". చిత్ర విశ్లేషణకు Worker మద్దతు అవసరం.");
+}
+
+$("photoInput").addEventListener("change", event => {
+  handleImage(event.target.files[0]);
+  event.target.value = "";
+});
+
+$("cameraInput").addEventListener("change", event => {
+  handleImage(event.target.files[0]);
+  event.target.value = "";
+});
+
+function addMessage(text, type) {
+  welcome.style.display = "none";
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "message " + type;
+
+  const content = document.createElement("div");
+  content.className = type === "assistant" ? "answer" : "";
+  content.textContent = text;
+  wrapper.appendChild(content);
+
+  if (type === "assistant") {
+    const actions = document.createElement("div");
+    actions.className = "message-actions";
+
+    [
+      ["📋","Copy"],
+      ["👍","Like"],
+      ["👎","Dislike"],
+      ["📤
