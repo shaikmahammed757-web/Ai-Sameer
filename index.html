@@ -5,49 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ai Sameer</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #0b0f19; color: #ffffff; margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #0b0f19; color: #ffffff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
         .chat-container { display: flex; flex-direction: column; height: 100%; max-width: 800px; margin: 0 auto; width: 100%; position: relative; }
         
         /* Header */
-        .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #0b0f19; }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .model-select { background: none; border: none; color: #fff; font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-        .icon-btn { background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; }
+        .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #0b0f19; }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .app-title { font-size: 1.15rem; font-weight: 500; color: #e2e8f0; display: flex; align-items: center; gap: 6px; }
+        .icon-btn { background: none; border: none; color: #fff; font-size: 1.3rem; cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; }
         
         /* Sidebar */
-        .sidebar { position: fixed; top: 0; left: -280px; width: 280px; height: 100%; background: #171c28; transition: 0.3s ease; z-index: 1000; display: flex; flex-direction: column; padding: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.5); }
+        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: #131825; transition: 0.3s ease; z-index: 1000; display: flex; flex-direction: column; padding: 16px; box-shadow: 4px 0 15px rgba(0,0,0,0.6); overflow-y: auto; }
         .sidebar.open { left: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .sidebar-item { padding: 12px 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: #e0e0e0; margin-bottom: 5px; background: #212635; }
-        .sidebar-item:hover { background: #2c344a; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 1.1rem; font-weight: 500; }
+        .sidebar-item { padding: 12px 14px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 14px; font-size: 0.95rem; color: #e2e8f0; margin-bottom: 6px; background: #1c2333; }
+        .sidebar-item:hover { background: #283248; }
+        .sidebar-section-title { font-size: 0.8rem; color: #94a3b8; margin: 16px 0 8px 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .recent-item { padding: 10px 14px; font-size: 0.9rem; color: #cbd5e1; cursor: pointer; border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .recent-item:hover { background: #1c2333; }
 
-        /* Main Center Area */
-        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .welcome-box { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .sparkle-icon { font-size: 2.5rem; background: linear-gradient(45deg, #4285f4, #ea4335, #fbbc05, #34a853); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .welcome-title { font-size: 1.8rem; font-weight: 500; color: #e2e8f0; }
+        /* Overlay for Sidebar */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; z-index: 999; }
+        .overlay.active { display: block; }
 
-        /* Bottom Input Area */
-        .chat-input-area { padding: 15px 20px; background: #0b0f19; display: flex; flex-direction: column; gap: 10px; }
-        .action-chips { display: flex; gap: 10px; justify-content: center; margin-bottom: 5px; }
-        .chip { background: #1e2330; border: 1px solid #2d3748; padding: 10px 18px; border-radius: 20px; color: #fff; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        /* Main Chat & Welcome Area */
+        .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 20px; }
+        .welcome-box { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .sparkle-icon { font-size: 2.8rem; background: linear-gradient(45deg, #4285f4, #ea4335, #fbbc05, #34a853); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .welcome-title { font-size: 1.85rem; font-weight: 400; color: #e2e8f0; }
+
+        /* Bottom Input & Chips Area */
+        .chat-input-area { padding: 12px 16px 20px 16px; background: #0b0f19; display: flex; flex-direction: column; gap: 10px; }
+        .action-chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+        .action-chips::-webkit-scrollbar { display: none; }
+        .chip { background: #171c28; border: 1.5px solid #283248; padding: 8px 16px; border-radius: 20px; color: #fff; font-size: 0.88rem; display: flex; align-items: center; gap: 8px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
         
-        .input-box-wrapper { display: flex; background: #171c28; border-radius: 30px; padding: 10px 20px; align-items: center; border: 1px solid #2d3748; }
-        .input-box-wrapper input { flex: 1; background: none; border: none; color: #fff; outline: none; font-size: 1rem; }
+        .input-box-wrapper { display: flex; background: #171c28; border-radius: 28px; padding: 10px 14px; align-items: center; border: 1.5px solid #283248; gap: 8px; }
+        .input-box-wrapper input { flex: 1; background: none; border: none; color: #fff; outline: none; font-size: 1rem; padding-left: 4px; }
+        .input-box-wrapper input::placeholder { color: #94a3b8; }
         
         /* Message Bubbles */
-        .message { padding: 12px 18px; border-radius: 12px; max-width: 85%; align-self: flex-start; margin-bottom: 10px; text-align: left; line-height: 1.5; }
-        .user-message { background: #212635; align-self: flex-end; }
-        .ai-message { background: #171c28; border: 1px solid #2d3748; }
+        .message-list { width: 100%; display: flex; flex-direction: column; gap: 16px; align-items: flex-start; justify-content: flex-start; }
+        .message { padding: 12px 16px; border-radius: 14px; max-width: 88%; text-align: left; line-height: 1.5; font-size: 0.95rem; }
+        .user-message { background: #1c2333; align-self: flex-end; color: #f8fafc; border-bottom-right-radius: 4px; }
+        .ai-message { background: #131825; border: 1px solid #283248; align-self: flex-start; color: #e2e8f0; border-bottom-left-radius: 4px; width: 100%; }
+        
+        .action-buttons { display: flex; gap: 12px; margin-top: 10px; font-size: 0.85rem; }
+        .action-buttons button { background: #1c2333; color: #cbd5e1; border: none; padding: 5px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .action-buttons button:hover { background: #283248; }
     </style>
 </head>
 <body>
+    <div class="overlay" id="overlay"></div>
     <div class="chat-container">
         <!-- Header -->
         <header class="chat-header">
             <div class="header-left">
                 <button id="sidebar-toggle" class="icon-btn">☰</button>
-                <button class="model-select">Gemini Auto <span>▼</span></button>
+                <div class="app-title">Ai Sameer</div>
             </div>
             <button id="new-chat-btn" class="icon-btn">✏️</button>
         </header>
@@ -55,20 +72,23 @@
         <!-- Sidebar Menu -->
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <h3>Gemini</h3>
+                <span>Ai Sameer</span>
                 <button id="sidebar-close" class="icon-btn">✕</button>
             </div>
             <div class="sidebar-item" onclick="newChat()">✏️ New chat</div>
             <div class="sidebar-item">🔍 Search chats</div>
             <div class="sidebar-item">🖼️ Images</div>
             <div class="sidebar-item">📚 Library</div>
-            <hr style="border: 0.5px solid #2d3748; margin: 15px 0;">
-            <div class="sidebar-item">⚙️ Settings</div>
+            
+            <div class="sidebar-section-title">Recent</div>
+            <div class="recent-item">AI సమాధానాల సమస్య పరిష్కారం</div>
+            <div class="recent-item">కోడ్ను కాపీ చేయడం ఎలా?</div>
+            <div class="recent-item">సహాయం కోసం సిద్ధంగా ఉన్నాను</div>
         </div>
 
-        <!-- Chat Area / Welcome Screen -->
+        <!-- Chat Area -->
         <div id="chat-messages" class="chat-messages">
-            <div class="welcome-box">
+            <div class="welcome-box" id="welcome-box">
                 <div class="sparkle-icon">✦</div>
                 <div class="welcome-title">What should we focus on?</div>
             </div>
@@ -77,14 +97,14 @@
         <!-- Bottom Input & Quick Chips -->
         <div class="chat-input-area">
             <div class="action-chips">
-                <div class="chip">📷 Photos</div>
+                <div class="chip">🖼️ Photos</div>
                 <div class="chip">📸 Camera</div>
                 <div class="chip">😊 Avatar</div>
             </div>
             <div class="input-box-wrapper">
-                <button id="add-btn" class="icon-btn" style="margin-right: 10px;">＋</button>
-                <input type="text" id="user-input" placeholder="Ask Gemini">
-                <button id="mic-btn" class="icon-btn" style="margin-right: 10px;">🎙️</button>
+                <button id="add-btn" class="icon-btn">＋</button>
+                <input type="text" id="user-input" placeholder="Ask Ai Sameer">
+                <button id="mic-btn" class="icon-btn">🎙️</button>
                 <button id="send-btn" class="icon-btn">⬆️</button>
             </div>
         </div>
@@ -93,30 +113,62 @@
     <script>
         const WORKER_URL = "https://ai-sameer-api.shaikmahammed757.workers.dev";
 
-        // Sidebar Toggle
+        // Sidebar Elements
         const sidebar = document.getElementById("sidebar");
-        document.getElementById("sidebar-toggle").addEventListener("click", () => sidebar.classList.add("open"));
-        document.getElementById("sidebar-close").addEventListener("click", () => sidebar.classList.remove("open"));
+        const overlay = document.getElementById("overlay");
+        
+        document.getElementById("sidebar-toggle").addEventListener("click", () => {
+            sidebar.classList.add("open");
+            overlay.classList.add("active");
+        });
+        
+        document.getElementById("sidebar-close").addEventListener("click", closeSidebar);
+        overlay.addEventListener("click", closeSidebar);
+
+        function closeSidebar() {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+        }
 
         function newChat() {
-            document.getElementById("chat-messages").innerHTML = `
-                <div class="welcome-box">
+            const chatContainer = document.getElementById("chat-messages");
+            chatContainer.innerHTML = `
+                <div class="welcome-box" id="welcome-box">
                     <div class="sparkle-icon">✦</div>
                     <div class="welcome-title">What should we focus on?</div>
                 </div>
             `;
-            sidebar.classList.remove("open");
+            closeSidebar();
         }
 
         document.getElementById("new-chat-btn").addEventListener("click", newChat);
 
         async function sendToAI(promptText) {
-            const chatMessages = document.getElementById("chat-messages");
-            if(chatMessages.querySelector('.welcome-box')) {
-                chatMessages.innerHTML = "";
+            const chatContainer = document.getElementById("chat-messages");
+            let welcomeBox = document.getElementById("welcome-box");
+            
+            if (welcomeBox) {
+                chatContainer.innerHTML = `<div class="message-list" id="message-list"></div>`;
+            } else if (!document.getElementById("message-list")) {
+                chatContainer.innerHTML = `<div class="message-list" id="message-list"></div>`;
             }
 
-            appendMessage("You", promptText);
+            const messageList = document.getElementById("message-list");
+
+            // Append User Message
+            const userMsgDiv = document.createElement("div");
+            userMsgDiv.className = "message user-message";
+            userMsgDiv.innerText = promptText;
+            messageList.appendChild(userMsgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // AI Loading Placeholder
+            const aiMsgDiv = document.createElement("div");
+            aiMsgDiv.className = "message ai-message";
+            aiMsgDiv.innerHTML = `లోడ్ అవుతోంది...`;
+            messageList.appendChild(aiMsgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
             try {
                 const response = await fetch(WORKER_URL, {
                     method: "POST",
@@ -125,38 +177,22 @@
                 });
                 const data = await response.json();
                 const aiReply = data.reply || "సమాధానం అందుకోవడంలో సమస్య ఏర్పడింది.";
-                appendAIMessage(aiReply);
+                
+                aiMsgDiv.innerHTML = `
+                    <div>${aiReply}</div>
+                    <div class="action-buttons">
+                        <button onclick="copyText(this)">📋 Copy</button>
+                        <button onclick="speakText('${aiReply.replace(/'/g, "\\'")}')">🔊 Listen</button>
+                    </div>
+                `;
             } catch (error) {
-                appendAIMessage("నెట్‌వర్క్ సమస్య కారణంగా కనెక్షన్ కాలేదు.");
+                aiMsgDiv.innerHTML = `నెట్‌వర్క్ సమస్య కారణంగా కనెక్షన్ కాలేదు.`;
             }
-        }
-
-        function appendAIMessage(text) {
-            const chatMessages = document.getElementById("chat-messages");
-            const messageDiv = document.createElement("div");
-            messageDiv.className = "message ai-message";
-            messageDiv.innerHTML = `
-                <div class="message-content">${text}</div>
-                <div style="display: flex; gap: 10px; margin-top: 8px; font-size: 0.85rem;">
-                    <button onclick="copyText(this)" style="background:#212635; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">📋 Copy</button>
-                    <button onclick="speakText('${text.replace(/'/g, "\\'")}')" style="background:#212635; color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">🔊 Listen</button>
-                </div>
-            `;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function appendMessage(sender, text) {
-            const chatMessages = document.getElementById("chat-messages");
-            const messageDiv = document.createElement("div");
-            messageDiv.className = `message ${sender === 'You' ? 'user-message' : 'ai-message'}`;
-            messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
         function copyText(button) {
-            const text = button.closest('.ai-message').querySelector('.message-content').innerText;
+            const text = button.closest('.ai-message').querySelector('div').innerText;
             navigator.clipboard.writeText(text);
             alert("టెక్స్ట్ కాపీ చేయబడింది!");
         }
@@ -174,6 +210,16 @@
             if (input.value.trim() !== "") {
                 sendToAI(input.value);
                 input.value = "";
+            }
+        });
+
+        document.getElementById("user-input").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                const input = document.getElementById("user-input");
+                if (input.value.trim() !== "") {
+                    sendToAI(input.value);
+                    input.value = "";
+                }
             }
         });
     </script>
