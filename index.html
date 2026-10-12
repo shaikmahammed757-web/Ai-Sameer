@@ -3,710 +3,350 @@
 <html lang="te">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b0f19">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
 <title>AI Sameer</title>
 <style>
-:root {
-  --bg: #0b0f19;
-  --panel: #121826;
-  --panel2: #1b2333;
-  --border: #293347;
-  --text: #f1f5ff;
-  --muted: #a9b4c8;
-  --accent: #8da9ff;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, "Noto Sans Telugu", sans-serif;
-}
-button, input, textarea { font: inherit; }
-button {
-  color: inherit;
-  cursor: pointer;
-}
-header {
-  height: 76px;
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 18px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 25px;
-  font-weight: 650;
-}
-.icon-btn {
-  border: 0;
-  background: transparent;
-  font-size: 27px;
-  padding: 7px;
-  border-radius: 12px;
-}
-.icon-btn:hover, button:hover { filter: brightness(1.15); }
-main {
-  max-width: 900px;
-  margin: auto;
-  padding: 22px 16px 190px;
-}
-.welcome {
-  text-align: center;
-  margin: 65px auto 25px;
-}
-.welcome h1 { font-size: 30px; }
-.welcome p { color: var(--muted); }
-#messages {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-.message { max-width: 100%; }
-.message.user {
-  align-self: flex-end;
-  max-width: 88%;
-  background: var(--panel2);
-  padding: 15px 18px;
-  border-radius: 23px 23px 6px 23px;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-.answer {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  padding: 17px;
-  border-radius: 22px 22px 22px 6px;
-  line-height: 1.8;
-  overflow-wrap: anywhere;
-}
-.answer-text { white-space: pre-wrap; }
-.answer-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  margin-top: 15px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
-}
-.answer-actions button {
-  background: transparent;
-  border: 0;
-  border-radius: 9px;
-  padding: 7px 10px;
-  font-size: 21px;
-}
-.answer-actions button.active { background: #303e59; }
-.status {
-  color: var(--muted);
-  padding: 12px 3px;
-}
-.error { color: #ffb8b8; }
-.composer-wrap {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, var(--bg) 16%);
-  padding: 35px 14px 18px;
-  z-index: 4;
-}
-.composer {
-  max-width: 850px;
-  margin: auto;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 25px;
-  padding: 10px;
-}
-#question {
-  display: block;
-  width: 100%;
-  min-height: 48px;
-  max-height: 150px;
-  resize: vertical;
-  color: var(--text);
-  background: transparent;
-  border: 0;
-  outline: none;
-  padding: 10px;
-}
-.composer-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.tools { display: flex; flex-wrap: wrap; gap: 6px; }
-.tool-btn, .send-btn {
-  border: 1px solid var(--border);
-  background: var(--panel2);
-  border-radius: 20px;
-  padding: 9px 12px;
-}
-.send-btn {
-  background: var(--accent);
-  color: #10182a;
-  font-weight: 700;
-  min-width: 48px;
-}
-#fileInput { display: none; }
-#preview {
-  display: none;
-  padding: 8px;
-  color: var(--muted);
-  overflow-wrap: anywhere;
-}
-#toast {
-  position: fixed;
-  left: 50%;
-  bottom: 125px;
-  transform: translateX(-50%);
-  z-index: 20;
-  background: #293347;
-  border: 1px solid #44516a;
-  border-radius: 12px;
-  padding: 11px 16px;
-  width: max-content;
-  max-width: 90%;
-  display: none;
-}
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: #0009;
-  z-index: 9;
-  display: none;
-}
-.sidebar {
-  position: fixed;
-  z-index: 10;
-  inset: 0 auto 0 0;
-  width: min(310px, 85vw);
-  background: #101521;
-  border-right: 1px solid var(--border);
-  padding: 20px;
-  transform: translateX(-105%);
-  transition: transform .2s;
-  overflow-y: auto;
-}
-.sidebar.open { transform: translateX(0); }
-.sidebar-title {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 22px;
-  margin-bottom: 25px;
-}
-.menu-btn {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: var(--panel);
-  border: 1px solid #202a3c;
-  border-radius: 15px;
-  padding: 15px;
-  margin: 10px 0;
-}
-.history-title { color: var(--muted); margin-top: 25px; }
-.history-item {
-  width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: left;
-  padding: 12px 6px;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--border);
-}
-@media (max-width: 480px) {
-  header { height: 68px; padding: 0 12px; }
-  .brand { font-size: 22px; gap: 10px; }
-  main { padding: 18px 12px 185px; }
-  .welcome { margin-top: 45px; }
-  .message.user { max-width: 94%; }
-  .composer-wrap { padding: 24px 9px 12px; }
-  .tool-btn { padding: 8px 10px; font-size: 14px; }
+*{box-sizing:border-box}
+:root{--bg:#000;--panel:#1c1c1c;--text:#f3f3f3;--muted:#a5a5a5;--border:#30343e;--blue:#a7b9ff}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,system-ui,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer;color:inherit}
+.topbar{height:70px;position:sticky;top:0;z-index:5;background:#000;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.top-left{display:flex;align-items:center;gap:17px;min-width:0}
+.icon-btn{border:0;background:transparent;border-radius:50%;width:44px;height:44px;font-size:26px;display:grid;place-items:center}
+.model-name{font-size:21px;color:#eee;white-space:nowrap}
+.new-chat{font-size:27px}
+main{max-width:850px;margin:auto;padding:20px 15px 170px}
+#welcome{text-align:center;min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px}
+.sparkle{font-size:58px;background:linear-gradient(40deg,#4285f4,#34a853,#fbbc04,#ea4335);color:transparent;background-clip:text}
+#welcome h1{font-size:clamp(27px,6vw,40px);font-weight:400;margin:0;line-height:1.35}
+#welcome p{color:var(--muted)}
+#messages{display:flex;flex-direction:column;gap:22px}
+.user-msg{align-self:flex-end;max-width:90%;background:#202534;padding:14px 18px;border-radius:25px 25px 5px 25px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
+.answer{max-width:100%;padding:17px 4px;line-height:1.85;overflow-wrap:anywhere}
+.answer-text{white-space:pre-wrap}
+.answer-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;border-top:1px solid #303030;margin-top:17px;padding-top:12px}
+.answer-actions button{border:0;background:transparent;border-radius:50%;width:42px;height:42px;font-size:21px}
+.answer-actions button:active{background:#303030}
+.composer-area{position:fixed;bottom:0;left:0;right:0;z-index:6;padding:12px 12px max(12px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#000 15%)}
+.composer{max-width:850px;margin:auto;border-radius:34px;background:var(--panel);padding:12px 14px;border:1px solid #282828}
+#question{width:100%;resize:none;min-height:47px;max-height:130px;background:transparent;color:#fff;border:0;outline:0;padding:9px 7px;font-size:18px}
+#question::placeholder{color:#a0a0a0}
+.composer-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.left-actions{display:flex;align-items:center;gap:8px}
+.composer-btn{width:45px;height:45px;border:0;background:transparent;border-radius:50%;display:grid;place-items:center;font-size:25px}
+.composer-btn:active{background:#353535}
+#sendBtn{width:47px;height:47px;background:var(--blue);color:#11182b;border:0;border-radius:50%;font-size:25px}
+#sendBtn:disabled{opacity:.5}
+#featurePanel{display:none;position:fixed;z-index:21;left:12px;right:12px;bottom:105px;max-width:570px;margin:auto;background:#1c1c1c;border:1px solid #333;border-radius:30px;padding:16px;color:#f4f4f4;box-shadow:0 12px 50px #000b;max-height:75dvh;overflow-y:auto}
+#featurePanel.open{display:block}
+#overlay{display:none;position:fixed;inset:0;background:#0009;z-index:20}
+#overlay.open{display:block}
+.handle{height:5px;width:65px;border-radius:8px;background:#777;margin:0 auto 18px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:15px}
+.feature-tile{border:0;border-radius:24px;background:#292929;min-height:105px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px 3px}
+.feature-tile .emoji{font-size:30px}
+.feature-tile span:last-child{font-size:15px}
+.feature-list{display:flex;flex-direction:column;gap:3px}
+.feature-row{width:100%;display:flex;align-items:center;gap:16px;text-align:left;padding:13px 10px;background:transparent;border:0;border-radius:15px}
+.feature-row:active,.feature-tile:active{background:#383838}
+.feature-icon{width:39px;text-align:center;font-size:27px}
+.feature-desc{font-size:14px;color:#aaa;margin-top:4px}
+#sideOverlay{display:none;position:fixed;inset:0;background:#0009;z-index:29}
+#sideOverlay.open{display:block}
+#sideMenu{position:fixed;top:0;bottom:0;left:0;width:min(86vw,350px);background:#111318;z-index:30;padding:20px 14px;transform:translateX(-105%);transition:transform .22s ease;display:flex;flex-direction:column;gap:10px}
+#sideMenu.open{transform:translateX(0)}
+.side-heading{display:flex;align-items:center;justify-content:space-between;font-size:22px;padding:8px 5px 20px}
+.side-item{width:100%;text-align:left;border:0;border-radius:17px;background:#1c1e24;padding:16px;font-size:17px}
+#chatSearch{display:none;width:100%;padding:12px;border-radius:12px;background:#242630;color:#fff;border:1px solid #444}
+#chatHistory{overflow-y:auto;display:flex;flex-direction:column;gap:5px}
+.history-item{background:transparent;border:0;text-align:left;padding:12px;border-radius:12px;overflow-wrap:anywhere}
+.history-item:active{background:#292b32}
+#toast{display:none;position:fixed;bottom:115px;left:50%;transform:translateX(-50%);background:#303030;padding:12px 17px;border-radius:15px;z-index:50;max-width:90%;text-align:center}
+#fileInput,#cameraInput{display:none}
+#attached{font-size:13px;color:#aaa;overflow-wrap:anywhere;padding:4px}
+@media(min-width:600px){
+ .composer-area{padding-bottom:18px}
+ #featurePanel{left:18px;right:auto;width:420px;bottom:100px}
 }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand">
-    <button class="icon-btn" id="menuButton" aria-label="Menu">☰</button>
-    <span>AI Sameer</span>
-  </div>
-  <button class="icon-btn" id="newChatTop" aria-label="New chat">✏️</button>
+<header class="topbar">
+ <div class="top-left">
+  <button class="icon-btn" id="menuBtn" aria-label="Open menu">☰</button>
+  <div class="model-name">AI Sameer <span style="font-size:15px;color:#aaa">⌄</span></div>
+ </div>
+ <button class="icon-btn new-chat" id="newBtn" aria-label="New chat">✎</button>
 </header>
 
-<div class="overlay" id="overlay"></div>
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-title">
-    <span>AI Sameer Menu</span>
-    <button class="icon-btn" id="closeMenu">✕</button>
-  </div>
-  <button class="menu-btn" id="newChatMenu">✏️ New chat</button>
-  <button class="menu-btn" id="searchChats">🔎 Search chats</button>
-  <button class="menu-btn" id="imagesMenu">🖼️ Images</button>
-  <div class="history-title">Recent chats</div>
-  <div id="history"></div>
+<div id="sideOverlay"></div>
+<aside id="sideMenu">
+ <div class="side-heading">
+  <span>AI Sameer Menu</span>
+  <button class="icon-btn" id="closeMenu" aria-label="Close menu">×</button>
+ </div>
+ <button class="side-item" id="sideNew">✏️ &nbsp; New chat</button>
+ <button class="side-item" id="searchBtn">🔍 &nbsp; Search chats</button>
+ <input id="chatSearch" type="search" placeholder="చాట్‌లను వెతకండి...">
+ <button class="side-item" id="sideImages">🖼️ &nbsp; Images</button>
+ <div id="chatHistory"></div>
 </aside>
 
 <main>
-  <section class="welcome" id="welcome">
-    <h1>నమస్కారం! 👋</h1>
-    <p>నేను AI Sameer. మీకు ఎలా సహాయం చేయగలను?</p>
-  </section>
-  <section id="messages" aria-live="polite"></section>
+ <section id="welcome">
+  <div class="sparkle">✦</div>
+  <h1>మీరు దేని గురించి<br>తెలుసుకోవాలనుకుంటున్నారు?</h1>
+  <p>AI Sameer మీకు సహాయం చేయడానికి సిద్ధంగా ఉంది.</p>
+ </section>
+ <section id="messages"></section>
 </main>
 
-<div class="composer-wrap">
-  <div class="composer">
-    <div id="preview"></div>
-    <textarea id="question" rows="1"
-      placeholder="మీ ప్రశ్నను ఇక్కడ టైప్ చేయండి..."
-      aria-label="మీ ప్రశ్న"></textarea>
-    <div class="composer-actions">
-      <div class="tools">
-        <button class="tool-btn" id="photosButton">🖼️ Photos</button>
-        <button class="tool-btn" id="cameraButton">📸 Camera</button>
-        <button class="tool-btn" id="avatarButton">😊 Avatar</button>
-        <button class="tool-btn" id="micButton" aria-label="Voice input">🎙️</button>
-      </div>
-      <button class="send-btn" id="sendButton">➤</button>
-    </div>
+<div id="overlay"></div>
+<section id="featurePanel" aria-label="అదనపు ఫీచర్లు">
+ <div class="handle"></div>
+ <div class="feature-grid">
+  <button class="feature-tile" data-feature="Photos"><span class="emoji">🖼️</span><span>Photos</span></button>
+  <button class="feature-tile" data-feature="Camera"><span class="emoji">📸</span><span>Camera</span></button>
+  <button class="feature-tile" data-feature="Avatar"><span class="emoji">😊</span><span>Avatar</span></button>
+ </div>
+ <div class="feature-list">
+  <button class="feature-row" data-feature="Images"><span class="feature-icon">🎨</span><span>Images<div class="feature-desc">Create and edit</div></span></button>
+  <button class="feature-row" data-feature="Music"><span class="feature-icon">🎵</span><span>Music<div class="feature-desc">Make audio tracks</div></span></button>
+  <button class="feature-row" data-feature="Canvas"><span class="feature-icon">▣</span><span>Canvas<div class="feature-desc">Code, write or make slides</div></span></button>
+  <button class="feature-row" data-feature="Deep Research"><span class="feature-icon">◎</span><span>Deep Research<div class="feature-desc">Get detailed reports</div></span></button>
+  <button class="feature-row" data-feature="Guided Learning"><span class="feature-icon">📖</span><span>Guided Learning<div class="feature-desc">Get step-by-step help</div></span></button>
+ </div>
+</section>
+
+<div class="composer-area">
+ <div class="composer">
+  <div id="attached"></div>
+  <textarea id="question" rows="1" placeholder="AI Sameerని అడగండి..." aria-label="మీ ప్రశ్న"></textarea>
+  <div class="composer-row">
+   <div class="left-actions">
+    <button class="composer-btn" id="plusBtn" aria-label="Open features">＋</button>
+    <button class="composer-btn" id="micBtn" aria-label="Voice input">🎙</button>
+    <button class="composer-btn" id="shareBtn" aria-label="Share">↗</button>
+   </div>
+   <button id="sendBtn" aria-label="Send">➤</button>
   </div>
-  <input type="file" id="fileInput" accept="image/*" multiple>
-  <input type="file" id="cameraInput" accept="image/*" capture="environment">
+ </div>
 </div>
 
+<input id="fileInput" type="file" accept="image/*" multiple>
+<input id="cameraInput" type="file" accept="image/*" capture="environment">
 <div id="toast" role="status"></div>
 
 <script>
 "use strict";
 
-/*
-  AI Sameer frontend.
-  API key must remain in Cloudflare Worker secrets.
-*/
-const API_URL =
-  "https://ai-sameer-api.shaikmahammed757.workers.dev";
+/* మీ ఇప్పటికే ఉన్న Cloudflare Worker URL */
+const API_URL="https://ai-sameer-api.shaikmahammed757.workers.dev";
 
-const $ = id => document.getElementById(id);
+const $=id=>document.getElementById(id);
+const panel=$("featurePanel"),overlay=$("overlay");
+const sideMenu=$("sideMenu"),sideOverlay=$("sideOverlay");
+const question=$("question"),messages=$("messages");
+let chatHistory=[],savedChats=[],files=[],busy=false,lastAnswer="";
 
-const messagesEl = $("messages");
-const questionEl = $("question");
-const sendButton = $("sendButton");
-const previewEl = $("preview");
-const welcomeEl = $("welcome");
-
-let chat = [];
-let attachedFiles = [];
-let isSending = false;
-let toastTimer;
-
-function showToast(message) {
-  const toast = $("toast");
-  toast.textContent = message;
-  toast.style.display = "block";
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => {
-    toast.style.display = "none";
-  }, 3000);
+function toast(text){
+ const t=$("toast");t.textContent=text;t.style.display="block";
+ clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display="none",3200);
 }
-
-function openMenu() {
-  $("sidebar").classList.add("open");
-  $("overlay").style.display = "block";
+function toggleFeatures(force){
+ const open=typeof force==="boolean"?force:!panel.classList.contains("open");
+ panel.classList.toggle("open",open);overlay.classList.toggle("open",open);
 }
-function closeMenu() {
-  $("sidebar").classList.remove("open");
-  $("overlay").style.display = "none";
+function toggleMenu(force){
+ const open=typeof force==="boolean"?force:!sideMenu.classList.contains("open");
+ sideMenu.classList.toggle("open",open);sideOverlay.classList.toggle("open",open);
 }
+$("plusBtn").addEventListener("click",()=>toggleFeatures());
+overlay.addEventListener("click",()=>toggleFeatures(false));
+$("menuBtn").addEventListener("click",()=>toggleMenu());
+$("closeMenu").addEventListener("click",()=>toggleMenu(false));
+sideOverlay.addEventListener("click",()=>toggleMenu(false));
 
-$("menuButton").addEventListener("click", openMenu);
-$("closeMenu").addEventListener("click", closeMenu);
-$("overlay").addEventListener("click", closeMenu);
-
-function newChat() {
-  chat = [];
-  attachedFiles = [];
-  messagesEl.replaceChildren();
-  welcomeEl.style.display = "block";
-  updatePreview();
-  questionEl.value = "";
-  closeMenu();
-  questionEl.focus();
+function resetChat(){
+ if(chatHistory.length)savedChats.unshift([...chatHistory]);
+ chatHistory=[];files=[];lastAnswer="";
+ messages.replaceChildren();$("attached").textContent="";
+ $("chatSearch").value="";$("chatSearch").style.display="none";
+ $("chatHistory").replaceChildren();
+ $("welcome").style.display="flex";question.value="";
+ toggleMenu(false);toggleFeatures(false);question.focus();
 }
-$("newChatTop").addEventListener("click", newChat);
-$("newChatMenu").addEventListener("click", newChat);
+$("newBtn").addEventListener("click",resetChat);
+$("sideNew").addEventListener("click",resetChat);
 
-function updateHistory() {
-  const history = $("history");
-  history.replaceChildren();
+$("searchBtn").addEventListener("click",()=>{
+ const s=$("chatSearch");s.style.display=s.style.display==="block"?"none":"block";
+ if(s.style.display==="block")s.focus();
+});
+$("chatSearch").addEventListener("input",()=>{
+ const term=$("chatSearch").value.toLowerCase();
+ const list=$("chatHistory");list.replaceChildren();
+ savedChats.forEach((chat,i)=>{
+  const first=chat.find(m=>m.role==="user")?.content||"చాట్";
+  if(!first.toLowerCase().includes(term))return;
+  const b=document.createElement("button");b.className="history-item";b.textContent=first;
+  b.onclick=()=>{chatHistory=chat.slice();messages.replaceChildren();chatHistory.forEach(m=>addMessage(m.role==="user"?"user":"assistant",m.content));$("welcome").style.display="none";toggleMenu(false);};
+  list.appendChild(b);
+ });
+});
 
-  const conversations = chat.filter(m => m.role === "user").slice(-15).reverse();
+$("sideImages").addEventListener("click",()=>{
+ toggleMenu(false);
+ question.value="నాకు ఒక AI చిత్రం సృష్టించడానికి మంచి prompt తయారు చేయండి.";
+ question.focus();
+ toast("Images ఫీచర్ కోసం ప్రశ్న సిద్ధమైంది. నిజమైన చిత్రం తయారీకి image API అవసరం.");
+});
 
-  conversations.forEach(item => {
-    const button = document.createElement("button");
-    button.className = "history-item";
-    button.textContent = "💬 " + item.content;
-    button.title = item.content;
-    button.addEventListener("click", () => {
-      closeMenu();
-      showToast("ఈ చాట్ ప్రస్తుత సంభాషణలో ఉంది.");
-    });
-    history.appendChild(button);
+function addMessage(role,text){
+ const el=document.createElement("div");
+ if(role==="user"){
+  el.className="user-msg";el.textContent=text;
+ }else{
+  el.className="answer";
+  const body=document.createElement("div");body.className="answer-text";body.textContent=text;
+  el.appendChild(body);el.body=body;
+  const actions=document.createElement("div");actions.className="answer-actions";
+  const make=(icon,label,fn)=>{
+   const b=document.createElement("button");b.textContent=icon;b.title=label;b.setAttribute("aria-label",label);
+   b.onclick=fn;actions.appendChild(b);
+  };
+  make("📋","Copy",()=>copy(body.textContent));
+  make("👍","Like",()=>toast("ధన్యవాదాలు!"));
+  make("👎","Dislike",()=>toast("మీ అభిప్రాయానికి ధన్యవాదాలు."));
+  make("🔊","Read aloud",()=>speak(body.textContent));
+  make("📤","Share",()=>share(body.textContent));
+  el.appendChild(actions);
+ }
+ messages.appendChild(el);el.scrollIntoView({behavior:"smooth",block:"nearest"});return el;
+}
+async function copy(text){
+ try{await navigator.clipboard.writeText(text);toast("కాపీ అయింది.");}
+ catch(e){toast("కాపీ చేయడానికి సమాధానాన్ని నొక్కి సెలెక్ట్ చేయండి.");}
+}
+async function share(text){
+ try{
+  if(navigator.share)await navigator.share({title:"AI Sameer",text});
+  else{await copy(text);toast("సమాధానం కాపీ అయింది.");}
+ }catch(e){if(e.name!=="AbortError")toast("షేర్ చేయలేకపోయాం.");}
+}
+$("shareBtn").addEventListener("click",()=>{
+ const text=lastAnswer||question.value.trim();
+ if(text)share(text);else toast("ముందుగా ఒక ప్రశ్న అడగండి.");
+});
+function speak(text){
+ if(!("speechSynthesis" in window)){toast("ఈ బ్రౌజర్‌లో వాయిస్ అందుబాటులో లేదు.");return;}
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text);u.lang="te-IN";speechSynthesis.speak(u);
+}
+$("micBtn").addEventListener("click",()=>{
+ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!SR){toast("వాయిస్ టైపింగ్‌కు Chrome మైక్ అనుమతి అవసరం.");return;}
+ const r=new SR();r.lang="te-IN";
+ r.onresult=e=>{question.value+=(question.value?" ":"")+e.results[0][0].transcript;question.focus();};
+ r.onerror=()=>toast("మైక్రోఫోన్ అనుమతిని తనిఖీ చేయండి.");
+ try{r.start();}catch(e){toast("మైక్రోఫోన్ ప్రారంభం కాలేదు.");}
+});
+
+function addFiles(list){
+ for(const f of Array.from(list||[])){
+  if(!f.type.startsWith("image/"))continue;
+  if(f.size>5*1024*1024){toast("ఫోటో 5 MB కంటే చిన్నదిగా ఉండాలి.");continue;}
+  if(files.length>=4){toast("గరిష్ఠంగా 4 ఫోటోలు ఎంచుకోండి.");break;}
+  files.push(f);
+ }
+ $("attached").textContent=files.length?"📎 "+files.map(f=>f.name).join(", ")+"  (తొలగించడానికి నొక్కండి)":"";
+}
+$("attached").addEventListener("click",()=>{files=[];$("attached").textContent="";});
+$("fileInput").addEventListener("change",e=>{addFiles(e.target.files);e.target.value="";});
+$("cameraInput").addEventListener("change",e=>{addFiles(e.target.files);e.target.value="";});
+
+const prompts={
+ Avatar:"నా కోసం ఒక Avatar తయారు చేయడానికి సహాయం చేయండి.",
+ Images:"నాకు ఒక AI చిత్రం సృష్టించడానికి prompt తయారు చేయండి.",
+ Music:"నాకు సంగీత ట్రాక్ సృష్టించడానికి prompt తయారు చేయండి.",
+ Canvas:"నాకు కోడ్, రైటింగ్ లేదా స్లైడ్స్ తయారు చేయడంలో సహాయం చేయండి.",
+ "Deep Research":"ఈ అంశంపై లోతైన పరిశోధన చేసి, ముఖ్యమైన వివరాలు మరియు మూలాలను వివరించండి.",
+ "Guided Learning":"ఈ అంశాన్ని నాకు దశలవారీగా నేర్పించండి."
+};
+document.querySelectorAll("[data-feature]").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  const f=btn.dataset.feature;toggleFeatures(false);
+  if(f==="Photos"){$("fileInput").click();return;}
+  if(f==="Camera"){$("cameraInput").click();return;}
+  question.value=prompts[f]||("నాకు "+f+" గురించి సహాయం చేయండి.");
+  question.focus();toast(f+" కోసం ప్రశ్న సిద్ధమైంది. పంపడానికి ➤ నొక్కండి.");
+ });
+});
+
+function getAnswer(data){
+ if(typeof data==="string")return data;
+ if(!data||typeof data!=="object")return "";
+ if(typeof data.answer==="string")return data.answer;
+ if(typeof data.reply==="string")return data.reply;
+ if(typeof data.output_text==="string")return data.output_text;
+ if(data.choices?.[0]?.message?.content)return data.choices[0].message.content;
+ if(data.error)return typeof data.error==="string"?data.error:data.error.message||JSON.stringify(data.error);
+ return "";
+}
+async function askAI(historyToSend){
+ let res,raw,data;
+ try{
+  res=await fetch(API_URL,{
+   method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({messages:historyToSend})
   });
+ }catch(e){throw new Error("AI సర్వర్‌కు కనెక్ట్ కాలేదు. Cloudflare Worker URL మరియు ఇంటర్నెట్‌ను తనిఖీ చేయండి.");}
+ raw=await res.text();
+ try{data=JSON.parse(raw);}catch(e){data={message:raw};}
+ if(!res.ok){
+  const detail=getAnswer(data)||data.message||("HTTP "+res.status);
+  if(/no credits remaining|insufficient_quota/i.test(detail))throw new Error("OpenAI API క్రెడిట్లు అయిపోయాయి. API Billingను తనిఖీ చేయండి.");
+  throw new Error("AI సర్వర్ లోపం ("+res.status+"): "+detail);
+ }
+ const answer=getAnswer(data);
+ if(!answer)throw new Error("Worker నుంచి సమాధానం రాలేదు. Worker కోడ్‌లో API request/response ఫార్మాట్‌ను తనిఖీ చేయాలి.");
+ return answer;
 }
-
-$("searchChats").addEventListener("click", () => {
-  closeMenu();
-  const term = prompt("చాట్‌లో వెతకాల్సిన పదాన్ని నమోదు చేయండి:");
-  if (term === null || !term.trim()) return;
-  const found = [...messagesEl.querySelectorAll(".message")]
-    .some(el => el.textContent.toLowerCase().includes(term.toLowerCase()));
-  showToast(found ? "సరిపోలిన సందేశం ఈ చాట్‌లో ఉంది." : "ఈ చాట్‌లో సరిపోలిన సందేశం లేదు.");
+async function sendMessage(){
+ if(busy)return;
+ const text=question.value.trim();
+ if(!text&&!files.length){toast("మీ ప్రశ్నను టైప్ చేయండి.");return;}
+ if(files.length){toast("ఫోటోలను AIతో విశ్లేషించడానికి Workerలో image API మద్దతు అవసరం.");return;}
+ chatHistory.push({role:"user",content:text});
+ addMessage("user",text);$("welcome").style.display="none";
+ question.value="";question.style.height="47px";
+ const waiting=addMessage("assistant","సమాధానం సిద్ధం చేస్తున్నాను…");
+ busy=true;$("sendBtn").disabled=true;
+ try{
+  const answer=await askAI(chatHistory);
+  chatHistory.push({role:"assistant",content:answer});lastAnswer=answer;
+  waiting.body.textContent=answer;
+ }catch(e){
+  waiting.body.textContent="క్షమించండి. "+(e.message||"సమాధానం పొందలేకపోయాం.");
+  waiting.body.style.color="#ffb9b9";
+  const retry=document.createElement("button");
+  retry.textContent="మళ్లీ ప్రయత్నించండి";
+  retry.style.cssText="display:block;margin-top:12px;padding:10px 15px;border:1px solid #444;border-radius:20px;background:#252525;color:white";
+  retry.onclick=()=>{waiting.remove();chatHistory.pop();question.value=text;sendMessage();};
+  waiting.appendChild(retry);
+ }finally{busy=false;$("sendBtn").disabled=false;}
+}
+$("sendBtn").addEventListener("click",sendMessage);
+question.addEventListener("keydown",e=>{
+ if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();}
 });
-
-/* Avoid JavaScript alert popups for unavailable features. */
-$("imagesMenu").addEventListener("click", () => {
-  closeMenu();
-  $("fileInput").click();
+question.addEventListener("input",()=>{
+ question.style.height="47px";
+ question.style.height=Math.min(question.scrollHeight,130)+"px";
 });
-
-$("photosButton").addEventListener("click", () => $("fileInput").click());
-$("cameraButton").addEventListener("click", () => $("cameraInput").click());
-$("avatarButton").addEventListener("click", () => {
-  showToast("Avatar ఫీచర్ ఇంకా కనెక్ట్ చేయలేదు.");
-});
-
-$("fileInput").addEventListener("change", event => {
-  addFiles(event.target.files);
-  event.target.value = "";
-});
-$("cameraInput").addEventListener("change", event => {
-  addFiles(event.target.files);
-  event.target.value = "";
-});
-
-function addFiles(files) {
-  const selected = Array.from(files || []);
-  for (const file of selected) {
-    if (!file.type.startsWith("image/")) {
-      showToast("దయచేసి ఇమేజ్ ఫైల్ ఎంచుకోండి.");
-      continue;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      showToast("ఒక్కో ఫోటో పరిమాణం 5 MB కంటే తక్కువగా ఉండాలి.");
-      continue;
-    }
-    if (attachedFiles.length >= 4) {
-      showToast("ఒకేసారి గరిష్ఠంగా 4 ఫోటోలు ఎంచుకోండి.");
-      break;
-    }
-    attachedFiles.push(file);
-  }
-  updatePreview();
-}
-
-function updatePreview() {
-  previewEl.replaceChildren();
-  if (!attachedFiles.length) {
-    previewEl.style.display = "none";
-    return;
-  }
-  previewEl.style.display = "block";
-  const label = document.createElement("span");
-  label.textContent = "📎 " + attachedFiles.map(f => f.name).join(", ");
-  previewEl.appendChild(label);
-
-  const remove = document.createElement("button");
-  remove.textContent = " ✕";
-  remove.className = "icon-btn";
-  remove.style.fontSize = "16px";
-  remove.addEventListener("click", () => {
-    attachedFiles = [];
-    updatePreview();
-  });
-  previewEl.appendChild(remove);
-}
-
-function createMessage(role, text, options = {}) {
-  const wrapper = document.createElement("article");
-  wrapper.className = "message " + role;
-
-  if (role === "user") {
-    wrapper.textContent = text;
-    if (options.files && options.files.length) {
-      const fileNames = document.createElement("div");
-      fileNames.style.color = "#a9b4c8";
-      fileNames.style.marginTop = "8px";
-      fileNames.textContent = "📎 " + options.files.join(", ");
-      wrapper.appendChild(fileNames);
-    }
-  } else {
-    const card = document.createElement("div");
-    card.className = "answer";
-
-    const body = document.createElement("div");
-    body.className = "answer-text";
-    body.textContent = text;
-    card.appendChild(body);
-
-    const actions = document.createElement("div");
-    actions.className = "answer-actions";
-
-    const copy = makeAction("📋", "Copy answer", () => {
-      copyText(text);
-    });
-    const like = makeAction("👍", "Like", () => {
-      like.classList.toggle("active");
-      showToast("ధన్యవాదాలు!");
-    });
-    const dislike = makeAction("👎", "Dislike", () => {
-      dislike.classList.toggle("active");
-      showToast("మీ అభిప్రాయానికి ధన్యవాదాలు.");
-    });
-    const listen = makeAction("🔊", "Listen to answer", () => {
-      speakText(text);
-    });
-    const share = makeAction("📤", "Share answer", async () => {
-      if (navigator.share) {
-        try {
-          await navigator.share({ title: "AI Sameer", text });
-        } catch (error) {
-          if (error.name !== "AbortError") copyText(text);
-        }
-      } else {
-        copyText(text);
-        showToast("సమాధానం కాపీ అయింది. మీరు షేర్ చేయవచ్చు.");
-      }
-    });
-
-    [copy, like, dislike, listen, share].forEach(button => actions.appendChild(button));
-    card.appendChild(actions);
-    wrapper.appendChild(card);
-  }
-
-  messagesEl.appendChild(wrapper);
-  wrapper.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  return wrapper;
-}
-
-function makeAction(symbol, label, callback) {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.textContent = symbol;
-  button.title = label;
-  button.setAttribute("aria-label", label);
-  button.addEventListener("click", callback);
-  return button;
-}
-
-async function copyText(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    showToast("సమాధానం కాపీ అయింది.");
-  } catch {
-    const area = document.createElement("textarea");
-    area.value = text;
-    area.style.position = "fixed";
-    area.style.opacity = "0";
-    document.body.appendChild(area);
-    area.select();
-    const ok = document.execCommand("copy");
-    area.remove();
-    showToast(ok ? "సమాధానం కాపీ అయింది." : "కాపీ కాలేదు. సమాధానాన్ని సెలెక్ట్ చేయండి.");
-  }
-}
-
-function speakText(text) {
-  if (!("speechSynthesis" in window)) {
-    showToast("ఈ బ్రౌజర్‌లో వాయిస్ ఫీచర్ అందుబాటులో లేదు.");
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "te-IN";
-  window.speechSynthesis.speak(utterance);
-}
-
-function getAnswerFromResponse(data) {
-  if (typeof data === "string") return data;
-  if (!data || typeof data !== "object") return "";
-  if (typeof data.answer === "string") return data.answer;
-  if (typeof data.reply === "string") return data.reply;
-  if (typeof data.message === "string" && data.status !== "ready") {
-    return data.message;
-  }
-  return "";
-}
-
-async function getAIResponse(history, files) {
-  /*
-    The Worker must accept POST JSON with a messages array
-    and return JSON containing answer or reply.
-    This frontend does not expose the secret API key.
-  */
-  const payload = {
-    messages: history
-  };
-
-  /*
-    Files are selected in the UI, but image understanding requires
-    additional image-upload/base64 support in the Worker.
-  */
-  if (files.length) {
-    throw new Error(
-      "ఫోటోలు ఎంచుకున్నారు. ఫోటోలను AI విశ్లేషించాలంటే Worker‌లో image support కూడా అమర్చాలి. ప్రస్తుతం టెక్స్ట్ ప్రశ్నను మాత్రమే పంపండి."
-    );
-  }
-
-  let response;
-  try {
-    response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-  } catch {
-    throw new Error(
-      "సర్వర్‌కు కనెక్ట్ కాలేదు. ఇంటర్నెట్ కనెక్షన్, Cloudflare Worker URL తనిఖీ చేయండి."
-    );
-  }
-
-  const raw = await response.text();
-  let data;
-  try {
-    data = JSON.parse(raw);
-  } catch {
-    data = { message: raw };
-  }
-
-  if (!response.ok) {
-    const detail = data.error || data.message || ("HTTP " + response.status);
-    throw new Error("AI సర్వర్ సమస్య: " + detail);
-  }
-
-  const answer = getAnswerFromResponse(data);
-  if (!answer) {
-    if (data.status === "ready") {
-      throw new Error(
-        "Worker నడుస్తోంది, కానీ AI సమాధానం ఇచ్చే POST API ఇంకా సరిగ్గా అమర్చబడలేదు."
-      );
-    }
-    throw new Error(
-      "సర్వర్ నుంచి సమాధానం రాలేదు. Worker‌లో AI API కోడ్‌ను తనిఖీ చేయండి."
-    );
-  }
-  return answer;
-}
-
-async function sendMessage() {
-  if (isSending) return;
-
-  const text = questionEl.value.trim();
-  if (!text && !attachedFiles.length) {
-    showToast("ముందుగా మీ ప్రశ్నను టైప్ చేయండి.");
-    questionEl.focus();
-    return;
-  }
-
-  if (attachedFiles.length) {
-    showToast("ఫోటో విశ్లేషణ కోసం Worker‌లో image support అవసరం.");
-    return;
-  }
-
-  const userText = text;
-  chat.push({ role: "user", content: userText });
-  createMessage("user", userText);
-  welcomeEl.style.display = "none";
-  questionEl.value = "";
-  questionEl.style.height = "48px";
-  updateHistory();
-
-  const loading = createMessage("assistant", "⏳ సమాధానం తయారు చేస్తున్నాను...");
-  const answerBody = loading.querySelector(".answer-text");
-
-  isSending = true;
-  sendButton.disabled = true;
-  sendButton.textContent = "…";
-
-  try {
-    const answer = await getAIResponse(chat, attachedFiles);
-    chat.push({ role: "assistant", content: answer });
-    answerBody.textContent = answer;
-    updateHistory();
-  } catch (error) {
-    answerBody.textContent =
-      "క్షమించండి. " + (error.message || "సమాధానం పొందలేకపోయాను.");
-    answerBody.classList.add("error");
-
-    const retry = document.createElement("button");
-    retry.className = "tool-btn";
-    retry.textContent = "మళ్లీ ప్రయత్నించండి";
-    retry.style.marginTop = "12px";
-    retry.addEventListener("click", () => {
-      loading.remove();
-      questionEl.value = userText;
-      sendMessage();
-    });
-    loading.querySelector(".answer").appendChild(retry);
-  } finally {
-    isSending = false;
-    sendButton.disabled = false;
-    sendButton.textContent = "➤";
-  }
-}
-
-sendButton.addEventListener("click", sendMessage);
-
-questionEl.addEventListener("keydown", event => {
-  if (event.key === "Enter" && !event.shiftKey) {
-    event.preventDefault();
-    sendMessage();
-  }
-});
-
-questionEl.addEventListener("input", () => {
-  questionEl.style.height = "48px";
-  questionEl.style.height = Math.min(questionEl.scrollHeight, 150) + "px";
-});
-
-$("micButton").addEventListener("click", () => {
-  const SpeechRecognition =
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if (!SpeechRecognition) {
-    showToast("వాయిస్ ఇన్‌పుట్‌కు Chrome అనుమతి లేదా మద్దతు అవసరం.");
-    return;
-  }
-
-  const recognition = new SpeechRecognition();
-  recognition.lang = "te-IN";
-  recognition.interimResults = false;
-  recognition.onresult = event => {
-    questionEl.value += event.results[0][0].transcript;
-    questionEl.focus();
-  };
-  recognition.onerror = () => {
-    showToast("మైక్రోఫోన్ అనుమతిని తనిఖీ చేయండి.");
-  };
-  recognition.start();
-});
-
 </script>
 </body>
 </html>
