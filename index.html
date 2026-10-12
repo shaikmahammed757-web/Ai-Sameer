@@ -1,139 +1,567 @@
 
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <title>AI Sameer</title>
+
 <style>
-*{box-sizing:border-box}
-:root{--bg:#000;--panel:#1c1c1c;--text:#f3f3f3;--muted:#a5a5a5;--border:#30343e;--blue:#a7b9ff}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,system-ui,sans-serif}
-button,input,textarea{font:inherit}
-button{cursor:pointer;color:inherit}
-.topbar{height:70px;position:sticky;top:0;z-index:5;background:#000;display:flex;align-items:center;justify-content:space-between;padding:0 16px}
-.top-left{display:flex;align-items:center;gap:17px;min-width:0}
-.icon-btn{border:0;background:transparent;border-radius:50%;width:44px;height:44px;font-size:26px;display:grid;place-items:center}
-.model-name{font-size:21px;color:#eee;white-space:nowrap}
-.new-chat{font-size:27px}
-main{max-width:850px;margin:auto;padding:20px 15px 170px}
-#welcome{text-align:center;min-height:50vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px}
-.sparkle{font-size:58px;background:linear-gradient(40deg,#4285f4,#34a853,#fbbc04,#ea4335);color:transparent;background-clip:text}
-#welcome h1{font-size:clamp(27px,6vw,40px);font-weight:400;margin:0;line-height:1.35}
-#welcome p{color:var(--muted)}
-#messages{display:flex;flex-direction:column;gap:22px}
-.user-msg{align-self:flex-end;max-width:90%;background:#202534;padding:14px 18px;border-radius:25px 25px 5px 25px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
-.answer{max-width:100%;padding:17px 4px;line-height:1.85;overflow-wrap:anywhere}
-.answer-text{white-space:pre-wrap}
-.answer-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;border-top:1px solid #303030;margin-top:17px;padding-top:12px}
-.answer-actions button{border:0;background:transparent;border-radius:50%;width:42px;height:42px;font-size:21px}
-.answer-actions button:active{background:#303030}
-.composer-area{position:fixed;bottom:0;left:0;right:0;z-index:6;padding:12px 12px max(12px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#000 15%)}
-.composer{max-width:850px;margin:auto;border-radius:34px;background:var(--panel);padding:12px 14px;border:1px solid #282828}
-#question{width:100%;resize:none;min-height:47px;max-height:130px;background:transparent;color:#fff;border:0;outline:0;padding:9px 7px;font-size:18px}
-#question::placeholder{color:#a0a0a0}
-.composer-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.left-actions{display:flex;align-items:center;gap:8px}
-.composer-btn{width:45px;height:45px;border:0;background:transparent;border-radius:50%;display:grid;place-items:center;font-size:25px}
-.composer-btn:active{background:#353535}
-#sendBtn{width:47px;height:47px;background:var(--blue);color:#11182b;border:0;border-radius:50%;font-size:25px}
-#sendBtn:disabled{opacity:.5}
-#featurePanel{display:none;position:fixed;z-index:21;left:12px;right:12px;bottom:105px;max-width:570px;margin:auto;background:#1c1c1c;border:1px solid #333;border-radius:30px;padding:16px;color:#f4f4f4;box-shadow:0 12px 50px #000b;max-height:75dvh;overflow-y:auto}
-#featurePanel.open{display:block}
-#overlay{display:none;position:fixed;inset:0;background:#0009;z-index:20}
-#overlay.open{display:block}
-.handle{height:5px;width:65px;border-radius:8px;background:#777;margin:0 auto 18px}
-.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:15px}
-.feature-tile{border:0;border-radius:24px;background:#292929;min-height:105px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:10px 3px}
-.feature-tile .emoji{font-size:30px}
-.feature-tile span:last-child{font-size:15px}
-.feature-list{display:flex;flex-direction:column;gap:3px}
-.feature-row{width:100%;display:flex;align-items:center;gap:16px;text-align:left;padding:13px 10px;background:transparent;border:0;border-radius:15px}
-.feature-row:active,.feature-tile:active{background:#383838}
-.feature-icon{width:39px;text-align:center;font-size:27px}
-.feature-desc{font-size:14px;color:#aaa;margin-top:4px}
-#sideOverlay{display:none;position:fixed;inset:0;background:#0009;z-index:29}
-#sideOverlay.open{display:block}
-#sideMenu{position:fixed;top:0;bottom:0;left:0;width:min(86vw,350px);background:#111318;z-index:30;padding:20px 14px;transform:translateX(-105%);transition:transform .22s ease;display:flex;flex-direction:column;gap:10px}
-#sideMenu.open{transform:translateX(0)}
-.side-heading{display:flex;align-items:center;justify-content:space-between;font-size:22px;padding:8px 5px 20px}
-.side-item{width:100%;text-align:left;border:0;border-radius:17px;background:#1c1e24;padding:16px;font-size:17px}
-#chatSearch{display:none;width:100%;padding:12px;border-radius:12px;background:#242630;color:#fff;border:1px solid #444}
-#chatHistory{overflow-y:auto;display:flex;flex-direction:column;gap:5px}
-.history-item{background:transparent;border:0;text-align:left;padding:12px;border-radius:12px;overflow-wrap:anywhere}
-.history-item:active{background:#292b32}
-#toast{display:none;position:fixed;bottom:115px;left:50%;transform:translateX(-50%);background:#303030;padding:12px 17px;border-radius:15px;z-index:50;max-width:90%;text-align:center}
-#fileInput,#cameraInput{display:none}
-#attached{font-size:13px;color:#aaa;overflow-wrap:anywhere;padding:4px}
-@media(min-width:600px){
- .composer-area{padding-bottom:18px}
- #featurePanel{left:18px;right:auto;width:420px;bottom:100px}
+:root {
+  color-scheme: dark;
+  --bg: #000000;
+  --panel: #1c1c1c;
+  --panel2: #252525;
+  --text: #f1f1f1;
+  --muted: #a5a5a5;
+  --border: #303038;
+  --blue: #a9baff;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+               "Segoe UI", sans-serif;
+}
+
+body { min-height: 100dvh; }
+
+button, textarea, input { font: inherit; }
+button { color: inherit; cursor: pointer; }
+button:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.topbar {
+  height: 66px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #000;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.icon-button {
+  border: 0;
+  background: transparent;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.icon-button:active { background: #252525; }
+
+.brand {
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -.4px;
+}
+
+.new-chat { font-size: 26px; }
+
+main {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+#welcome {
+  min-height: calc(100dvh - 255px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 30px 0 55px;
+}
+
+.sparkle {
+  font-size: 65px;
+  line-height: 1.2;
+  background: linear-gradient(45deg,#4285f4,#34a853,#fbbc05,#ea4335);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 22px;
+}
+
+#welcome h1 {
+  margin: 0;
+  font-size: clamp(29px, 7vw, 43px);
+  font-weight: 400;
+  letter-spacing: -1.2px;
+  line-height: 1.25;
+}
+
+#welcome p {
+  color: var(--muted);
+  font-size: 15px;
+  margin-top: 16px;
+}
+
+#messages {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px 0 25px;
+}
+
+.user-message {
+  align-self: flex-end;
+  max-width: 88%;
+  padding: 13px 18px;
+  background: #202433;
+  border-radius: 25px 25px 5px 25px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.65;
+}
+
+.answer {
+  width: 100%;
+  padding: 7px 2px 12px;
+  line-height: 1.8;
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.answer-text { white-space: pre-wrap; }
+
+.answer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  border-top: 1px solid #292929;
+  margin-top: 17px;
+  padding-top: 10px;
+}
+
+.answer-actions button {
+  border: 0;
+  background: transparent;
+  border-radius: 50%;
+  width: 43px;
+  height: 43px;
+  font-size: 21px;
+}
+
+.answer-actions button:active { background: #292929; }
+
+.composer-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 12;
+  padding: 12px 14px max(12px, env(safe-area-inset-bottom));
+  background: linear-gradient(transparent, #000 14%);
+}
+
+.composer {
+  max-width: 810px;
+  margin: 0 auto;
+  padding: 11px 13px;
+  border: 1px solid #292929;
+  border-radius: 35px;
+  background: var(--panel);
+  box-shadow: 0 5px 24px #0005;
+}
+
+#question {
+  display: block;
+  width: 100%;
+  min-height: 49px;
+  max-height: 135px;
+  resize: none;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  padding: 10px 9px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+#question::placeholder { color: #a5a5a5; }
+
+.composer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.composer-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.composer-button {
+  border: 0;
+  background: transparent;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.composer-button:active { background: #333; }
+
+#voiceButton {
+  width: 53px;
+  height: 53px;
+  flex-basis: 53px;
+  border: 0;
+  border-radius: 50%;
+  background: #283f98;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+#voiceButton.listening {
+  background: #b3261e;
+  animation: pulse 1.2s infinite;
+}
+
+#sendButton {
+  display: none;
+  width: 48px;
+  height: 48px;
+  flex-basis: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #10182f;
+  font-size: 24px;
+}
+
+#sendButton.visible { display: flex; align-items: center; justify-content: center; }
+#sendButton:disabled { opacity: .55; }
+
+@keyframes pulse {
+  50% { box-shadow: 0 0 0 7px #b3261e33; }
+}
+
+/* Plus feature sheet */
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: #0009;
+  display: none;
+}
+
+#overlay.open { display: block; }
+
+#featurePanel {
+  display: none;
+  position: fixed;
+  z-index: 21;
+  left: 12px;
+  right: 12px;
+  bottom: 100px;
+  max-width: 650px;
+  max-height: min(76dvh, 760px);
+  overflow-y: auto;
+  margin: 0 auto;
+  padding: 16px 15px 20px;
+  background: #1c1c1c;
+  border: 1px solid #343434;
+  border-radius: 32px;
+  box-shadow: 0 12px 45px #0009;
+}
+
+#featurePanel.open { display: block; }
+
+.handle {
+  width: 64px;
+  height: 5px;
+  border-radius: 9px;
+  background: #777;
+  margin: 0 auto 20px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin-bottom: 17px;
+}
+
+.feature-tile {
+  min-height: 115px;
+  padding: 10px 3px;
+  border: 0;
+  border-radius: 26px;
+  background: #282828;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.feature-tile .emoji { font-size: 34px; }
+.feature-tile span:last-child { font-size: 16px; }
+.feature-tile:active, .feature-row:active { background: #383838; }
+
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.feature-row {
+  width: 100%;
+  min-height: 79px;
+  padding: 12px 10px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-align: left;
+  border: 0;
+  border-radius: 16px;
+  background: transparent;
+}
+
+.feature-icon {
+  width: 40px;
+  flex: 0 0 40px;
+  text-align: center;
+  font-size: 29px;
+}
+
+.feature-name { font-size: 19px; }
+.feature-description { color: #aaa; font-size: 15px; margin-top: 3px; }
+
+/* Side menu */
+#sideOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #0009;
+  z-index: 29;
+}
+
+#sideOverlay.open { display: block; }
+
+#sideMenu {
+  position: fixed;
+  z-index: 30;
+  inset: 0 auto 0 0;
+  width: min(87vw, 355px);
+  background: #111318;
+  padding: 18px 14px;
+  transform: translateX(-105%);
+  transition: transform .22s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+#sideMenu.open { transform: translateX(0); }
+
+.side-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 22px;
+  padding: 5px 3px 18px;
+}
+
+.side-item {
+  width: 100%;
+  padding: 16px;
+  text-align: left;
+  border: 0;
+  border-radius: 16px;
+  background: #202127;
+  font-size: 17px;
+}
+
+#chatSearch {
+  display: none;
+  padding: 13px;
+  background: #252630;
+  border: 1px solid #444;
+  border-radius: 13px;
+  color: #fff;
+  width: 100%;
+}
+
+.history-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  padding: 12px;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+#fileInput, #cameraInput { display: none; }
+
+#attached {
+  display: none;
+  padding: 5px 9px;
+  color: #bdbdbd;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+#toast {
+  display: none;
+  position: fixed;
+  z-index: 60;
+  left: 50%;
+  bottom: 125px;
+  transform: translateX(-50%);
+  max-width: 90%;
+  background: #333;
+  color: white;
+  padding: 12px 17px;
+  border-radius: 16px;
+  font-size: 14px;
+  text-align: center;
+}
+
+@media (min-width: 600px) {
+  .composer-wrap { padding-bottom: 18px; }
+  #featurePanel { left: 18px; right: auto; width: 430px; bottom: 100px; }
+}
+
+@media (max-height: 650px) {
+  #welcome { min-height: 42dvh; }
+  #featurePanel { max-height: 65dvh; }
 }
 </style>
 </head>
+
 <body>
 
 <header class="topbar">
- <div class="top-left">
-  <button class="icon-btn" id="menuBtn" aria-label="Open menu">☰</button>
-  <div class="model-name">AI Sameer <span style="font-size:15px;color:#aaa">⌄</span></div>
- </div>
- <button class="icon-btn new-chat" id="newBtn" aria-label="New chat">✎</button>
+  <div class="top-left">
+    <button class="icon-button" id="menuButton" aria-label="Open menu">☰</button>
+    <div class="brand">AI Sameer</div>
+  </div>
+  <button class="icon-button new-chat" id="newChatButton" aria-label="New chat">✎</button>
 </header>
 
-<div id="sideOverlay"></div>
-<aside id="sideMenu">
- <div class="side-heading">
-  <span>AI Sameer Menu</span>
-  <button class="icon-btn" id="closeMenu" aria-label="Close menu">×</button>
- </div>
- <button class="side-item" id="sideNew">✏️ &nbsp; New chat</button>
- <button class="side-item" id="searchBtn">🔍 &nbsp; Search chats</button>
- <input id="chatSearch" type="search" placeholder="చాట్‌లను వెతకండి...">
- <button class="side-item" id="sideImages">🖼️ &nbsp; Images</button>
- <div id="chatHistory"></div>
+<aside id="sideMenu" aria-label="AI Sameer menu">
+  <div class="side-heading">
+    <span>AI Sameer</span>
+    <button class="icon-button" id="closeMenuButton" aria-label="Close menu">×</button>
+  </div>
+  <button class="side-item" id="sideNewChat">✎ &nbsp; New chat</button>
+  <button class="side-item" id="searchChatsButton">⌕ &nbsp; Search chats</button>
+  <input id="chatSearch" type="search" placeholder="Search chats...">
+  <button class="side-item" id="sideImagesButton">▧ &nbsp; Images</button>
+  <div id="chatHistory"></div>
 </aside>
+<div id="sideOverlay"></div>
 
 <main>
- <section id="welcome">
-  <div class="sparkle">✦</div>
-  <h1>మీరు దేని గురించి<br>తెలుసుకోవాలనుకుంటున్నారు?</h1>
-  <p>AI Sameer మీకు సహాయం చేయడానికి సిద్ధంగా ఉంది.</p>
- </section>
- <section id="messages"></section>
+  <section id="welcome">
+    <div class="sparkle">✦</div>
+    <h1>What should we<br>focus on?</h1>
+    <p>Ask anything. Let's figure it out together.</p>
+  </section>
+  <section id="messages" aria-live="polite"></section>
 </main>
 
 <div id="overlay"></div>
-<section id="featurePanel" aria-label="అదనపు ఫీచర్లు">
- <div class="handle"></div>
- <div class="feature-grid">
-  <button class="feature-tile" data-feature="Photos"><span class="emoji">🖼️</span><span>Photos</span></button>
-  <button class="feature-tile" data-feature="Camera"><span class="emoji">📸</span><span>Camera</span></button>
-  <button class="feature-tile" data-feature="Avatar"><span class="emoji">😊</span><span>Avatar</span></button>
- </div>
- <div class="feature-list">
-  <button class="feature-row" data-feature="Images"><span class="feature-icon">🎨</span><span>Images<div class="feature-desc">Create and edit</div></span></button>
-  <button class="feature-row" data-feature="Music"><span class="feature-icon">🎵</span><span>Music<div class="feature-desc">Make audio tracks</div></span></button>
-  <button class="feature-row" data-feature="Canvas"><span class="feature-icon">▣</span><span>Canvas<div class="feature-desc">Code, write or make slides</div></span></button>
-  <button class="feature-row" data-feature="Deep Research"><span class="feature-icon">◎</span><span>Deep Research<div class="feature-desc">Get detailed reports</div></span></button>
-  <button class="feature-row" data-feature="Guided Learning"><span class="feature-icon">📖</span><span>Guided Learning<div class="feature-desc">Get step-by-step help</div></span></button>
- </div>
+
+<section id="featurePanel" aria-label="More features">
+  <div class="handle"></div>
+
+  <div class="feature-grid">
+    <button class="feature-tile" data-feature="Photos">
+      <span class="emoji">🖼️</span><span>Photos</span>
+    </button>
+    <button class="feature-tile" data-feature="Camera">
+      <span class="emoji">📸</span><span>Camera</span>
+    </button>
+    <button class="feature-tile" data-feature="Avatar">
+      <span class="emoji">😊</span><span>Avatar</span>
+    </button>
+  </div>
+
+  <div class="feature-list">
+    <button class="feature-row" data-feature="Images">
+      <span class="feature-icon">🎨</span>
+      <span><div class="feature-name">Images</div><div class="feature-description">Create and edit</div></span>
+    </button>
+    <button class="feature-row" data-feature="Music">
+      <span class="feature-icon">🎵</span>
+      <span><div class="feature-name">Music</div><div class="feature-description">Make audio tracks</div></span>
+    </button>
+    <button class="feature-row" data-feature="Canvas">
+      <span class="feature-icon">▣</span>
+      <span><div class="feature-name">Canvas</div><div class="feature-description">Code, write or make slides</div></span>
+    </button>
+    <button class="feature-row" data-feature="Deep Research">
+      <span class="feature-icon">◎</span>
+      <span><div class="feature-name">Deep Research</div><div class="feature-description">Get detailed reports</div></span>
+    </button>
+    <button class="feature-row" data-feature="Guided Learning">
+      <span class="feature-icon">📖</span>
+      <span><div class="feature-name">Guided Learning</div><div class="feature-description">Get step-by-step help</div></span>
+    </button>
+  </div>
 </section>
 
-<div class="composer-area">
- <div class="composer">
-  <div id="attached"></div>
-  <textarea id="question" rows="1" placeholder="AI Sameerని అడగండి..." aria-label="మీ ప్రశ్న"></textarea>
-  <div class="composer-row">
-   <div class="left-actions">
-    <button class="composer-btn" id="plusBtn" aria-label="Open features">＋</button>
-    <button class="composer-btn" id="micBtn" aria-label="Voice input">🎙</button>
-    <button class="composer-btn" id="shareBtn" aria-label="Share">↗</button>
-   </div>
-   <button id="sendBtn" aria-label="Send">➤</button>
+<div class="composer-wrap">
+  <div class="composer">
+    <div id="attached"></div>
+    <textarea id="question" rows="1" placeholder="Ask AI Sameer..." aria-label="Ask AI Sameer"></textarea>
+    <div class="composer-row">
+      <div class="composer-left">
+        <button class="composer-button" id="plusButton" aria-label="More features">＋</button>
+        <button class="composer-button" id="micButton" aria-label="Voice typing">🎙</button>
+      </div>
+      <button id="sendButton" aria-label="Send message">➤</button>
+      <button id="voiceButton" aria-label="Voice mode" title="Voice mode">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect x="3" y="10" width="3" height="8" rx="1.5" fill="currentColor"/>
+          <rect x="9" y="5" width="3" height="18" rx="1.5" fill="currentColor"/>
+          <rect x="15" y="9" width="3" height="10" rx="1.5" fill="currentColor"/>
+          <rect x="21" y="7" width="3" height="14" rx="1.5" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
   </div>
- </div>
 </div>
 
 <input id="fileInput" type="file" accept="image/*" multiple>
@@ -143,210 +571,269 @@ main{max-width:850px;margin:auto;padding:20px 15px 170px}
 <script>
 "use strict";
 
-/* మీ ఇప్పటికే ఉన్న Cloudflare Worker URL */
-const API_URL="https://ai-sameer-api.shaikmahammed757.workers.dev";
+/*
+ IMPORTANT:
+ Keep your real Cloudflare Worker URL here.
+ The address below is the Worker address used in the previous version.
+ If your actual Worker URL is different, replace it with that exact URL.
+*/
+const API_URL = "https://ai-sameer-api.shaikmahammed757.workers.dev";
 
-const $=id=>document.getElementById(id);
-const panel=$("featurePanel"),overlay=$("overlay");
-const sideMenu=$("sideMenu"),sideOverlay=$("sideOverlay");
-const question=$("question"),messages=$("messages");
-let chatHistory=[],savedChats=[],files=[],busy=false,lastAnswer="";
+const $ = id => document.getElementById(id);
 
-function toast(text){
- const t=$("toast");t.textContent=text;t.style.display="block";
- clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display="none",3200);
-}
-function toggleFeatures(force){
- const open=typeof force==="boolean"?force:!panel.classList.contains("open");
- panel.classList.toggle("open",open);overlay.classList.toggle("open",open);
-}
-function toggleMenu(force){
- const open=typeof force==="boolean"?force:!sideMenu.classList.contains("open");
- sideMenu.classList.toggle("open",open);sideOverlay.classList.toggle("open",open);
-}
-$("plusBtn").addEventListener("click",()=>toggleFeatures());
-overlay.addEventListener("click",()=>toggleFeatures(false));
-$("menuBtn").addEventListener("click",()=>toggleMenu());
-$("closeMenu").addEventListener("click",()=>toggleMenu(false));
-sideOverlay.addEventListener("click",()=>toggleMenu(false));
+const question = $("question");
+const messages = $("messages");
+const welcome = $("welcome");
+const featurePanel = $("featurePanel");
+const overlay = $("overlay");
+const sideMenu = $("sideMenu");
+const sideOverlay = $("sideOverlay");
 
-function resetChat(){
- if(chatHistory.length)savedChats.unshift([...chatHistory]);
- chatHistory=[];files=[];lastAnswer="";
- messages.replaceChildren();$("attached").textContent="";
- $("chatSearch").value="";$("chatSearch").style.display="none";
- $("chatHistory").replaceChildren();
- $("welcome").style.display="flex";question.value="";
- toggleMenu(false);toggleFeatures(false);question.focus();
-}
-$("newBtn").addEventListener("click",resetChat);
-$("sideNew").addEventListener("click",resetChat);
+let chat = [];
+let savedChats = [];
+let selectedFiles = [];
+let busy = false;
+let lastAnswer = "";
+let voiceMode = false;
+let recognition = null;
 
-$("searchBtn").addEventListener("click",()=>{
- const s=$("chatSearch");s.style.display=s.style.display==="block"?"none":"block";
- if(s.style.display==="block")s.focus();
-});
-$("chatSearch").addEventListener("input",()=>{
- const term=$("chatSearch").value.toLowerCase();
- const list=$("chatHistory");list.replaceChildren();
- savedChats.forEach((chat,i)=>{
-  const first=chat.find(m=>m.role==="user")?.content||"చాట్";
-  if(!first.toLowerCase().includes(term))return;
-  const b=document.createElement("button");b.className="history-item";b.textContent=first;
-  b.onclick=()=>{chatHistory=chat.slice();messages.replaceChildren();chatHistory.forEach(m=>addMessage(m.role==="user"?"user":"assistant",m.content));$("welcome").style.display="none";toggleMenu(false);};
-  list.appendChild(b);
- });
-});
+function showToast(message) {
+  const el = $("toast");
+  el.textContent = message;
+  el.style.display = "block";
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => el.style.display = "none", 3200);
+}
 
-$("sideImages").addEventListener("click",()=>{
- toggleMenu(false);
- question.value="నాకు ఒక AI చిత్రం సృష్టించడానికి మంచి prompt తయారు చేయండి.";
- question.focus();
- toast("Images ఫీచర్ కోసం ప్రశ్న సిద్ధమైంది. నిజమైన చిత్రం తయారీకి image API అవసరం.");
-});
+function toggleFeatures(force) {
+  const open = typeof force === "boolean"
+    ? force : !featurePanel.classList.contains("open");
+  featurePanel.classList.toggle("open", open);
+  overlay.classList.toggle("open", open);
+}
 
-function addMessage(role,text){
- const el=document.createElement("div");
- if(role==="user"){
-  el.className="user-msg";el.textContent=text;
- }else{
-  el.className="answer";
-  const body=document.createElement("div");body.className="answer-text";body.textContent=text;
-  el.appendChild(body);el.body=body;
-  const actions=document.createElement("div");actions.className="answer-actions";
-  const make=(icon,label,fn)=>{
-   const b=document.createElement("button");b.textContent=icon;b.title=label;b.setAttribute("aria-label",label);
-   b.onclick=fn;actions.appendChild(b);
-  };
-  make("📋","Copy",()=>copy(body.textContent));
-  make("👍","Like",()=>toast("ధన్యవాదాలు!"));
-  make("👎","Dislike",()=>toast("మీ అభిప్రాయానికి ధన్యవాదాలు."));
-  make("🔊","Read aloud",()=>speak(body.textContent));
-  make("📤","Share",()=>share(body.textContent));
-  el.appendChild(actions);
- }
- messages.appendChild(el);el.scrollIntoView({behavior:"smooth",block:"nearest"});return el;
+function toggleSideMenu(force) {
+  const open = typeof force === "boolean"
+    ? force : !sideMenu.classList.contains("open");
+  sideMenu.classList.toggle("open", open);
+  sideOverlay.classList.toggle("open", open);
 }
-async function copy(text){
- try{await navigator.clipboard.writeText(text);toast("కాపీ అయింది.");}
- catch(e){toast("కాపీ చేయడానికి సమాధానాన్ని నొక్కి సెలెక్ట్ చేయండి.");}
+
+$("plusButton").addEventListener("click", () => toggleFeatures());
+overlay.addEventListener("click", () => toggleFeatures(false));
+$("menuButton").addEventListener("click", () => toggleSideMenu());
+$("closeMenuButton").addEventListener("click", () => toggleSideMenu(false));
+sideOverlay.addEventListener("click", () => toggleSideMenu(false));
+
+function newChat() {
+  if (chat.length) savedChats.unshift(chat.slice());
+  chat = [];
+  lastAnswer = "";
+  selectedFiles = [];
+  messages.replaceChildren();
+  $("attached").style.display = "none";
+  $("attached").textContent = "";
+  question.value = "";
+  question.style.height = "49px";
+  welcome.style.display = "flex";
+  renderChatHistory();
+  toggleFeatures(false);
+  toggleSideMenu(false);
+  updateComposer();
+  question.focus();
 }
-async function share(text){
- try{
-  if(navigator.share)await navigator.share({title:"AI Sameer",text});
-  else{await copy(text);toast("సమాధానం కాపీ అయింది.");}
- }catch(e){if(e.name!=="AbortError")toast("షేర్ చేయలేకపోయాం.");}
-}
-$("shareBtn").addEventListener("click",()=>{
- const text=lastAnswer||question.value.trim();
- if(text)share(text);else toast("ముందుగా ఒక ప్రశ్న అడగండి.");
-});
-function speak(text){
- if(!("speechSynthesis" in window)){toast("ఈ బ్రౌజర్‌లో వాయిస్ అందుబాటులో లేదు.");return;}
- speechSynthesis.cancel();
- const u=new SpeechSynthesisUtterance(text);u.lang="te-IN";speechSynthesis.speak(u);
-}
-$("micBtn").addEventListener("click",()=>{
- const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
- if(!SR){toast("వాయిస్ టైపింగ్‌కు Chrome మైక్ అనుమతి అవసరం.");return;}
- const r=new SR();r.lang="te-IN";
- r.onresult=e=>{question.value+=(question.value?" ":"")+e.results[0][0].transcript;question.focus();};
- r.onerror=()=>toast("మైక్రోఫోన్ అనుమతిని తనిఖీ చేయండి.");
- try{r.start();}catch(e){toast("మైక్రోఫోన్ ప్రారంభం కాలేదు.");}
+
+$("newChatButton").addEventListener("click", newChat);
+$("sideNewChat").addEventListener("click", newChat);
+
+$("searchChatsButton").addEventListener("click", () => {
+  const el = $("chatSearch");
+  el.style.display = el.style.display === "block" ? "none" : "block";
+  if (el.style.display === "block") el.focus();
 });
 
-function addFiles(list){
- for(const f of Array.from(list||[])){
-  if(!f.type.startsWith("image/"))continue;
-  if(f.size>5*1024*1024){toast("ఫోటో 5 MB కంటే చిన్నదిగా ఉండాలి.");continue;}
-  if(files.length>=4){toast("గరిష్ఠంగా 4 ఫోటోలు ఎంచుకోండి.");break;}
-  files.push(f);
- }
- $("attached").textContent=files.length?"📎 "+files.map(f=>f.name).join(", ")+"  (తొలగించడానికి నొక్కండి)":"";
-}
-$("attached").addEventListener("click",()=>{files=[];$("attached").textContent="";});
-$("fileInput").addEventListener("change",e=>{addFiles(e.target.files);e.target.value="";});
-$("cameraInput").addEventListener("change",e=>{addFiles(e.target.files);e.target.value="";});
+function renderChatHistory() {
+  const list = $("chatHistory");
+  const term = $("chatSearch").value.toLowerCase();
+  list.replaceChildren();
 
-const prompts={
- Avatar:"నా కోసం ఒక Avatar తయారు చేయడానికి సహాయం చేయండి.",
- Images:"నాకు ఒక AI చిత్రం సృష్టించడానికి prompt తయారు చేయండి.",
- Music:"నాకు సంగీత ట్రాక్ సృష్టించడానికి prompt తయారు చేయండి.",
- Canvas:"నాకు కోడ్, రైటింగ్ లేదా స్లైడ్స్ తయారు చేయడంలో సహాయం చేయండి.",
- "Deep Research":"ఈ అంశంపై లోతైన పరిశోధన చేసి, ముఖ్యమైన వివరాలు మరియు మూలాలను వివరించండి.",
- "Guided Learning":"ఈ అంశాన్ని నాకు దశలవారీగా నేర్పించండి."
-};
-document.querySelectorAll("[data-feature]").forEach(btn=>{
- btn.addEventListener("click",()=>{
-  const f=btn.dataset.feature;toggleFeatures(false);
-  if(f==="Photos"){$("fileInput").click();return;}
-  if(f==="Camera"){$("cameraInput").click();return;}
-  question.value=prompts[f]||("నాకు "+f+" గురించి సహాయం చేయండి.");
-  question.focus();toast(f+" కోసం ప్రశ్న సిద్ధమైంది. పంపడానికి ➤ నొక్కండి.");
- });
-});
+  savedChats.forEach((saved, index) => {
+    const first = saved.find(m => m.role === "user")?.content || "New chat";
+    if (!first.toLowerCase().includes(term)) return;
 
-function getAnswer(data){
- if(typeof data==="string")return data;
- if(!data||typeof data!=="object")return "";
- if(typeof data.answer==="string")return data.answer;
- if(typeof data.reply==="string")return data.reply;
- if(typeof data.output_text==="string")return data.output_text;
- if(data.choices?.[0]?.message?.content)return data.choices[0].message.content;
- if(data.error)return typeof data.error==="string"?data.error:data.error.message||JSON.stringify(data.error);
- return "";
-}
-async function askAI(historyToSend){
- let res,raw,data;
- try{
-  res=await fetch(API_URL,{
-   method:"POST",headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({messages:historyToSend})
+    const btn = document.createElement("button");
+    btn.className = "history-item";
+    btn.textContent = first;
+    btn.addEventListener("click", () => {
+      chat = saved.slice();
+      messages.replaceChildren();
+      chat.forEach(m => addMessage(m.role, m.content));
+      welcome.style.display = "none";
+      toggleSideMenu(false);
+      updateComposer();
+    });
+    list.appendChild(btn);
   });
- }catch(e){throw new Error("AI సర్వర్‌కు కనెక్ట్ కాలేదు. Cloudflare Worker URL మరియు ఇంటర్నెట్‌ను తనిఖీ చేయండి.");}
- raw=await res.text();
- try{data=JSON.parse(raw);}catch(e){data={message:raw};}
- if(!res.ok){
-  const detail=getAnswer(data)||data.message||("HTTP "+res.status);
-  if(/no credits remaining|insufficient_quota/i.test(detail))throw new Error("OpenAI API క్రెడిట్లు అయిపోయాయి. API Billingను తనిఖీ చేయండి.");
-  throw new Error("AI సర్వర్ లోపం ("+res.status+"): "+detail);
- }
- const answer=getAnswer(data);
- if(!answer)throw new Error("Worker నుంచి సమాధానం రాలేదు. Worker కోడ్‌లో API request/response ఫార్మాట్‌ను తనిఖీ చేయాలి.");
- return answer;
 }
-async function sendMessage(){
- if(busy)return;
- const text=question.value.trim();
- if(!text&&!files.length){toast("మీ ప్రశ్నను టైప్ చేయండి.");return;}
- if(files.length){toast("ఫోటోలను AIతో విశ్లేషించడానికి Workerలో image API మద్దతు అవసరం.");return;}
- chatHistory.push({role:"user",content:text});
- addMessage("user",text);$("welcome").style.display="none";
- question.value="";question.style.height="47px";
- const waiting=addMessage("assistant","సమాధానం సిద్ధం చేస్తున్నాను…");
- busy=true;$("sendBtn").disabled=true;
- try{
-  const answer=await askAI(chatHistory);
-  chatHistory.push({role:"assistant",content:answer});lastAnswer=answer;
-  waiting.body.textContent=answer;
- }catch(e){
-  waiting.body.textContent="క్షమించండి. "+(e.message||"సమాధానం పొందలేకపోయాం.");
-  waiting.body.style.color="#ffb9b9";
-  const retry=document.createElement("button");
-  retry.textContent="మళ్లీ ప్రయత్నించండి";
-  retry.style.cssText="display:block;margin-top:12px;padding:10px 15px;border:1px solid #444;border-radius:20px;background:#252525;color:white";
-  retry.onclick=()=>{waiting.remove();chatHistory.pop();question.value=text;sendMessage();};
-  waiting.appendChild(retry);
- }finally{busy=false;$("sendBtn").disabled=false;}
+$("chatSearch").addEventListener("input", renderChatHistory);
+
+function addMessage(role, text) {
+  if (role === "user") {
+    const el = document.createElement("div");
+    el.className = "user-message";
+    el.textContent = text;
+    messages.appendChild(el);
+    return el;
+  }
+
+  const el = document.createElement("article");
+  el.className = "answer";
+
+  const body = document.createElement("div");
+  body.className = "answer-text";
+  body.textContent = text;
+  el.appendChild(body);
+
+  const actions = document.createElement("div");
+  actions.className = "answer-actions";
+
+  function action(icon, label, callback) {
+    const btn = document.createElement("button");
+    btn.textContent = icon;
+    btn.title = label;
+    btn.setAttribute("aria-label", label);
+    btn.addEventListener("click", callback);
+    actions.appendChild(btn);
+  }
+
+  action("📋", "Copy", () => copyText(body.textContent));
+  action("👍", "Like", () => showToast("Thanks for your feedback!"));
+  action("👎", "Dislike", () => showToast("Thanks for your feedback."));
+  action("🔊", "Read aloud", () => speakText(body.textContent));
+  action("📤", "Share", () => shareText(body.textContent));
+
+  el.appendChild(actions);
+  el.body = body;
+  messages.appendChild(el);
+  el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  return el;
 }
-$("sendBtn").addEventListener("click",sendMessage);
-question.addEventListener("keydown",e=>{
- if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMessage();}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast("Copied.");
+  } catch {
+    showToast("Clipboard access is unavailable in this browser.");
+  }
+}
+
+async function shareText(text) {
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: "AI Sameer", text });
+    } else {
+      await copyText(text);
+    }
+  } catch (err) {
+    if (err.name !== "AbortError") showToast("Unable to share right now.");
+  }
+}
+
+function speakText(text) {
+  if (!("speechSynthesis" in window)) {
+    showToast("Speech playback is not supported in this browser.");
+    return;
+  }
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-IN";
+  speechSynthesis.speak(utterance);
+}
+
+function updateComposer() {
+  const hasText = question.value.trim().length > 0;
+  $("sendButton").classList.toggle("visible", hasText);
+  $("voiceButton").style.display = hasText ? "none" : "flex";
+}
+
+question.addEventListener("input", () => {
+  question.style.height = "49px";
+  question.style.height = Math.min(question.scrollHeight, 135) + "px";
+  updateComposer();
 });
-question.addEventListener("input",()=>{
- question.style.height="47px";
- question.style.height=Math.min(question.scrollHeight,130)+"px";
+
+question.addEventListener("keydown", event => {
+  if (event.key === "Enter" && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
 });
-</script>
-</body>
-</html>
+
+function startSpeechRecognition(onText) {
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    showToast("Voice typing is not supported. Try Chrome and allow microphone access.");
+    return;
+  }
+
+  try {
+    if (recognition) recognition.abort();
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-IN";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onresult = event => {
+      const spoken = event.results[0][0].transcript;
+      onText(spoken);
+    };
+
+    recognition.onerror = () => {
+      $("voiceButton").classList.remove("listening");
+      showToast("Microphone unavailable. Check browser permissions.");
+    };
+
+    recognition.onend = () => {
+      $("voiceButton").classList.remove("listening");
+      if (voiceMode) voiceMode = false;
+    };
+
+    recognition.start();
+    return true;
+  } catch {
+    showToast("Could not start the microphone.");
+    return false;
+  }
+}
+
+$("micButton").addEventListener("click", () => {
+  startSpeechRecognition(text => {
+    question.value = (question.value.trim() ? question.value.trim() + " " : "") + text;
+    question.dispatchEvent(new Event("input"));
+    question.focus();
+  });
+});
+
+$("voiceButton").addEventListener("click", () => {
+  voiceMode = true;
+  $("voiceButton").classList.add("listening");
+  showToast("Listening... Speak your question.");
+
+  const started = startSpeechRecognition(text => {
+    question.value = text;
+    question.dispatchEvent(new Event("input"));
+    voiceMode = false;
+    $("voiceButton").classList.remove("listening");
+    sendMessage(true);
+  });
+
+  if (!started) {
+    voiceMode = false;
+    $("voiceButton").classList.remove("listening");
+  }
+});
+
+function addSelectedFiles(file
