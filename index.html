@@ -524,7 +524,6 @@ main {
 (function(){
 "use strict";
 
-/* Cloudflare Worker URL */
 const WORKER_URL = "https://ai-sameer-api.shaikmahammed757.workers.dev/";
 
 const $ = id => document.getElementById(id);
@@ -704,7 +703,6 @@ async function sendMessage(overrideText) {
 
     let reply = data.reply || data.answer || data.response || data.text;
 
-    /* Gemini-style response support */
     if (!reply && data.candidates && data.candidates[0]) {
       const parts = data.candidates[0].content &&
                     data.candidates[0].content.parts;
@@ -873,4 +871,7 @@ $("fileInput").onchange = e => {
       "ఎంచుకున్న ఫైళ్లు: " + selectedFiles.map(f => f.name).join(", ");
     toast(selectedFiles.length + " ఫైల్(లు) ఎంచుకున్నారు");
   }
-  e.ta
+};
+
+// Menu Overlay click handlers
+overlay.addEventListener("click", e => 
