@@ -521,9 +521,6 @@ main {
 <div id="toast"></div>
 
 <script>
-(function(){
-"use strict";
-
 const WORKER_URL = "https://ai-sameer-api.shaikmahammed757.workers.dev/";
 
 const $ = id => document.getElementById(id);
@@ -542,6 +539,7 @@ let chatHistory = [];
 
 function toast(text) {
   const el = $("toast");
+  if (!el) return;
   el.textContent = text;
   el.style.display = "block";
   clearTimeout(toast.timer);
@@ -549,8 +547,8 @@ function toast(text) {
 }
 
 function hideMenus() {
-  overlay.classList.remove("show");
-  plusOverlay.classList.remove("show");
+  if (overlay) overlay.classList.remove("show");
+  if (plusOverlay) plusOverlay.classList.remove("show");
 }
 
 function showModal(title, html, callback, label) {
@@ -874,45 +872,5 @@ $("fileInput").onchange = e => {
 };
 
 // Menu Overlay click handlers
-overlay.addEventListener("click", e => 
-    if (e.target === overlay) hideMenus();
-});
-
-plusOverlay.addEventListener("click", e => {
-  if (e.target === plusOverlay) hideMenus();
-});
-
-document.querySelectorAll(".drawer .menuitem").forEach(btn => {
-  btn.onclick = () => {
-    const action = btn.dataset.action;
-    hideMenus();
-
-    if (action === "new") {
-      newChat();
-    } else if (action === "photo" || action === "document") {
-      $("fileInput").click();
-    } else if (action === "camera") {
-      $("cameraInput").click();
-    } else if (action === "close" || action === "closePlus") {
-      // just close
-    } else {
-      toast(btn.textContent.trim() + " ఫీచర్ త్వరలో వస్తుంది!");
-    }
-  };
-});
-
-// Click outside drawers to close
-document.addEventListener("click", e => {
-  if (overlay.classList.contains("show") && !e.target.closest(".drawer") && !e.target.closest("#menuBtn")) {
-    overlay.classList.remove("show");
-  }
-  if (plusOverlay.classList.contains("show") && !e.target.closest(".drawer") && !e.target.closest("#plusBtn")) {
-    plusOverlay.classList.remove("show");
-  }
-});
-
-})();
-</script>
-</body>
-</html>
-
+if (overlay) {
+  o
