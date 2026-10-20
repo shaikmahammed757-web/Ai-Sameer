@@ -8,59 +8,97 @@
         body {
             margin: 0;
             padding: 0;
-            background: #111;
+            background: #0f172a;
             color: #fff;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
         }
         header {
-            background: #ff9800;
-            padding: 15px;
-            font-size: 20px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            padding: 18px;
+            font-size: 22px;
             font-weight: bold;
             color: #000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .container {
-            padding: 20px;
+            padding: 15px;
+            max-width: 400px;
+            margin: auto;
         }
         .wallet-box {
-            background: #222;
-            border: 2px solid #ff9800;
-            padding: 10px;
-            margin: 10px auto;
-            width: 80%;
-            border-radius: 8px;
+            background: #1e293b;
+            border: 2px solid #f59e0b;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 12px;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.05);
         }
-        .game-board {
-            width: 300px;
-            height: 300px;
-            margin: 20px auto;
-            background: #333;
-            border: 3px solid #fff;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 5px;
-            padding: 5px;
+        .wallet-box p {
+            margin: 5px 0;
+            font-size: 16px;
         }
-        .tile {
-            background: #ff5722;
+        .balance-text {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .game-screen {
+            background: #1e293b;
+            border: 3px solid #3b82f6;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .bike-blueprint {
+            width: 100%;
+            height: 180px;
+            background: #090d16;
+            border: 2px dashed #60a5fa;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
+            font-size: 18px;
+            color: #93c5fd;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
         }
-        button {
-            background: #4caf50;
+        .parts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .part-card {
+            background: #334155;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px 5px;
+            font-size: 28px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .part-card:active {
+            transform: scale(0.95);
+            background: #475569;
+        }
+        .action-btn {
+            background: #22c55e;
             color: white;
             border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 10px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(34,197,94,0.3);
+        }
+        .action-btn:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
@@ -70,55 +108,65 @@
 
     <div class="container">
         <div class="wallet-box">
-            <p>Wallet Balance: <span id="balance">₹0</span></p>
-            <p style="font-size: 12px; color: #aaa;">Minimum Withdrawal: ₹1000</p>
+            <p>Wallet Balance: <span class="balance-text" id="balance">₹0</span></p>
+            <p style="font-size: 13px; color: #94a3b8;">Min. Withdrawal Limit: <b>₹1000</b></p>
         </div>
 
-        <h3>Level: <span id="level">1</span></h3>
-        <p>Fix the bike parts in order!</p>
+        <div class="game-screen">
+            <h3>Level: <span id="level">1</span> - Fix Bike Parts</h3>
+            <p style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px;">Tap the correct tools/parts to assemble the bike blueprint!</p>
+            
+            <div class="bike-blueprint" id="blueprint">
+                🔧 Blueprint Area (Assemble Here)
+            </div>
 
-        <div class="game-board" id="board">
-            <!-- Game Tiles generated via JS -->
+            <div class="parts-grid" id="partsGrid">
+                <!-- Dynamic Bike Parts -->
+            </div>
+
+            <button class="action-btn" onclick="completeLevel()">Fix & Earn ₹50</button>
         </div>
-
-        <button onclick="nextLevel()">Complete Level</button>
     </div>
 
     <script>
         let balance = 0;
         let level = 1;
+        const bikeParts = ["🛞", "⚙️", "🛠️", "🔩", "⛽", "🪞", "🔌", "⛓️", "🚲"];
 
-        function updateGame() {
+        function loadPuzzle() {
             document.getElementById("balance").innerText = "₹" + balance;
             document.getElementById("level").innerText = level;
             
-            const board = document.getElementById("board");
-            board.innerHTML = "";
+            const grid = document.getElementById("partsGrid");
+            grid.innerHTML = "";
             
-            // Random puzzle generation for infinite levels
-            let tiles = [1, 2, 3, 4, 5, 6, 7, 8, "🔧"];
-            tiles.sort(() => Math.random() - 0.5);
-
-            tiles.forEach(tile => {
+            // Randomize parts for puzzle feel
+            let shuffled = [...bikeParts].sort(() => Math.random() - 0.5);
+            
+            shuffled.slice(0, 6).forEach(part => {
                 let div = document.createElement("div");
-                div.className = "tile";
-                div.innerText = tile;
-                board.appendChild(div);
+                div.className = "part-card";
+                div.innerText = part;
+                div.onclick = function() {
+                    document.getElementById("blueprint").innerHTML = `<span style="font-size:40px;">${part}</span><br>Part Fitted Successfully!`;
+                };
+                grid.appendChild(div);
             });
         }
 
-        function nextLevel() {
-            balance += 50; // Earn ₹50 per level
+        function completeLevel() {
+            balance += 50; 
             level += 1;
-            alert("Level Completed! You earned ₹50.");
             
             if(balance >= 1000) {
-                alert("Congratulations! You reached ₹1000. You can withdraw now.");
+                alert("🎉 Congratulations! You reached ₹1000. Your withdrawal request is unlocked!");
+            } else {
+                alert("✨ Great job! Level Completed. ₹50 added to your wallet.");
             }
-            updateGame();
+            loadPuzzle();
         }
 
-        updateGame();
+        loadPuzzle();
     </script>
 </body>
 </html>
