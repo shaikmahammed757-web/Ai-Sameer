@@ -1,876 +1,124 @@
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#020817">
-<title>AI Sameer</title>
-
-<style>
-:root {
-  --bg: #020817;
-  --panel: #071a37;
-  --blue: #087cff;
-  --text: #edf5ff;
-  --muted: #9bb9e8;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: radial-gradient(ellipse at 50% 20%, #103c78, #03132e 52%, #020817 90%);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-button, textarea, input, select {
-  font: inherit;
-}
-
-button {
-  color: inherit;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button:disabled {
-  opacity: .55;
-  cursor: wait;
-}
-
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  height: 64px;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  background: #020b1df5;
-  border-bottom: 1px solid #153968;
-}
-
-.iconbtn, .brand {
-  background: #061d3e;
-  border: 1px solid #168bff;
-  box-shadow: 0 0 14px #087cff22;
-}
-
-.iconbtn {
-  width: 43px;
-  height: 43px;
-  border-radius: 14px;
-  font-size: 22px;
-}
-
-.brand {
-  padding: 10px 13px;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-main {
-  max-width: 850px;
-  margin: auto;
-  padding: 14px 12px 180px;
-}
-
-.hero {
-  text-align: center;
-  padding: 28px 0 20px;
-}
-
-.mascot {
-  position: relative;
-  width: 150px;
-  height: 150px;
-  margin: auto;
-  display: grid;
-  place-items: center;
-  border: 2px solid #078cff;
-  border-radius: 50%;
-  background: radial-gradient(circle, #174d91, #061b3b 75%);
-  box-shadow: 0 0 28px #087cff80;
-}
-
-.banana {
-  font-size: 78px;
-  filter: drop-shadow(0 0 12px #ffce36);
-}
-
-.thumb {
-  position: absolute;
-  right: 0;
-  bottom: 18px;
-  font-size: 29px;
-}
-
-.hero h1 {
-  margin: 17px 0 7px;
-  font-size: clamp(29px, 6vw, 43px);
-  color: #8dbbff;
-}
-
-.hero p {
-  color: #b6d5ff;
-}
-
-#conversation {
-  margin-top: 18px;
-}
-
-.msg {
-  padding: 13px;
-  margin: 12px 0;
-  border-radius: 16px;
-  line-height: 1.65;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.user {
-  margin-left: 8%;
-  background: #0b3261;
-  border: 1px solid #1859a1;
-}
-
-.bot {
-  margin-right: 2%;
-  background: #071a34;
-  border: 1px solid #174a80;
-}
-
-.msghead {
-  color: #91bfff;
-  font-size: 13px;
-  margin-bottom: 7px;
-}
-
-.msgtools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.msgtools button {
-  border: 0;
-  background: transparent;
-  color: #9fc4ff;
-  padding: 5px;
-}
-
-.chatbar {
-  position: fixed;
-  z-index: 20;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 9px 10px calc(8px + env(safe-area-inset-bottom));
-  background: linear-gradient(180deg, #020b1d00, #020b1dfc 22%);
-}
-
-.composer {
-  max-width: 850px;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 7px;
-  border: 1px solid #078cff;
-  border-radius: 28px;
-  background: #061a37;
-  box-shadow: 0 0 18px #087cff35;
-}
-
-.smallbtn {
-  flex: 0 0 36px;
-  width: 36px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 50%;
-  background: #073779;
-  font-size: 21px;
-}
-
-#message {
-  flex: 1;
-  min-width: 0;
-  min-height: 38px;
-  max-height: 110px;
-  resize: none;
-  padding: 10px 3px;
-  background: transparent;
-  color: white;
-  border: 0;
-  outline: none;
-}
-
-#message::placeholder {
-  color: #91b4e9;
-}
-
-#send {
-  background: #086cff;
-}
-
-.actions {
-  max-width: 500px;
-  margin: 5px auto 0;
-  display: flex;
-  justify-content: space-around;
-  gap: 2px;
-}
-
-.actions button {
-  padding: 5px 2px;
-  border: 0;
-  background: transparent;
-  color: #9fc4ff;
-  font-size: 11px;
-}
-
-.actions span {
-  display: block;
-  margin-bottom: 2px;
-  font-size: 18px;
-}
-
-.overlay, .modal {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  display: none;
-  background: #000b;
-}
-
-.overlay.show {
-  display: block;
-}
-
-.drawer {
-  position: absolute;
-  top: 9px;
-  bottom: 9px;
-  left: 9px;
-  width: min(320px, 88vw);
-  overflow: auto;
-  padding: 14px;
-  border: 1px solid #168bff;
-  border-radius: 18px;
-  background: #04152f;
-}
-
-.drawer.right {
-  left: auto;
-  right: 9px;
-}
-
-.drawer h3 {
-  margin: 8px 7px 15px;
-  color: #8fc3ff;
-}
-
-.menuitem {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 9px;
-  border: 0;
-  border-radius: 11px;
-  background: transparent;
-  text-align: left;
-  color: #e4efff;
-}
-
-.menuitem:active, .menuitem:hover {
-  background: #0b2b53;
-}
-
-.mi {
-  width: 27px;
-  text-align: center;
-  font-size: 20px;
-}
-
-.modal {
-  z-index: 50;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-
-.modal.show {
-  display: flex;
-}
-
-.modalbox {
-  width: min(440px, 100%);
-  max-height: 85vh;
-  overflow: auto;
-  padding: 19px;
-  border: 1px solid #138cff;
-  border-radius: 20px;
-  background: #061833;
-}
-
-.modalbox h2 {
-  margin: 0 0 12px;
-  color: #9ecbff;
-  font-size: 21px;
-}
-
-.modalbox p {
-  color: #b6cfee;
-  line-height: 1.6;
-}
-
-.modalbox input, .modalbox textarea, .modalbox select {
-  width: 100%;
-  padding: 12px;
-  margin: 7px 0;
-  background: #021027;
-  color: white;
-  border: 1px solid #20528a;
-  border-radius: 10px;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 9px;
-  margin-top: 13px;
-}
-
-.primary, .secondary {
-  padding: 11px 14px;
-  border: 1px solid #168bff;
-  border-radius: 11px;
-}
-
-.primary {
-  background: #086cff;
-}
-
-.secondary {
-  background: #0a2344;
-}
-
-.option {
-  width: 100%;
-  margin: 7px 0;
-  padding: 12px;
-  text-align: left;
-  border: 1px solid #174a80;
-  border-radius: 12px;
-  background: #081e3c;
-  color: white;
-}
-
-.option small {
-  display: block;
-  margin-top: 4px;
-  color: #9fc4ed;
-}
-
-#toast {
-  position: fixed;
-  z-index: 70;
-  left: 50%;
-  bottom: 145px;
-  transform: translateX(-50%);
-  display: none;
-  max-width: 90vw;
-  padding: 11px 15px;
-  border: 1px solid #168bff;
-  border-radius: 12px;
-  background: #12335c;
-  color: white;
-  text-align: center;
-}
-
-.hidden {
-  display: none !important;
-}
-
-@media(max-width:620px) {
-  main {
-    padding: 12px 10px 160px;
-  }
-
-  .mascot {
-    width: 140px;
-    height: 140px;
-  }
-
-  .banana {
-    font-size: 72px;
-  }
-
-  .smallbtn {
-    flex-basis: 34px;
-    width: 34px;
-    height: 36px;
-    font-size: 19px;
-  }
-
-  .composer {
-    gap: 4px;
-  }
-
-  .msg {
-    padding: 12px;
-  }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SK MD Bike Puzzle & Earn</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        header {
+            background: #ff9800;
+            padding: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000;
+        }
+        .container {
+            padding: 20px;
+        }
+        .wallet-box {
+            background: #222;
+            border: 2px solid #ff9800;
+            padding: 10px;
+            margin: 10px auto;
+            width: 80%;
+            border-radius: 8px;
+        }
+        .game-board {
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            background: #333;
+            border: 3px solid #fff;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            padding: 5px;
+        }
+        .tile {
+            background: #ff5722;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
 </head>
-
 <body>
 
-<header class="topbar">
-  <button class="iconbtn" id="menuBtn" aria-label="Menu">☰</button>
-  <button class="brand" id="modelBtn">AI Sameer ⌄</button>
-  <button class="iconbtn" id="newBtn" aria-label="New chat">✏️</button>
-</header>
+    <header>SK MD Bike Puzzle & Earn</header>
 
-<main>
-  <section class="hero" id="home">
-    <div class="mascot">
-      <div class="banana">🍌</div>
-      <div class="thumb">👍</div>
+    <div class="container">
+        <div class="wallet-box">
+            <p>Wallet Balance: <span id="balance">₹0</span></p>
+            <p style="font-size: 12px; color: #aaa;">Minimum Withdrawal: ₹1000</p>
+        </div>
+
+        <h3>Level: <span id="level">1</span></h3>
+        <p>Fix the bike parts in order!</p>
+
+        <div class="game-board" id="board">
+            <!-- Game Tiles generated via JS -->
+        </div>
+
+        <button onclick="nextLevel()">Complete Level</button>
     </div>
-    <h1>Hey Sameer</h1>
-    <p>How can I help you today?</p>
-  </section>
-  <div id="conversation" aria-live="polite"></div>
-</main>
 
-<div class="chatbar">
-  <div class="composer">
-    <button class="smallbtn" id="plusBtn" aria-label="Features">＋</button>
-    <textarea id="message" rows="1" placeholder="Ask AI Sameer..." aria-label="Message"></textarea>
-    <button class="smallbtn" id="micBtn" aria-label="Microphone">🎙️</button>
-    <button class="smallbtn" id="send" aria-label="Send">➤</button>
-  </div>
-  <div class="actions">
-    <button id="copyBtn"><span>▢</span>Copy</button>
-    <button id="likeBtn"><span>👍</span>Like</button>
-    <button id="dislikeBtn"><span>👎</span>Dislike</button>
-    <button id="shareBtn"><span>↗</span>Share</button>
-    <button id="listenBtn"><span>🔊</span>Listen</button>
-  </div>
-</div>
-
-<div class="overlay" id="overlay">
-  <aside class="drawer">
-    <h3>AI Sameer Menu</h3>
-    <button class="menuitem" data-action="new"><span class="mi">＋</span>New Chat</button>
-    <button class="menuitem" data-action="history"><span class="mi">🔎</span>Search Chats</button>
-    <button class="menuitem" data-action="library"><span class="mi">📁</span>Library</button>
-    <button class="menuitem" data-action="settings"><span class="mi">⚙️</span>Settings</button>
-    <button class="menuitem" data-action="help"><span class="mi">❔</span>Help</button>
-    <button class="menuitem" data-action="close"><span class="mi">✕</span>Close</button>
-  </aside>
-</div>
-
-<div class="overlay" id="plusOverlay">
-  <aside class="drawer right">
-    <h3>Explore Features</h3>
-    <button class="menuitem" data-action="photo"><span class="mi">🖼️</span>Photos & Files</button>
-    <button class="menuitem" data-action="camera"><span class="mi">📷</span>Camera</button>
-    <button class="menuitem" data-action="image"><span class="mi">🎨</span>Image Generation</button>
-    <button class="menuitem" data-action="voice"><span class="mi">🎙️</span>Voice Chat</button>
-    <button class="menuitem" data-action="search"><span class="mi">🔎</span>Live Search</button>
-    <button class="menuitem" data-action="study"><span class="mi">🎓</span>Study & Learning</button>
-    <button class="menuitem" data-action="document"><span class="mi">📄</span>Document Analysis</button>
-    <button class="menuitem" data-action="code"><span class="mi">💻</span>Code Assistant</button>
-    <button class="menuitem" data-action="writing"><span class="mi">🖊️</span>Creative Writing</button>
-    <button class="menuitem" data-action="music"><span class="mi">🎵</span>Music Ideas</button>
-    <button class="menuitem" data-action="avatar"><span class="mi">🧐</span>Avatar</button>
-    <button class="menuitem" data-action="youtube"><span class="mi">▶️</span>YouTube</button>
-    <button class="menuitem" data-action="maps"><span class="mi">📍</span>Google Maps</button>
-    <button class="menuitem" data-action="instagram"><span class="mi">📸</span>Instagram</button>
-    <button class="menuitem" data-action="research"><span class="mi">🔬</span>Deep Research</button>
-    <button class="menuitem" data-action="canvas"><span class="mi">📝</span>Canvas</button>
-    <button class="menuitem" data-action="closePlus"><span class="mi">✕</span>Close</button>
-  </aside>
-</div>
-
-<div class="modal" id="modal">
-  <div class="modalbox">
-    <h2 id="modalTitle">AI Sameer</h2>
-    <div id="modalContent"></div>
-    <div class="modal-actions">
-      <button class="primary" id="modalOk">Continue</button>
-      <button class="secondary" id="modalCancel">Close</button>
-    </div>
-  </div>
-</div>
-
-<input type="file" id="fileInput" hidden multiple accept="image/*,.pdf,.txt,.doc,.docx">
-<input type="file" id="cameraInput" hidden accept="image/*" capture="environment">
-<div id="toast"></div>
-
-<script>
-const WORKER_URL = "https://ai-sameer-api.shaikmahammed757.workers.dev/";
-
-const $ = id => document.getElementById(id);
-const conversation = $("conversation");
-const message = $("message");
-const overlay = $("overlay");
-const plusOverlay = $("plusOverlay");
-const modal = $("modal");
-
-let busy = false;
-let currentModel = "Fast";
-let lastReply = "";
-let recognition = null;
-let selectedFiles = [];
-let chatHistory = [];
-
-function toast(text) {
-  const el = $("toast");
-  if (!el) return;
-  el.textContent = text;
-  el.style.display = "block";
-  clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => el.style.display = "none", 3000);
-}
-
-function hideMenus() {
-  if (overlay) overlay.classList.remove("show");
-  if (plusOverlay) plusOverlay.classList.remove("show");
-}
-
-function showModal(title, html, callback, label) {
-  $("modalTitle").textContent = title;
-  $("modalContent").innerHTML = html;
-  $("modalOk").textContent = label || "Continue";
-  modal.classList.add("show");
-
-  $("modalOk").onclick = function() {
-    modal.classList.remove("show");
-    if (callback) callback();
-  };
-}
-
-$("modalCancel").onclick = () => modal.classList.remove("show");
-
-modal.addEventListener("click", e => {
-  if (e.target === modal) modal.classList.remove("show");
-});
-
-function addMessage(text, who) {
-  const div = document.createElement("div");
-  div.className = "msg " + who;
-
-  const head = document.createElement("div");
-  head.className = "msghead";
-  head.textContent = who === "user" ? "You" : "AI Sameer";
-
-  const body = document.createElement("div");
-  body.textContent = text;
-
-  div.append(head, body);
-  conversation.appendChild(div);
-
-  if (who === "bot") {
-    const tools = document.createElement("div");
-    tools.className = "msgtools";
-
-    const copy = document.createElement("button");
-    copy.textContent = "▢ Copy";
-    copy.onclick = () => copyText(body.textContent);
-
-    const listen = document.createElement("button");
-    listen.textContent = "🔊 Listen";
-    listen.onclick = () => speak(body.textContent);
-
-    tools.append(copy, listen);
-    div.appendChild(tools);
-  }
-
-  div.scrollIntoView({behavior:"smooth", block:"nearest"});
-  return {div, body};
-}
-
-function copyText(text) {
-  if (!text) return toast("ముందుగా AI సమాధానం పొందండి");
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text)
-      .then(() => toast("కాపీ అయింది"))
-      .catch(() => fallbackCopy(text));
-  } else {
-    fallbackCopy(text);
-  }
-}
-
-function fallbackCopy(text) {
-  const el = document.createElement("textarea");
-  el.value = text;
-  el.style.position = "fixed";
-  el.style.opacity = "0";
-  document.body.appendChild(el);
-  el.select();
-
-  try {
-    document.execCommand("copy");
-    toast("కాపీ అయింది");
-  } catch (e) {
-    toast("సమాధానాన్ని నొక్కి పట్టుకొని కాపీ చేయండి");
-  }
-
-  el.remove();
-}
-
-function speak(text) {
-  if (!text) return toast("ముందుగా AI సమాధానం పొందండి");
-
-  if (!("speechSynthesis" in window)) {
-    return toast("ఈ బ్రౌజర్‌లో Read Aloud అందుబాటులో లేదు");
-  }
-
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = /[\u0C00-\u0C7F]/.test(text) ? "te-IN" : "en-IN";
-  window.speechSynthesis.speak(utterance);
-}
-
-function setBusy(value) {
-  busy = value;
-  $("send").disabled = value;
-  $("send").textContent = value ? "…" : "➤";
-}
-
-async function sendMessage(overrideText) {
-  let text = (overrideText !== undefined ? overrideText : message.value).trim();
-
-  if (busy) return;
-  if (!text && selectedFiles.length) {
-    text = "నేను ఎంచుకున్న ఫైళ్లను విశ్లేషించడానికి సహాయం చేయండి.";
-  }
-  if (!text) return;
-
-  if (selectedFiles.length) {
-    text += "\n\nఎంచుకున్న ఫైళ్లు: " + selectedFiles.map(f => f.name).join(", ") +
-      "\nగమనిక: ఈ వెర్షన్‌లో ఫైల్ పేర్లు మాత్రమే పంపబడతాయి; ఫైల్ కంటెంట్ స్వయంగా చదవబడదు.";
-    selectedFiles = [];
-  }
-
-  message.value = "";
-  message.style.height = "38px";
-  $("home").style.paddingTop = "8px";
-
-  addMessage(text, "user");
-  chatHistory.push({role:"user", text});
-
-  setBusy(true);
-  const loading = addMessage("సమాధానం తయారు చేస్తున్నాను…", "bot");
-
-  try {
-    const response = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({message:text, model:currentModel})
-    });
-
-    const raw = await response.text();
-    let data;
-
-    try {
-      data = JSON.parse(raw);
-    } catch (e) {
-      throw new Error("Worker JSON సమాధానం ఇవ్వలేదు. Cloudflare Worker కోడ్ చెక్ చేయండి.");
-    }
-
-    if (!response.ok) {
-      throw new Error(data.error || data.message || ("HTTP Error " + response.status));
-    }
-
-    if (data.error) throw new Error(data.error);
-
-    let reply = data.reply || data.answer || data.response || data.text;
-
-    if (!reply && data.candidates && data.candidates[0]) {
-      const parts = data.candidates[0].content &&
-                    data.candidates[0].content.parts;
-      if (parts) reply = parts.map(p => p.text || "").join("\n");
-    }
-
-    if (typeof reply !== "string" || !reply.trim()) {
-      throw new Error("AI సమాధానం ఖాళీగా ఉంది. Worker POST కోడ్‌ను సరిచేయాలి.");
-    }
-
-    loading.body.textContent = reply;
-    lastReply = reply;
-    chatHistory.push({role:"assistant", text:reply});
-
-  } catch (err) {
-    loading.body.textContent =
-      "AI కనెక్షన్ సమస్య: " + (err.message || "Network error") +
-      "\n\n1. Cloudflare Worker Deploy అయిందో చూడండి." +
-      "\n2. GEMINI_API_KEY Secret సరిగ్గా ఉందో చూడండి." +
-      "\n3. Worker POST అభ్యర్థికి AI సమాధానం ఇస్తోందో చూడాలి." +
-      "\n4. CORS లేదా Network Error ఉండవచ్చు.";
-    toast("AI కనెక్షన్ సమస్య");
-  } finally {
-    setBusy(false);
-  }
-}
-
-$("send").onclick = () => sendMessage();
-
-message.addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-});
-
-message.addEventListener("input", () => {
-  message.style.height = "38px";
-  message.style.height = Math.min(message.scrollHeight, 110) + "px";
-});
-
-$("menuBtn").onclick = () => {
-  plusOverlay.classList.remove("show");
-  overlay.classList.add("show");
-};
-
-$("plusBtn").onclick = () => {
-  overlay.classList.remove("show");
-  plusOverlay.classList.add("show");
-};
-
-function newChat() {
-  if (busy) return toast("సమాధానం వచ్చే వరకు వేచి ఉండండి");
-
-  conversation.innerHTML = "";
-  message.value = "";
-  lastReply = "";
-  chatHistory = [];
-  selectedFiles = [];
-  $("home").style.paddingTop = "28px";
-  hideMenus();
-
-  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-  toast("కొత్త చాట్ ప్రారంభమైంది");
-}
-
-$("newBtn").onclick = newChat;
-
-$("modelBtn").onclick = () => {
-  showModal(
-    "Choose AI Sameer Mode",
-    '<button class="option" data-model="Fast">⚡ Fast<small>Quick responses</small></button>' +
-    '<button class="option" data-model="Pro">👑 Pro<small>General assistance</small></button>' +
-    '<button class="option" data-model="Creative">🎨 Creative<small>Creative ideas</small></button>' +
-    '<button class="option" data-model="Reasoning">🧠 Reasoning<small>Logical explanations</small></button>' +
-    '<p>మోడ్ మార్పు Worker మద్దతుపై ఆధారపడి ఉంటుంది.</p>',
-    null,
-    "Done"
-  );
-
-  document.querySelectorAll("[data-model]").forEach(btn => {
-    btn.onclick = () => {
-      currentModel = btn.dataset.model;
-      $("modelBtn").textContent = "AI Sameer · " + currentModel + " ⌄";
-      modal.classList.remove("show");
-      toast(currentModel + " mode selected");
-    };
-  });
-};
-
-function startVoice() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  if (!SR) {
-    showModal(
-      "Voice Input",
-      "<p>ఈ బ్రౌజర్‌లో Voice Recognition అందుబాటులో లేదు. Chromeలో మైక్ అనుమతి ఇవ్వండి లేదా కీబోర్డ్ మైక్ ఉపయోగించండి.</p>",
-      null,
-      "OK"
-    );
-    return;
-  }
-
-  if (recognition) {
-    recognition.stop();
-    recognition = null;
-    $("micBtn").textContent = "🎙️";
-    return;
-  }
-
-  recognition = new SR();
-  recognition.lang = "te-IN";
-  recognition.interimResults = true;
-  recognition.continuous = false;
-
-  recognition.onstart = () => {
-    $("micBtn").textContent = "⏹";
-    toast("మాట్లాడండి…");
-  };
-
-  recognition.onresult = e => {
-    let result = "";
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      result += e.results[i][0].transcript;
-    }
-    message.value = result;
-  };
-
-  recognition.onerror = e => toast("మైక్ సమస్య: " + e.error);
-
-  recognition.onend = () => {
-    $("micBtn").textContent = "🎙️";
-    recognition = null;
-  };
-
-  try {
-    recognition.start();
-  } catch (e) {
-    toast("మైక్రోఫోన్ మళ్లీ ప్రయత్నించండి");
-  }
-}
-
-$("micBtn").onclick = startVoice;
-
-$("copyBtn").onclick = () => copyText(lastReply);
-$("likeBtn").onclick = () => toast("ధన్యవాదాలు! 👍");
-$("dislikeBtn").onclick = () => toast("మీ ఫీడ్‌బ్యాక్‌కు ధన్యవాదాలు");
-$("listenBtn").onclick = () => speak(lastReply);
-
-$("shareBtn").onclick = async () => {
-  const text = lastReply || "AI Sameer";
-
-  if (navigator.share) {
-    try {
-      await navigator.share({title:"AI Sameer", text});
-    } catch (e) {}
-  } else {
-    copyText(text);
-  }
-};
-
-$("fileInput").onchange = e => {
-  selectedFiles = Array.from(e.target.files || []);
-  if (selectedFiles.length) {
-    message.value += (message.value ? "\n" : "") +
-      "ఎంచుకున్న ఫైళ్లు: " + selectedFiles.map(f => f.name).join(", ");
-    toast(selectedFiles.length + " ఫైల్(లు) ఎంచుకున్నారు");
-  }
-};
-
-// Menu Overlay click handlers
-if (overlay) {
-  o
+    <script>
+        let balance = 0;
+        let level = 1;
+
+        function updateGame() {
+            document.getElementById("balance").innerText = "₹" + balance;
+            document.getElementById("level").innerText = level;
+            
+            const board = document.getElementById("board");
+            board.innerHTML = "";
+            
+            // Random puzzle generation for infinite levels
+            let tiles = [1, 2, 3, 4, 5, 6, 7, 8, "🔧"];
+            tiles.sort(() => Math.random() - 0.5);
+
+            tiles.forEach(tile => {
+                let div = document.createElement("div");
+                div.className = "tile";
+                div.innerText = tile;
+                board.appendChild(div);
+            });
+        }
+
+        function nextLevel() {
+            balance += 50; // Earn ₹50 per level
+            level += 1;
+            alert("Level Completed! You earned ₹50.");
+            
+            if(balance >= 1000) {
+                alert("Congratulations! You reached ₹1000. You can withdraw now.");
+            }
+            updateGame();
+        }
+
+        updateGame();
+    </script>
+</body>
+</html>
