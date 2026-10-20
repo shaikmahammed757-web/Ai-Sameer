@@ -15,90 +15,68 @@
         }
         header {
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            padding: 18px;
-            font-size: 22px;
+            padding: 16px;
+            font-size: 20px;
             font-weight: bold;
             color: #000;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .container {
-            padding: 15px;
+            padding: 12px;
             max-width: 400px;
             margin: auto;
         }
         .wallet-box {
             background: #1e293b;
             border: 2px solid #f59e0b;
-            padding: 12px;
-            margin: 15px 0;
-            border-radius: 12px;
-            box-shadow: inset 0 2px 5px rgba(255,255,255,0.05);
-        }
-        .wallet-box p {
-            margin: 5px 0;
-            font-size: 16px;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
         }
         .balance-text {
             color: #4ade80;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 18px;
         }
         .game-screen {
             background: #1e293b;
             border: 3px solid #3b82f6;
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
         }
-        .bike-blueprint {
-            width: 100%;
-            height: 180px;
-            background: #090d16;
-            border: 2px dashed #60a5fa;
-            border-radius: 10px;
+        .puzzle-board {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+        .slot, .piece {
+            height: 90px;
+            background: #334155;
+            border: 2px dashed #94a3b8;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            color: #93c5fd;
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-        .parts-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .part-card {
-            background: #334155;
-            border: 2px solid #f59e0b;
-            border-radius: 8px;
-            padding: 12px 5px;
-            font-size: 28px;
+            font-size: 36px;
             cursor: pointer;
-            transition: 0.2s;
         }
-        .part-card:active {
-            transform: scale(0.95);
+        .piece {
+            border: 2px solid #f59e0b;
             background: #475569;
         }
         .action-btn {
             background: #22c55e;
             color: white;
             border: none;
-            padding: 12px 25px;
-            font-size: 18px;
+            padding: 12px;
+            font-size: 16px;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 4px 10px rgba(34,197,94,0.3);
-        }
-        .action-btn:active {
-            transform: scale(0.98);
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -108,65 +86,73 @@
 
     <div class="container">
         <div class="wallet-box">
-            <p>Wallet Balance: <span class="balance-text" id="balance">₹0</span></p>
-            <p style="font-size: 13px; color: #94a3b8;">Min. Withdrawal Limit: <b>₹1000</b></p>
+            <p style="margin:4px 0;">Wallet Balance: <span class="balance-text" id="balance">₹0</span></p>
+            <p style="margin:4px 0; font-size: 12px; color: #94a3b8;">Min. Withdrawal Limit: <b>₹1000</b></p>
         </div>
 
         <div class="game-screen">
-            <h3>Level: <span id="level">1</span> - Fix Bike Parts</h3>
-            <p style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px;">Tap the correct tools/parts to assemble the bike blueprint!</p>
+            <h3 style="margin:5px 0;">Bike Mechanic Jigsaw</h3>
+            <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 10px;">Tap pieces to place them into the correct puzzle slots!</p>
             
-            <div class="bike-blueprint" id="blueprint">
-                🔧 Blueprint Area (Assemble Here)
+            <div style="font-size:13px; color:#f59e0b; margin-bottom:5px;">Puzzle Slots (Target)</div>
+            <div class="puzzle-board">
+                <div class="slot" id="slot0" onclick="placePiece(0)">🛞</div>
+                <div class="slot" id="slot1" onclick="placePiece(1)">⚙️</div>
+                <div class="slot" id="slot2" onclick="placePiece(2)">⛽</div>
+                <div class="slot" id="slot3" onclick="placePiece(3)">⛓️</div>
             </div>
 
-            <div class="parts-grid" id="partsGrid">
-                <!-- Dynamic Bike Parts -->
+            <div style="font-size:13px; color:#38bdf8; margin-bottom:5px;">Available Bike Parts</div>
+            <div class="puzzle-board" id="piecesContainer">
+                <!-- Pieces -->
             </div>
 
-            <button class="action-btn" onclick="completeLevel()">Fix & Earn ₹50</button>
+            <button class="action-btn" onclick="verifyPuzzle()">Check & Earn ₹50</button>
         </div>
     </div>
 
     <script>
         let balance = 0;
-        let level = 1;
-        const bikeParts = ["🛞", "⚙️", "🛠️", "🔩", "⛽", "🪞", "🔌", "⛓️", "🚲"];
-
-        function loadPuzzle() {
+        let selectedPiece = null;
+        
+        function initGame() {
             document.getElementById("balance").innerText = "₹" + balance;
-            document.getElementById("level").innerText = level;
+            const container = document.getElementById("piecesContainer");
+            container.innerHTML = "";
             
-            const grid = document.getElementById("partsGrid");
-            grid.innerHTML = "";
-            
-            // Randomize parts for puzzle feel
-            let shuffled = [...bikeParts].sort(() => Math.random() - 0.5);
-            
-            shuffled.slice(0, 6).forEach(part => {
+            let parts = ['⛓️', '🛞', '⛽', '⚙️'].sort(() => Math.random() - 0.5);
+            parts.forEach(part => {
                 let div = document.createElement("div");
-                div.className = "part-card";
+                div.className = "piece";
                 div.innerText = part;
                 div.onclick = function() {
-                    document.getElementById("blueprint").innerHTML = `<span style="font-size:40px;">${part}</span><br>Part Fitted Successfully!`;
+                    selectedPiece = part;
+                    alert("Selected part: " + part + ". Now tap any empty slot above!");
                 };
-                grid.appendChild(div);
+                container.appendChild(div);
             });
         }
 
-        function completeLevel() {
-            balance += 50; 
-            level += 1;
-            
-            if(balance >= 1000) {
-                alert("🎉 Congratulations! You reached ₹1000. Your withdrawal request is unlocked!");
+        function placePiece(slotIndex) {
+            if(selectedPiece) {
+                document.getElementById("slot" + slotIndex).innerText = selectedPiece;
+                selectedPiece = null;
             } else {
-                alert("✨ Great job! Level Completed. ₹50 added to your wallet.");
+                alert("Please select a bike part from below first!");
             }
-            loadPuzzle();
         }
 
-        loadPuzzle();
+        function verifyPuzzle() {
+            balance += 50;
+            if(balance >= 1000) {
+                alert("🎉 Congratulations! You reached ₹1000 withdrawal limit.");
+            } else {
+                alert("✨ Puzzle Solved! ₹50 added to your wallet.");
+            }
+            initGame();
+        }
+
+        initGame();
     </script>
 </body>
 </html>
