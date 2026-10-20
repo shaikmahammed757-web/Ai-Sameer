@@ -45,33 +45,34 @@
             padding: 10px;
             margin-top: 5px;
         }
-        /* Main Blueprint Puzzle Box */
-        .puzzle-container {
-            width: 260px;
-            height: 260px;
+        /* Blueprint container styling matching reference */
+        .blueprint-container {
+            width: 280px;
+            height: 280px;
             margin: 10px auto;
             background: #1e3a8a;
-            border: 3px solid #60a5fa;
-            border-radius: 8px;
+            border: 4px solid #60a5fa;
+            border-radius: 10px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, 1fr);
             gap: 2px;
             padding: 2px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
         }
-        .puzzle-slot {
-            background: #0f172a;
+        .blueprint-slot {
+            background: rgba(15, 23, 42, 0.7);
             border: 2px dashed #93c5fd;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 14px;
             color: #93c5fd;
             cursor: pointer;
-            position: relative;
             overflow: hidden;
         }
-        /* Parts Pool Grid */
+        /* Scrambled pieces pool */
         .parts-pool {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -92,11 +93,11 @@
         .pool-piece:active {
             transform: scale(0.92);
         }
-        /* Splitting the master bike image into 4 quarters */
-        .bike-part-0 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') 0px 0px/120px 120px no-repeat; }
-        .bike-part-1 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') -60px 0px/120px 120px no-repeat; }
-        .bike-part-2 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') 0px -60px/120px 120px no-repeat; }
-        .bike-part-3 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') -60px -60px/120px 120px no-repeat; }
+        /* 4 distinct quadrants of the master bike image */
+        .p-0 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') 0px 0px/140px 140px no-repeat; }
+        .p-1 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') -70px 0px/140px 140px no-repeat; }
+        .p-2 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') 0px -70px/140px 140px no-repeat; }
+        .p-3 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') -70px -70px/140px 140px no-repeat; }
 
         .action-btn {
             background: #22c55e;
@@ -122,20 +123,20 @@
         </div>
 
         <div class="game-screen">
-            <h3 style="margin:4px 0;">Bike Mechanic Photo Puzzle</h3>
-            <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">Tap a part below, then tap slots to form the full bike photo!</p>
+            <h3 style="margin:4px 0;">Bike Mechanic Puzzle</h3>
+            <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">Tap a part below, then tap blueprint slots to complete the bike!</p>
             
-            <!-- 4 Slots forming the full bike image -->
-            <div class="puzzle-container">
-                <div class="puzzle-slot" id="slot0" onclick="placePiece(0)">Slot 1</div>
-                <div class="puzzle-slot" id="slot1" onclick="placePiece(1)">Slot 2</div>
-                <div class="puzzle-slot" id="slot2" onclick="placePiece(2)">Slot 3</div>
-                <div class="puzzle-slot" id="slot3" onclick="placePiece(3)">Slot 4</div>
+            <!-- Blueprint Slots -->
+            <div class="blueprint-container">
+                <div class="blueprint-slot" id="slot0" onclick="selectSlot(0)">Part 1</div>
+                <div class="blueprint-slot" id="slot1" onclick="selectSlot(1)">Part 2</div>
+                <div class="blueprint-slot" id="slot2" onclick="selectSlot(2)">Part 3</div>
+                <div class="blueprint-slot" id="slot3" onclick="selectSlot(3)">Part 4</div>
             </div>
 
-            <div style="font-size:12px; color:#f59e0b; margin: 5px 0;">Scrambled Bike Parts</div>
+            <div style="font-size:12px; color:#f59e0b; margin: 5px 0;">Available Bike Parts</div>
             
-            <!-- Shuffled pieces pool -->
+            <!-- Parts Pool -->
             <div class="parts-pool" id="poolContainer"></div>
 
             <button class="action-btn" onclick="verifyPuzzle()">Check & Earn ₹50</button>
@@ -144,50 +145,51 @@
 
     <script>
         let balance = 0;
-        let selectedPartClass = null;
-        let currentSlots = [null, null, null, null];
-        const correctParts = ['bike-part-0', 'bike-part-1', 'bike-part-2', 'bike-part-3'];
+        let selectedPiece = null;
+        let puzzleState = [null, null, null, null];
+        const allParts = ['p-0', 'p-1', 'p-2', 'p-3'];
 
         function initGame() {
             document.getElementById("balance").innerText = "₹" + balance;
-            currentSlots = [null, null, null, null];
-            renderBoard();
+            puzzleState = [null, null, null, null];
+            renderGame();
 
             let pool = document.getElementById("poolContainer");
             pool.innerHTML = "";
 
-            let shuffled = [...correctParts].sort(() => Math.random() - 0.5);
+            let shuffled = [...allParts].sort(() => Math.random() - 0.5);
             shuffled.forEach(partClass => {
                 let div = document.createElement("div");
                 div.className = `pool-piece ${partClass}`;
                 div.onclick = function() {
-                    selectedPartClass = partClass;
-                    alert("Piece selected! Now tap any slot above to fix it.");
+                    selectedPiece = partClass;
+                    div.style.borderColor = "#22c55e";
+                    alert("Part selected! Now tap any slot on the blueprint above.");
                 };
                 pool.appendChild(div);
             });
         }
 
-        function renderBoard() {
+        function renderGame() {
             for(let i=0; i<4; i++) {
                 let slot = document.getElementById("slot" + i);
-                if(currentSlots[i]) {
-                    slot.className = `puzzle-slot ${currentSlots[i]}`;
+                if(puzzleState[i]) {
+                    slot.className = `blueprint-slot ${puzzleState[i]}`;
                     slot.innerText = "";
                 } else {
-                    slot.className = "puzzle-slot";
-                    slot.innerText = `Slot ${i+1}`;
+                    slot.className = "blueprint-slot";
+                    slot.innerText = `Part ${i+1}`;
                 }
             }
         }
 
-        function placePiece(index) {
-            if(selectedPartClass) {
-                currentSlots[index] = selectedPartClass;
-                selectedPartClass = null;
-                renderBoard();
+        function selectSlot(index) {
+            if(selectedPiece) {
+                puzzleState[index] = selectedPiece;
+                selectedPiece = null;
+                renderGame();
             } else {
-                alert("Please select a bike part from the bottom first!");
+                alert("Please select a bike part from the bottom panel first!");
             }
         }
 
@@ -196,7 +198,7 @@
             if(balance >= 1000) {
                 alert("🎉 అభినందనలు! మీరు ₹1000 విత్‌డ్రా లిమిట్ చేరుకున్నారు.");
             } else {
-                alert("✨ అద్భుతం! బైక్ ఫోటో సరిగ్గా సెట్ అయింది. ₹50 మీ వాలెట్‌కి చేరింది!");
+                alert("✨ అద్భుతం! బైక్ పజిల్ పూర్తయింది. ₹50 మీ వాలెట్‌కి జోడించబడింది!");
             }
             initGame();
         }
