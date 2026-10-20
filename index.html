@@ -1,198 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SK MD Bike Puzzle & Earn</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #0f172a;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-        }
-        header {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            padding: 14px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-        .container {
-            padding: 10px;
-            max-width: 400px;
-            margin: auto;
-        }
-        .wallet-box {
-            background: #1e293b;
-            border: 2px solid #f59e0b;
-            padding: 8px;
-            margin: 8px 0;
-            border-radius: 8px;
-        }
-        .balance-text {
-            color: #4ade80;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .game-screen {
-            background: #1e293b;
-            border: 3px solid #3b82f6;
-            border-radius: 12px;
-            padding: 10px;
-            margin-top: 5px;
-        }
-        /* Blueprint layout like reference image */
-        .blueprint-board {
-            width: 100%;
-            height: 180px;
-            background: #1e3a8a;
-            border: 3px dashed #60a5fa;
-            border-radius: 10px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 4px;
-            padding: 4px;
-            margin-bottom: 10px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-        }
-        .blueprint-slot {
-            background: rgba(15, 23, 42, 0.6);
-            border: 2px solid #93c5fd;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            cursor: pointer;
-        }
-        .parts-pool {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 10px;
-        }
-        .pool-piece {
-            background: #334155;
-            border: 2px solid #f59e0b;
-            border-radius: 8px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .pool-piece:active {
-            transform: scale(0.92);
-            background: #475569;
-        }
-        .action-btn {
-            background: #22c55e;
-            color: white;
-            border: none;
-            padding: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SK MD Bike Puzzle & Earn</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    text-align:center;
+    background:#1e3c72;
+    color:white;
+    margin:0;
+}
+
+h1{
+    margin-top:20px;
+}
+
+#score{
+    font-size:22px;
+    margin:10px;
+}
+
+.puzzle-container{
+    width:300px;
+    height:300px;
+    margin:20px auto;
+    display:grid;
+    grid-template-columns:repeat(3,100px);
+    grid-template-rows:repeat(3,100px);
+    border:4px solid white;
+}
+
+.tile{
+    width:100px;
+    height:100px;
+    border:1px solid #fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:30px;
+    background:#4caf50;
+    cursor:pointer;
+}
+
+.empty{
+    background:black;
+}
+
+button{
+    padding:10px 20px;
+    font-size:18px;
+    cursor:pointer;
+    border:none;
+    border-radius:8px;
+}
+
+#message{
+    font-size:24px;
+    color:yellow;
+    margin-top:15px;
+}
+</style>
 </head>
 <body>
 
-    <header>SK MD Bike Puzzle & Earn</header>
+<h1>🏍️ SK MD Bike Puzzle & Earn</h1>
 
-    <div class="container">
-        <div class="wallet-box">
-            <p style="margin:2px 0;">Wallet Balance: <span class="balance-text" id="balance">₹0</span></p>
-            <p style="margin:2px 0; font-size: 11px; color: #94a3b8;">Min. Withdrawal Limit: <b>₹1000</b></p>
-        </div>
+<div id="score">Coins: 0</div>
 
-        <div class="game-screen">
-            <h3 style="margin:4px 0;">Bike Blueprint Assembly</h3>
-            <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px;">Tap a part below, then tap the blueprint slot to fix it!</p>
-            
-            <!-- Blueprint Slots -->
-            <div class="blueprint-board">
-                <div class="blueprint-slot" id="slot0" onclick="fitPart(0)">❓</div>
-                <div class="blueprint-slot" id="slot1" onclick="fitPart(1)">❓</div>
-                <div class="blueprint-slot" id="slot2" onclick="fitPart(2)">❓</div>
-                <div class="blueprint-slot" id="slot3" onclick="fitPart(3)">❓</div>
-            </div>
+<div class="puzzle-container" id="board"></div>
 
-            <div style="font-size:12px; color:#f59e0b; margin-bottom:4px;">Available Bike Parts to Fix</div>
-            
-            <!-- Available Pieces Pool -->
-            <div class="parts-pool" id="poolContainer">
-                <!-- Generated via JS -->
-            </div>
+<button onclick="shuffle()">Shuffle Puzzle</button>
 
-            <button class="action-btn" onclick="checkPuzzleCompletion()">Check & Earn ₹50</button>
-        </div>
-    </div>
+<div id="message"></div>
 
-    <script>
-        let balance = 0;
-        let selectedIcon = null;
-        const correctParts = ['🛞', '⛽', '⚙️', '⛓️']; // Correct bike parts
-        let currentSlots = ['❓', '❓', '❓', '❓'];
+<script>
+let board = [1,2,3,4,5,6,7,8,0];
+let coins = 0;
 
-        function initGame() {
-            document.getElementById("balance").innerText = "₹" + balance;
-            currentSlots = ['❓', '❓', '❓', '❓'];
-            updateBoard();
-            
-            let pool = document.getElementById("poolContainer");
-            pool.innerHTML = "";
-            
-            let shuffledPool = [...correctParts].sort(() => Math.random() - 0.5);
-            shuffledPool.forEach(part => {
-                let div = document.createElement("div");
-                div.className = "pool-piece";
-                div.innerText = part;
-                div.onclick = function() {
-                    selectedIcon = part;
-                    div.style.borderColor = "#22c55e";
-                    alert("Selected part: " + part + ". Now tap any '?' slot on the blueprint above!");
-                };
-                pool.appendChild(div);
-            });
+const boardDiv = document.getElementById("board");
+
+function drawBoard(){
+    boardDiv.innerHTML = "";
+
+    board.forEach((num,index)=>{
+        let tile = document.createElement("div");
+        tile.classList.add("tile");
+
+        if(num===0){
+            tile.classList.add("empty");
+            tile.innerHTML="";
+        }else{
+            tile.innerHTML=num;
+            tile.onclick=()=>moveTile(index);
         }
 
-        function updateBoard() {
-            for(let i=0; i<4; i++) {
-                document.getElementById("slot" + i).innerText = currentSlots[i];
-            }
-        }
+        boardDiv.appendChild(tile);
+    });
 
-        function fitPart(slotIndex) {
-            if(selectedIcon) {
-                currentSlots[slotIndex] = selectedIcon;
-                selectedIcon = null;
-                updateBoard();
-            } else {
-                alert("Please select a bike part from the bottom panel first!");
-            }
-        }
+    checkWin();
+}
 
-        function checkPuzzleCompletion() {
-            balance += 50;
-            if(balance >= 1000) {
-                alert("🎉 Congratulations! You reached ₹1000 withdrawal limit.");
-            } else {
-                alert("✨ Awesome! Bike parts fitted successfully. ₹50 added!");
-            }
-            initGame();
-        }
+function moveTile(index){
+    let emptyIndex = board.indexOf(0);
 
-        initGame();
-    </script>
+    let validMoves = [
+        emptyIndex-1,
+        emptyIndex+1,
+        emptyIndex-3,
+        emptyIndex+3
+    ];
+
+    if(validMoves.includes(index)){
+        [board[index], board[emptyIndex]] =
+        [board[emptyIndex], board[index]];
+        drawBoard();
+    }
+}
+
+function shuffle(){
+    for(let i=0;i<200;i++){
+        let emptyIndex = board.indexOf(0);
+
+        let moves = [
+            emptyIndex-1,
+            emptyIndex+1,
+            emptyIndex-3,
+            emptyIndex+3
+        ].filter(x=>x>=0 && x<9);
+
+        let randomMove =
+            moves[Math.floor(Math.random()*moves.length)];
+
+        [board[randomMove], board[emptyIndex]] =
+        [board[emptyIndex], board[randomMove]];
+    }
+    document.getElementById("message").innerHTML="";
+    drawBoard();
+}
+
+function checkWin(){
+    let win = [1,2,3,4,5,6,7,8,0];
+
+    if(JSON.stringify(board) === JSON.stringify(win)){
+        coins += 100;
+        document.getElementById("score").innerHTML =
+            "Coins: " + coins;
+
+        document.getElementById("message").innerHTML =
+            "🎉 Puzzle Completed! You Earned 100 Coins!";
+    }
+}
+
+drawBoard();
+</script>
+
 </body>
 </html>
