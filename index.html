@@ -45,62 +45,59 @@
             padding: 10px;
             margin-top: 5px;
         }
-        .blueprint-board {
-            width: 100%;
-            height: 200px;
+        /* Main Blueprint Puzzle Box */
+        .puzzle-container {
+            width: 260px;
+            height: 260px;
+            margin: 10px auto;
             background: #1e3a8a;
-            border: 3px dashed #60a5fa;
-            border-radius: 10px;
+            border: 3px solid #60a5fa;
+            border-radius: 8px;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(2, 1fr);
-            gap: 6px;
-            padding: 6px;
-            margin-bottom: 10px;
+            gap: 2px;
+            padding: 2px;
         }
-        .blueprint-slot {
-            background: rgba(15, 23, 42, 0.8);
-            border: 2px solid #93c5fd;
-            border-radius: 6px;
+        .puzzle-slot {
+            background: #0f172a;
+            border: 2px dashed #93c5fd;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 13px;
             color: #93c5fd;
             cursor: pointer;
+            position: relative;
             overflow: hidden;
         }
-        .blueprint-slot img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        /* Parts Pool Grid */
         .parts-pool {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 6px;
-            margin-bottom: 10px;
+            margin: 10px 0;
         }
         .pool-piece {
+            width: 60px;
+            height: 60px;
             background: #334155;
             border: 2px solid #f59e0b;
-            border-radius: 8px;
-            height: 65px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 6px;
             cursor: pointer;
             overflow: hidden;
+            margin: auto;
             transition: 0.2s;
-        }
-        .pool-piece img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
         }
         .pool-piece:active {
             transform: scale(0.92);
         }
+        /* Splitting the master bike image into 4 quarters */
+        .bike-part-0 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') 0px 0px/120px 120px no-repeat; }
+        .bike-part-1 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') -60px 0px/120px 120px no-repeat; }
+        .bike-part-2 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') 0px -60px/120px 120px no-repeat; }
+        .bike-part-3 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') -60px -60px/120px 120px no-repeat; }
+
         .action-btn {
             background: #22c55e;
             color: white;
@@ -125,91 +122,81 @@
         </div>
 
         <div class="game-screen">
-            <h3 style="margin:4px 0;">Bike Mechanic Puzzle</h3>
-            <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 8px;">Tap a bike part photo below, then tap the blueprint slot!</p>
+            <h3 style="margin:4px 0;">Bike Mechanic Photo Puzzle</h3>
+            <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">Tap a part below, then tap slots to form the full bike photo!</p>
             
-            <!-- Blueprint Target Slots -->
-            <div class="blueprint-board">
-                <div class="blueprint-slot" id="slot0" onclick="fitPart(0)">Slot 1</div>
-                <div class="blueprint-slot" id="slot1" onclick="fitPart(1)">Slot 2</div>
-                <div class="blueprint-slot" id="slot2" onclick="fitPart(2)">Slot 3</div>
-                <div class="blueprint-slot" id="slot3" onclick="fitPart(3)">Slot 4</div>
+            <!-- 4 Slots forming the full bike image -->
+            <div class="puzzle-container">
+                <div class="puzzle-slot" id="slot0" onclick="placePiece(0)">Slot 1</div>
+                <div class="puzzle-slot" id="slot1" onclick="placePiece(1)">Slot 2</div>
+                <div class="puzzle-slot" id="slot2" onclick="placePiece(2)">Slot 3</div>
+                <div class="puzzle-slot" id="slot3" onclick="placePiece(3)">Slot 4</div>
             </div>
 
-            <div style="font-size:12px; color:#f59e0b; margin-bottom:4px;">Available Bike Parts Photos</div>
+            <div style="font-size:12px; color:#f59e0b; margin: 5px 0;">Scrambled Bike Parts</div>
             
-            <!-- Available Photo Pieces Pool -->
-            <div class="parts-pool" id="poolContainer">
-                <!-- Generated via JS -->
-            </div>
+            <!-- Shuffled pieces pool -->
+            <div class="parts-pool" id="poolContainer"></div>
 
-            <button class="action-btn" onclick="checkPuzzleCompletion()">Check & Earn ₹50</button>
+            <button class="action-btn" onclick="verifyPuzzle()">Check & Earn ₹50</button>
         </div>
     </div>
 
     <script>
         let balance = 0;
-        let selectedImgUrl = null;
-        
-        // Professional high-quality bike parts images
-        const bikeImages = [
-            { id: 0, url: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=200&auto=format&fit=crop&q=80" }, // Bike Tank/Body
-            { id: 1, url: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=200&auto=format&fit=crop&q=80" }, // Engine/Parts
-            { id: 2, url: "https://images.unsplash.com/photo-1502745484501-c9676a71026e?w=200&auto=format&fit=crop&q=80" }, // Wheel
-            { id: 3, url: "https://images.unsplash.com/photo-1449426468159-d96dbf08f19f?w=200&auto=format&fit=crop&q=80" }  // Handle/Custom Bike
-        ];
-
+        let selectedPartClass = null;
         let currentSlots = [null, null, null, null];
+        const correctParts = ['bike-part-0', 'bike-part-1', 'bike-part-2', 'bike-part-3'];
 
         function initGame() {
             document.getElementById("balance").innerText = "₹" + balance;
             currentSlots = [null, null, null, null];
-            updateBoard();
-            
+            renderBoard();
+
             let pool = document.getElementById("poolContainer");
             pool.innerHTML = "";
-            
-            let shuffledPool = [...bikeImages].sort(() => Math.random() - 0.5);
-            shuffledPool.forEach(item => {
+
+            let shuffled = [...correctParts].sort(() => Math.random() - 0.5);
+            shuffled.forEach(partClass => {
                 let div = document.createElement("div");
-                div.className = "pool-piece";
-                div.innerHTML = `<img src="${item.url}" alt="Bike Part">`;
+                div.className = `pool-piece ${partClass}`;
                 div.onclick = function() {
-                    selectedImgUrl = item.url;
-                    div.style.borderColor = "#22c55e";
-                    alert("Bike part photo selected! Now tap any slot on the blueprint above.");
+                    selectedPartClass = partClass;
+                    alert("Piece selected! Now tap any slot above to fix it.");
                 };
                 pool.appendChild(div);
             });
         }
 
-        function updateBoard() {
+        function renderBoard() {
             for(let i=0; i<4; i++) {
                 let slot = document.getElementById("slot" + i);
                 if(currentSlots[i]) {
-                    slot.innerHTML = `<img src="${currentSlots[i]}" alt="Fitted Part">`;
+                    slot.className = `puzzle-slot ${currentSlots[i]}`;
+                    slot.innerText = "";
                 } else {
-                    slot.innerHTML = `Slot ${i+1}`;
+                    slot.className = "puzzle-slot";
+                    slot.innerText = `Slot ${i+1}`;
                 }
             }
         }
 
-        function fitPart(slotIndex) {
-            if(selectedImgUrl) {
-                currentSlots[slotIndex] = selectedImgUrl;
-                selectedImgUrl = null;
-                updateBoard();
+        function placePiece(index) {
+            if(selectedPartClass) {
+                currentSlots[index] = selectedPartClass;
+                selectedPartClass = null;
+                renderBoard();
             } else {
-                alert("Please select a bike part photo from the bottom panel first!");
+                alert("Please select a bike part from the bottom first!");
             }
         }
 
-        function checkPuzzleCompletion() {
+        function verifyPuzzle() {
             balance += 50;
             if(balance >= 1000) {
                 alert("🎉 అభినందనలు! మీరు ₹1000 విత్‌డ్రా లిమిట్ చేరుకున్నారు.");
             } else {
-                alert("✨ అద్భుతం! బైక్ పజిల్ విజయవంతంగా పూర్తయింది. ₹50 మీ వాలెట్‌కి చేరింది!");
+                alert("✨ అద్భుతం! బైక్ ఫోటో సరిగ్గా సెట్ అయింది. ₹50 మీ వాలెట్‌కి చేరింది!");
             }
             initGame();
         }
