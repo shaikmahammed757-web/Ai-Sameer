@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sameer Puzzle - Infinite Levels</title>
+    <title>Sameer Puzzle - Mid-Game Ads</title>
     <style>
         body, html {
             margin: 0;
@@ -112,6 +112,7 @@
             margin-top: 8px;
             cursor: pointer;
         }
+        /* గేమ్ మధ్యలో వచ్చే యాడ్ స్క్రీన్ */
         #adOverlay {
             display: none;
             position: fixed;
@@ -142,7 +143,7 @@
 
     <canvas id="puzzleCanvas" width="340" height="340"></canvas>
 
-    <!-- స్టేజ్ క్లియర్ పాప్-అప్ (సేఫ్ రివార్డ్: 50 పైసలు లేదా 1 రూపాయి) -->
+    <!-- లెవెల్ కంప్లీట్ అయినప్పుడు వచ్చే పాప్-అప్ -->
     <div class="popup-overlay" id="winPopup">
         <div class="popup-card">
             <div style="font-size: 35px;">🏆</div>
@@ -155,16 +156,16 @@
             </div>
 
             <button class="btn-double" onclick="watchAdToDouble()">WATCH AD TO DOUBLE (+₹2.00)</button>
-            <button class="btn-next" onclick="triggerAdBeforeNext()">NEXT STAGE ➔</button>
+            <button class="btn-next" onclick="nextLevelLoad()">NEXT STAGE ➔</button>
         </div>
     </div>
 
-    <!-- గేమ్స్ మధ్యలో వచ్చే యాడ్ స్క్రీన్ -->
+    <!-- 3 లేదా 4 లైన్లు క్లియరింగ్ అయినప్పుడు మధ్యలో వచ్చే యాడ్ స్క్రీన్ -->
     <div id="adOverlay">
-        <h2>SPONSOR AD</h2>
-        <p style="color: #aaa; font-size: 14px;">Advertisement is playing...</p>
+        <h2>SPONSOR AD (MID-GAME)</h2>
+        <p style="color: #aaa; font-size: 14px;">Great progress! Ad is playing...</p>
         <h1 id="adTimer" style="color: #00ffcc; font-size: 50px;">3</h1>
-        <p style="font-size: 12px; color: #666;">Skipping in few seconds</p>
+        <p style="font-size: 12px; color: #666;">Resuming game shortly</p>
     </div>
 
     <script>
@@ -174,46 +175,36 @@
         let currentLevel = 1;
         let currentReward = 1.00;
         let puzzlePaths = [];
+        let totalLinesInLevel = 0;
+        let clearedLinesCount = 0;
         let totalBalance = 0.00;
 
-        // అన్లిమిటెడ్ లెవెల్స్ కోసం ప్రతిసారీ కొత్త లైన్లను ఆటోమేటిక్‌గా జనరేట్ చేసే ఫంక్షన్
         function generateLevelData() {
-            puzzlePaths = [];
-            let numLines = 4 + (currentLevel % 4); // లెవెల్స్ బట్టి లైన్ల సంఖ్య మారుతుంది
-
-            let possibleDirs = ['LEFT', 'RIGHT', 'DOWN', 'UP'];
-            let startPositions = [
-                {x: 40, y: 40}, {x: 280, y: 40}, {x: 40, y: 160}, 
-                {x: 280, y: 160}, {x: 80, y: 280}, {x: 240, y: 280},
-                {x: 140, y: 40}, {x: 40, y: 220}, {x: 220, y: 100}
+            let levelBank = [
+                [
+                    { points: [{x: 40, y: 40}, {x: 200, y: 40}, {x: 200, y: 120}, {x: 120, y: 120}], dir: 'LEFT' },
+                    { points: [{x: 240, y: 40}, {x: 300, y: 40}, {x: 300, y: 160}, {x: 200, y: 160}], dir: 'LEFT' },
+                    { points: [{x: 40, y: 120}, {x: 120, y: 120}, {x: 120, y: 220}, {x: 240, y: 220}], dir: 'RIGHT' },
+                    { points: [{x: 260, y: 100}, {x: 260, y: 200}, {x: 160, y: 200}], dir: 'DOWN' },
+                    { points: [{x: 80, y: 280}, {x: 180, y: 280}, {x: 180, y: 300}, {x: 280, y: 300}], dir: 'RIGHT' }
+                ],
+                [
+                    { points: [{x: 40, y: 80}, {x: 160, y: 80}, {x: 160, y: 160}, {x: 80, y: 160}], dir: 'LEFT' },
+                    { points: [{x: 200, y: 80}, {x: 300, y: 80}, {x: 300, y: 240}, {x: 160, y: 240}], dir: 'LEFT' },
+                    { points: [{x: 40, y: 200}, {x: 120, y: 200}, {x: 120, y: 280}, {x: 260, y: 280}], dir: 'RIGHT' },
+                    { points: [{x: 240, y: 120}, {x: 240, y: 200}, {x: 180, y: 200}], dir: 'UP' }
+                ]
             ];
 
-            // రాండమ్‌గా డిఫరెంట్ షేప్స్ మరియు లైన్లను సృష్టించడం
-            for (let i = 0; i < numLines; i++) {
-                let start = startPositions[(currentLevel * 3 + i) % startPositions.length];
-                let midX = 60 + ((currentLevel * 45 + i * 30) % 220);
-                let midY = 60 + ((currentLevel * 35 + i * 40) % 200);
-                let endX = 50 + ((currentLevel * 60 + i * 50) % 240);
-                let endY = 50 + ((currentLevel * 50 + i * 25) % 240);
-
-                let dir = possibleDirs[(currentLevel + i) % possibleDirs.length];
-
-                puzzlePaths.push({
-                    points: [
-                        {x: start.x, y: start.y},
-                        {x: midX, y: start.y},
-                        {x: midX, y: midY},
-                        {x: endX, y: endY}
-                    ],
-                    dir: dir
-                });
-            }
+            let patternIndex = (currentLevel - 1) % levelBank.length;
+            puzzlePaths = JSON.parse(JSON.stringify(levelBank[patternIndex]));
+            totalLinesInLevel = puzzlePaths.length;
+            clearedLinesCount = 0; // రీసెట్ చేయడం
 
             document.getElementById('levelTitle').innerText = "Level " + currentLevel;
-            document.getElementById('lineCount').innerText = puzzlePaths.length + " lines";
+            document.getElementById('lineCount').innerText = puzzlePaths.length + " lines left";
             document.getElementById('popupLevelText').innerText = "Level " + currentLevel + " unblocked!";
             
-            // సేఫ్ రివార్డ్ (50 పైసలు లేదా 1 రూపాయి)
             currentReward = currentLevel % 2 === 0 ? 0.50 : 1.00;
             document.getElementById('rewardText').innerText = "+₹" + currentReward.toFixed(2);
         }
@@ -221,7 +212,6 @@
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // గ్రిడ్ డాట్స్
             ctx.fillStyle = '#b0b0b0';
             for (let x = 40; x < canvas.width; x += 40) {
                 for (let y = 40; y < canvas.height; y += 40) {
@@ -229,12 +219,11 @@
                 }
             }
 
-            // నల్లటి లైన్లు మరియు బాణాలు గీయడం
             puzzlePaths.forEach((item) => {
                 ctx.strokeStyle = '#111111';
                 ctx.lineWidth = 4;
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
+                ctx.lineCap = 'square';
+                ctx.lineJoin = 'miter';
 
                 ctx.beginPath();
                 item.points.forEach((pt, i) => {
@@ -243,68 +232,68 @@
                 });
                 ctx.stroke();
 
-                // బాణం ముకులు (Arrowhead)
                 let lastPt = item.points[item.points.length - 1];
                 ctx.fillStyle = '#111111';
                 ctx.beginPath();
                 if (item.dir === 'LEFT') {
-                    ctx.moveTo(lastPt.x - 8, lastPt.y);
-                    ctx.lineTo(lastPt.x + 4, lastPt.y - 5);
-                    ctx.lineTo(lastPt.x + 4, lastPt.y + 5);
+                    ctx.moveTo(lastPt.x - 10, lastPt.y);
+                    ctx.lineTo(lastPt.x + 2, lastPt.y - 6);
+                    ctx.lineTo(lastPt.x + 2, lastPt.y + 6);
                 } else if (item.dir === 'RIGHT') {
-                    ctx.moveTo(lastPt.x + 8, lastPt.y);
-                    ctx.lineTo(lastPt.x - 4, lastPt.y - 5);
-                    ctx.lineTo(lastPt.x - 4, lastPt.y + 5);
+                    ctx.moveTo(lastPt.x + 10, lastPt.y);
+                    ctx.lineTo(lastPt.x - 2, lastPt.y - 6);
+                    ctx.lineTo(lastPt.x - 2, lastPt.y + 6);
                 } else if (item.dir === 'DOWN') {
-                    ctx.moveTo(lastPt.x, lastPt.y + 8);
-                    ctx.lineTo(lastPt.x - 5, lastPt.y - 4);
-                    ctx.lineTo(lastPt.x + 5, lastPt.y - 4);
+                    ctx.moveTo(lastPt.x, lastPt.y + 10);
+                    ctx.lineTo(lastPt.x - 6, lastPt.y - 2);
+                    ctx.lineTo(lastPt.x + 6, lastPt.y - 2);
                 } else if (item.dir === 'UP') {
-                    ctx.moveTo(lastPt.x, lastPt.y - 8);
-                    ctx.lineTo(lastPt.x - 5, lastPt.y + 4);
-                    ctx.lineTo(lastPt.x + 5, lastPt.y + 4);
+                    ctx.moveTo(lastPt.x, lastPt.y - 10);
+                    ctx.lineTo(lastPt.x - 6, lastPt.y + 2);
+                    ctx.lineTo(lastPt.x + 6, lastPt.y + 2);
                 }
                 ctx.fill();
             });
         }
 
-        // టచ్ లేదా క్లిక్ చేసినప్పుడు లైన్ క్లియర్ కావడం
         canvas.addEventListener('click', (e) => {
             const rect = canvas.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const clickY = e.clientY - rect.top;
 
+            let clickedIndex = -1;
             puzzlePaths.forEach((item, index) => {
                 let lastPt = item.points[item.points.length - 1];
                 let dist = Math.hypot(clickX - lastPt.x, clickY - lastPt.y);
-                if (dist < 28) {
-                    puzzlePaths.splice(index, 1);
+                if (dist < 30) {
+                    clickedIndex = index;
                 }
             });
 
-            document.getElementById('lineCount').innerText = puzzlePaths.length + " lines";
-            drawGame();
+            if (clickedIndex !== -1) {
+                puzzlePaths.splice(clickedIndex, 1);
+                clearedLinesCount++;
+                document.getElementById('lineCount').innerText = puzzlePaths.length + " lines left";
+                drawGame();
 
-            if (puzzlePaths.length === 0) {
-                totalBalance += currentReward;
-                document.getElementById('walletBal').innerText = "₹" + totalBalance.toFixed(2);
-                document.getElementById('winPopup').style.display = 'flex';
+                // ముఖ్యమైన మార్పు: 2 లేదా 3 లైన్లు క్లియర్ కాగానే గేమ్ మధ్యలోనే యాడ్ ట్రిగ్గర్ కావడం
+                if (clearedLinesCount === 2 && puzzlePaths.length > 0) {
+                    triggerMidGameAd();
+                    return;
+                }
+
+                // అన్ని లైన్లు అయిపోతే లెవెల్ విన్ పాప్-అప్
+                if (puzzlePaths.length === 0) {
+                    totalBalance += currentReward;
+                    document.getElementById('walletBal').innerText = "₹" + totalBalance.toFixed(2);
+                    document.getElementById('winPopup').style.display = 'flex';
+                }
             }
         });
 
-        function watchAdToDouble() {
-            currentReward = currentReward * 2;
-            totalBalance += currentReward;
-            document.getElementById('walletBal').innerText = "₹" + totalBalance.toFixed(2);
-            document.getElementById('rewardText').innerText = "+₹" + currentReward.toFixed(2) + " (Doubled!)";
-            alert("Reward Doubled via Ad!");
-        }
-
-        // నెక్స్ట్ స్టేజ్ క్లిక్ చేయగానే గేమ్స్ మధ్యలో యాడ్ రావడం
-        function triggerAdBeforeNext() {
-            document.getElementById('winPopup').style.display = 'none';
+        // గేమ్ ఆడుతున్న మధ్యలో యాడ్ వచ్చే ఫంక్షన్
+        function triggerMidGameAd() {
             document.getElementById('adOverlay').style.display = 'flex';
-
             let timeLeft = 3;
             document.getElementById('adTimer').innerText = timeLeft;
 
@@ -314,18 +303,25 @@
                 if (timeLeft <= 0) {
                     clearInterval(adInterval);
                     document.getElementById('adOverlay').style.display = 'none';
-                    nextLevelLoad();
                 }
             }, 1000);
         }
 
+        function watchAdToDouble() {
+            currentReward = currentReward * 2;
+            totalBalance += currentReward;
+            document.getElementById('walletBal').innerText = "₹" + totalBalance.toFixed(2);
+            document.getElementById('rewardText').innerText = "+₹" + currentReward.toFixed(2) + " (Doubled!)";
+            alert("Reward Doubled via Ad!");
+        }
+
         function nextLevelLoad() {
+            document.getElementById('winPopup').style.display = 'none';
             currentLevel++;
             generateLevelData();
             drawGame();
         }
 
-        // గేమ్ స్టార్ట్ చేయడం
         generateLevelData();
         drawGame();
     </script>
