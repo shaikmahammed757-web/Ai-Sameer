@@ -3,18 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sameer Puzzle Game</title>
+    <title>Sameer Puzzle</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
-            background-color: #ffffff; /* తెల్లటి బ్యాక్‌గ్రౌండ్ */
+            background-color: #ffffff;
             color: #333333;
             font-family: Arial, sans-serif;
             text-align: center;
             height: 100%;
         }
-        /* టాప్ బార్ డిజైన్ */
+        .header-title {
+            background-color: #111122;
+            color: #00ffff;
+            font-size: 15px;
+            font-weight: bold;
+            padding: 6px;
+            letter-spacing: 1px;
+        }
         .top-bar {
             display: flex;
             justify-content: space-between;
@@ -50,15 +57,13 @@
             color: #ff3366;
             font-size: 16px;
         }
-        /* పజిల్ కాన్వాస్ (వైట్ బ్యాక్‌గ్రౌండ్, బ్లాక్ లైన్స్) */
         canvas {
             display: block;
-            margin: 15px auto;
+            margin: 10px auto;
             background-color: #ffffff;
             border: 2px solid #333333;
             border-radius: 8px;
         }
-        /* స్టేజ్ క్లియర్ పాప్-అప్ కార్డ్ */
         .popup-overlay {
             display: none;
             position: fixed;
@@ -109,34 +114,33 @@
 </head>
 <body>
 
-    <!-- టాప్ హెడర్ (బ్యాలెన్స్ & విత్డ్రా) -->
+    <div class="header-title">SAMEER PUZZLE - FLOW ADVENTURE</div>
+
     <div class="top-bar">
-        <div class="balance-box">₹375.61</div>
+        <div class="balance-box" id="walletBalance">₹0.00</div>
         <button class="withdraw-btn" onclick="alert('KYC Required for Withdrawal!')">Withdraw</button>
     </div>
 
     <div class="info-bar">
         <div class="hearts">❤️❤️❤️</div>
-        <div style="font-weight: bold;">Level 27</div>
-        <div style="color: #666;">20/20 lines</div>
+        <div style="font-weight: bold;" id="levelDisplay">Level 1</div>
+        <div style="color: #666;" id="linesCount">6/6 lines</div>
     </div>
 
-    <!-- గేమ్ పజిల్ బోర్డ్ (తెల్లటి బ్యాక్‌గ్రౌండ్, నల్లటి లైన్లు) -->
     <canvas id="puzzleCanvas" width="340" height="360"></canvas>
 
-    <!-- స్టేజ్ క్లియర్ అయినప్పుడు వచ్చే పాప్-అప్ (సేఫ్ రివార్డ్: ₹1.00 లేదా 50 పైసలు) -->
-    <div class="popup-overlay" id="winPopup" style="display: flex;">
+    <div class="popup-overlay" id="winPopup">
         <div class="popup-card">
             <div style="font-size: 35px;">🏆</div>
             <h3>STAGE CLEARED</h3>
-            <p style="color: #666; font-size: 13px;">All maze paths unblocked successfully!</p>
+            <p style="color: #666; font-size: 13px;" id="popupLevelText">Level 1 Completed!</p>
             
             <div style="background: #f1f3f5; padding: 10px; border-radius: 8px; margin: 15px 0;">
                 <div style="font-size: 12px; color: #555;">Earned Reward</div>
-                <div class="money-text" id="rewardText">+₹1.00</div>
+                <div class="money-text" id="rewardText">+₹0.50</div>
             </div>
 
-            <button class="btn-double" onclick="doubleReward()">WATCH AD TO DOUBLE (+₹2.00)</button>
+            <button class="btn-double" id="doubleBtn" onclick="doubleReward()">WATCH AD TO DOUBLE (+₹1.00)</button>
             <button class="btn-next" onclick="nextLevel()">NEXT STAGE ➔</button>
         </div>
     </div>
@@ -145,29 +149,52 @@
         const canvas = document.getElementById('puzzleCanvas');
         const ctx = canvas.getContext('2d');
 
-        // ఒరిజినల్ రెఫరెన్స్ లాగా నల్లటి లైన్లు మరియు బాణాలతో కూడిన మేజ్ పజిల్
-        let puzzlePaths = [
-            { points: [{x: 30, y: 30}, {x: 180, y: 30}, {x: 180, y: 90}, {x: 90, y: 90}], dir: 'LEFT' },
-            { points: [{x: 220, y: 30}, {x: 310, y: 30}, {x: 310, y: 140}, {x: 250, y: 140}], dir: 'LEFT' },
-            { points: [{x: 40, y: 120}, {x: 140, y: 120}, {x: 140, y: 200}, {x: 210, y: 200}], dir: 'RIGHT' },
-            { points: [{x: 250, y: 80}, {x: 250, y: 170}, {x: 170, y: 170}], dir: 'DOWN' },
-            { points: [{x: 70, y: 240}, {x: 150, y: 240}, {x: 150, y: 300}, {x: 280, y: 300}], dir: 'RIGHT' }
+        let currentLevel = 1;
+        let totalBalance = 0.00;
+        let currentReward = 0.50;
+
+        // బోర్డు నిండా ఉండే పూర్తి స్థాయి లైన్లు మరియు బాణాలు
+        let levelDesigns = [
+            // Level 1 Paths
+            [
+                { points: [{x: 40, y: 40}, {x: 160, y: 40}, {x: 160, y: 120}, {x: 80, y: 120}], dir: 'LEFT' },
+                { points: [{x: 200, y: 40}, {x: 280, y: 40}, {x: 280, y: 160}, {x: 200, y: 160}], dir: 'LEFT' },
+                { points: [{x: 40, y: 200}, {x: 120, y: 200}, {x: 120, y: 280}, {x: 240, y: 280}], dir: 'RIGHT' },
+                { points: [{x: 300, y: 100}, {x: 300, y: 240}, {x: 180, y: 240}], dir: 'LEFT' },
+                { points: [{x: 40, y: 320}, {x: 160, y: 320}, {x: 160, y: 300}], dir: 'UP' }
+            ],
+            // Level 2 Paths
+            [
+                { points: [{x: 60, y: 60}, {x: 220, y: 60}, {x: 220, y: 140}, {x: 100, y: 140}], dir: 'LEFT' },
+                { points: [{x: 280, y: 60}, {x: 280, y: 200}, {x: 140, y: 200}], dir: 'LEFT' },
+                { points: [{x: 60, y: 260}, {x: 180, y: 260}, {x: 180, y: 320}, {x: 280, y: 320}], dir: 'RIGHT' }
+            ]
         ];
+
+        let activePaths = [];
+
+        function loadLevel() {
+            let index = (currentLevel - 1) % levelDesigns.length;
+            activePaths = JSON.parse(JSON.stringify(levelDesigns[index]));
+            document.getElementById('levelDisplay').innerText = "Level " + currentLevel;
+            document.getElementById('linesCount').innerText = activePaths.length + "/" + activePaths.length + " lines";
+            drawGame();
+        }
 
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             // గ్రిడ్ డాట్స్
-            ctx.fillStyle = '#cccccc';
-            for (let x = 30; x < canvas.width; x += 30) {
-                for (let y = 30; y < canvas.height; y += 30) {
+            ctx.fillStyle = '#bbbbbb';
+            for (let x = 40; x < canvas.width; x += 40) {
+                for (let y = 40; y < canvas.height; y += 40) {
                     ctx.fillRect(x, y, 2, 2);
                 }
             }
 
-            // నల్లటి లైన్లు మరియు బాణాలు గీయడం
-            puzzlePaths.forEach((item) => {
-                ctx.strokeStyle = '#222222';
+            // నల్లటి లైన్లు మరియు బాణాలు
+            activePaths.forEach((item) => {
+                ctx.strokeStyle = '#111111';
                 ctx.lineWidth = 4;
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
@@ -175,68 +202,5 @@
                 ctx.beginPath();
                 item.points.forEach((pt, i) => {
                     if (i === 0) ctx.moveTo(pt.x, pt.y);
-                    else ctx.lineTo(pt.x, pt.y);
-                });
-                ctx.stroke();
-
-                // బాణం గుర్తు (Arrowhead)
-                let lastPt = item.points[item.points.length - 1];
-                ctx.fillStyle = '#222222';
-                ctx.beginPath();
-                if (item.dir === 'LEFT') {
-                    ctx.moveTo(lastPt.x - 8, lastPt.y);
-                    ctx.lineTo(lastPt.x + 4, lastPt.y - 5);
-                    ctx.lineTo(lastPt.x + 4, lastPt.y + 5);
-                } else if (item.dir === 'RIGHT') {
-                    ctx.moveTo(lastPt.x + 8, lastPt.y);
-                    ctx.lineTo(lastPt.x - 4, lastPt.y - 5);
-                    ctx.lineTo(lastPt.x - 4, lastPt.y + 5);
-                } else if (item.dir === 'DOWN') {
-                    ctx.moveTo(lastPt.x, lastPt.y + 8);
-                    ctx.lineTo(lastPt.x - 5, lastPt.y - 4);
-                    ctx.lineTo(lastPt.x + 5, lastPt.y - 4);
-                }
-                ctx.fill();
-            });
-        }
-
-        // క్లిక్ చేస్తే లైన్ క్లియర్ అయి విన్ పాప్-అప్ రావడం
-        canvas.addEventListener('click', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-
-            puzzlePaths.forEach((item, index) => {
-                let lastPt = item.points[item.points.length - 1];
-                let dist = Math.hypot(clickX - lastPt.x, clickY - lastPt.y);
-                if (dist < 22) {
-                    puzzlePaths.splice(index, 1);
-                }
-            });
-
-            drawGame();
-
-            if (puzzlePaths.length === 0) {
-                document.getElementById('winPopup').style.display = 'flex';
-            }
-        });
-
-        function doubleReward() {
-            document.getElementById('rewardText').innerText = "+₹2.00";
-            alert("Reward Doubled!");
-        }
-
-        function nextLevel() {
-            document.getElementById('winPopup').style.display = 'none';
-            puzzlePaths = [
-                { points: [{x: 40, y: 40}, {x: 160, y: 40}, {x: 160, y: 100}, {x: 100, y: 100}], dir: 'LEFT' },
-                { points: [{x: 200, y: 50}, {x: 280, y: 50}, {x: 280, y: 150}, {x: 220, y: 150}], dir: 'LEFT' }
-            ];
-            drawGame();
-        }
-
-        drawGame();
-    </script>
-
-</body>
-</html>
+                    else ctx.lineTo(pt.x, pt.y
+                                    
