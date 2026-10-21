@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sameer Puzzle - Flow Adventure</title>
+    <title>Sameer Puzzle - Different Levels</title>
     <style>
         body, html {
             margin: 0;
@@ -57,7 +57,6 @@
             color: #ff3366;
             font-size: 16px;
         }
-        /* కాన్వాస్ స్పష్టంగా కనిపించేలా సైజ్ ఫిక్స్ చేయడం */
         canvas {
             display: block;
             margin: 15px auto;
@@ -66,7 +65,6 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        /* పాప్-అప్ కార్డ్స్ */
         .popup-overlay {
             display: none;
             position: fixed;
@@ -114,7 +112,6 @@
             margin-top: 8px;
             cursor: pointer;
         }
-        /* యాడ్ స్క్రీన్ */
         #adOverlay {
             display: none;
             position: fixed;
@@ -140,10 +137,9 @@
     <div class="info-bar">
         <div class="hearts">❤️❤️❤️</div>
         <div style="font-weight: bold;" id="levelTitle">Level 1</div>
-        <div style="color: #666;" id="lineCount">6/6 lines</div>
+        <div style="color: #666;" id="lineCount">lines</div>
     </div>
 
-    <!-- గేమ్ పజిల్ బోర్డ్ -->
     <canvas id="puzzleCanvas" width="340" height="340"></canvas>
 
     <!-- స్టేజ్ క్లియర్ పాప్-అప్ (సేఫ్ రివార్డ్: 50 పైసలు లేదా 1 రూపాయి) -->
@@ -180,19 +176,40 @@
         let puzzlePaths = [];
         let totalBalance = 0.00;
 
-        // అన్లిమిటెడ్ లెవెల్స్ కోసం పజిల్ లైన్లను జనరేట్ చేయడం
+        // ప్రతి లెవెల్‌కి పూర్తిగా కొత్త డిజైన్‌లు వచ్చేలా చేసే మల్టిపుల్ పజిల్ సెట్స్
         function generateLevelData() {
-            puzzlePaths = [
-                { points: [{x: 40, y: 40}, {x: 180, y: 40}, {x: 180, y: 100}, {x: 80, y: 100}], dir: 'LEFT' },
-                { points: [{x: 220, y: 40}, {x: 300, y: 40}, {x: 300, y: 140}, {x: 220, y: 140}], dir: 'LEFT' },
-                { points: [{x: 40, y: 150}, {x: 140, y: 150}, {x: 140, y: 220}, {x: 200, y: 220}], dir: 'RIGHT' },
-                { points: [{x: 260, y: 90}, {x: 260, y: 180}, {x: 160, y: 180}], dir: 'DOWN' },
-                { points: [{x: 60, y: 260}, {x: 150, y: 260}, {x: 150, y: 300}, {x: 280, y: 300}], dir: 'RIGHT' },
-                { points: [{x: 100, y: 60}, {x: 100, y: 120}, {x: 50, y: 120}], dir: 'LEFT' }
+            let levelPatterns = [
+                // Pattern 1 (Level 1, 4, 7...)
+                [
+                    { points: [{x: 40, y: 40}, {x: 180, y: 40}, {x: 180, y: 100}, {x: 80, y: 100}], dir: 'LEFT' },
+                    { points: [{x: 220, y: 40}, {x: 300, y: 40}, {x: 300, y: 140}, {x: 220, y: 140}], dir: 'LEFT' },
+                    { points: [{x: 40, y: 150}, {x: 140, y: 150}, {x: 140, y: 220}, {x: 200, y: 220}], dir: 'RIGHT' },
+                    { points: [{x: 260, y: 90}, {x: 260, y: 180}, {x: 160, y: 180}], dir: 'DOWN' },
+                    { points: [{x: 60, y: 260}, {x: 150, y: 260}, {x: 150, y: 300}, {x: 280, y: 300}], dir: 'RIGHT' }
+                ],
+                // Pattern 2 (Level 2, 5, 8...)
+                [
+                    { points: [{x: 50, y: 50}, {x: 150, y: 50}, {x: 150, y: 120}, {x: 250, y: 120}], dir: 'RIGHT' },
+                    { points: [{x: 280, y: 50}, {x: 280, y: 200}, {x: 120, y: 200}], dir: 'LEFT' },
+                    { points: [{x: 40, y: 100}, {x: 100, y: 100}, {x: 100, y: 280}, {x: 200, y: 280}], dir: 'RIGHT' },
+                    { points: [{x: 80, y: 230}, {x: 220, y: 230}, {x: 220, y: 80}], dir: 'UP' }
+                ],
+                // Pattern 3 (Level 3, 6, 9...)
+                [
+                    { points: [{x: 60, y: 40}, {x: 240, y: 40}, {x: 240, y: 110}, {x: 120, y: 110}], dir: 'LEFT' },
+                    { points: [{x: 40, y: 160}, {x: 180, y: 160}, {x: 180, y: 240}, {x: 280, y: 240}], dir: 'RIGHT' },
+                    { points: [{x: 300, y: 80}, {x: 300, y: 180}, {x: 220, y: 180}], dir: 'DOWN' },
+                    { points: [{x: 50, y: 290}, {x: 150, y: 290}, {x: 150, y: 320}, {x: 260, y: 320}], dir: 'RIGHT' },
+                    { points: [{x: 100, y: 80}, {x: 50, y: 80}], dir: 'LEFT' }
+                ]
             ];
 
+            // ఏ లెవెల్ వస్తే ఆ లెవెల్‌కి తగిన ప్యాటర్న్ ఆటోమేటిక్‌గా సెలెక్ట్ అవుతుంది
+            let patternIndex = (currentLevel - 1) % levelPatterns.length;
+            puzzlePaths = JSON.parse(JSON.stringify(levelPatterns[patternIndex]));
+
             document.getElementById('levelTitle').innerText = "Level " + currentLevel;
-            document.getElementById('lineCount').innerText = puzzlePaths.length + "/6 lines";
+            document.getElementById('lineCount').innerText = puzzlePaths.length + " lines";
             document.getElementById('popupLevelText').innerText = "Level " + currentLevel + " unblocked!";
             
             // సేఫ్ రివార్డ్ (50 పైసలు లేదా 1 రూపాయి)
@@ -241,6 +258,10 @@
                     ctx.moveTo(lastPt.x, lastPt.y + 8);
                     ctx.lineTo(lastPt.x - 5, lastPt.y - 4);
                     ctx.lineTo(lastPt.x + 5, lastPt.y - 4);
+                } else if (item.dir === 'UP') {
+                    ctx.moveTo(lastPt.x, lastPt.y - 8);
+                    ctx.lineTo(lastPt.x - 5, lastPt.y + 4);
+                    ctx.lineTo(lastPt.x + 5, lastPt.y + 4);
                 }
                 ctx.fill();
             });
@@ -260,7 +281,7 @@
                 }
             });
 
-            document.getElementById('lineCount').innerText = puzzlePaths.length + "/6 lines";
+            document.getElementById('lineCount').innerText = puzzlePaths.length + " lines";
             drawGame();
 
             if (puzzlePaths.length === 0) {
