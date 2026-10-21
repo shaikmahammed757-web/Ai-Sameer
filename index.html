@@ -3,207 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SK MD Bike Puzzle & Earn</title>
+    <title>Sameer Puzzle - Safe Rewards</title>
     <style>
-        body {
+        body, html {
             margin: 0;
             padding: 0;
-            background: #0f172a;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d0d1a;
+            color: white;
+            font-family: Arial, sans-serif;
             text-align: center;
+            height: 100%;
+            overflow: hidden;
         }
-        header {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            padding: 14px;
+        .popup-card {
+            background: #131324;
+            border: 2px solid #222244;
+            width: 85%;
+            max-width: 350px;
+            margin: 40px auto;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+        }
+        .trophy-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .stage-title {
+            color: #00ffff;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .level-num {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 5px 0 15px 0;
+        }
+        .bounty-box {
+            background: #0b0b16;
+            border: 1px solid #222244;
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .money-text {
+            color: #50fa7b;
             font-size: 18px;
             font-weight: bold;
-            color: #000;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .container {
-            padding: 10px;
-            max-width: 400px;
-            margin: auto;
-        }
-        .wallet-box {
-            background: #1e293b;
-            border: 2px solid #f59e0b;
-            padding: 8px;
-            margin: 8px 0;
-            border-radius: 8px;
-        }
-        .balance-text {
-            color: #4ade80;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .game-screen {
-            background: #1e293b;
-            border: 3px solid #3b82f6;
-            border-radius: 12px;
-            padding: 10px;
-            margin-top: 5px;
-        }
-        /* Blueprint container styling matching reference */
-        .blueprint-container {
-            width: 280px;
-            height: 280px;
-            margin: 10px auto;
-            background: #1e3a8a;
-            border: 4px solid #60a5fa;
-            border-radius: 10px;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 2px;
-            padding: 2px;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
-        }
-        .blueprint-slot {
-            background: rgba(15, 23, 42, 0.7);
-            border: 2px dashed #93c5fd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .points-text {
+            color: #f1fa8c;
             font-size: 14px;
-            color: #93c5fd;
-            cursor: pointer;
-            overflow: hidden;
         }
-        /* Scrambled pieces pool */
-        .parts-pool {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin: 10px 0;
-        }
-        .pool-piece {
-            width: 60px;
-            height: 60px;
-            background: #334155;
-            border: 2px solid #f59e0b;
-            border-radius: 6px;
-            cursor: pointer;
-            overflow: hidden;
-            margin: auto;
-            transition: 0.2s;
-        }
-        .pool-piece:active {
-            transform: scale(0.92);
-        }
-        /* 4 distinct quadrants of the master bike image */
-        .p-0 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') 0px 0px/140px 140px no-repeat; }
-        .p-1 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') -70px 0px/140px 140px no-repeat; }
-        .p-2 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') 0px -70px/140px 140px no-repeat; }
-        .p-3 { background: url('https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&auto=format&fit=crop&q=80') -70px -70px/140px 140px no-repeat; }
-
-        .action-btn {
-            background: #22c55e;
-            color: white;
+        .btn-double {
+            background: linear-gradient(45deg, #f1c40f, #f39c12);
+            color: #000;
             border: none;
-            padding: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
             width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(241, 196, 15, 0.4);
+        }
+        .btn-next {
+            background: #00bcd4;
+            color: #000;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <header>SK MD Bike Puzzle & Earn</header>
+    <div class="popup-card">
+        <div class="trophy-icon">🏆</div>
+        <div class="stage-title">STAGE CLEARED</div>
+        <div class="level-num" id="levelText">Lv. 31</div>
+        <div style="font-size: 12px; color: #8888aa; margin-bottom: 15px;">All neon arrow paths unblocked!</div>
 
-    <div class="container">
-        <div class="wallet-box">
-            <p style="margin:2px 0;">Wallet Balance: <span class="balance-text" id="balance">₹0</span></p>
-            <p style="margin:2px 0; font-size: 11px; color: #94a3b8;">Min. Withdrawal Limit: <b>₹1000</b></p>
-        </div>
-
-        <div class="game-screen">
-            <h3 style="margin:4px 0;">Bike Mechanic Puzzle</h3>
-            <p style="font-size: 11px; color: #cbd5e1; margin-bottom: 6px;">Tap a part below, then tap blueprint slots to complete the bike!</p>
-            
-            <!-- Blueprint Slots -->
-            <div class="blueprint-container">
-                <div class="blueprint-slot" id="slot0" onclick="selectSlot(0)">Part 1</div>
-                <div class="blueprint-slot" id="slot1" onclick="selectSlot(1)">Part 2</div>
-                <div class="blueprint-slot" id="slot2" onclick="selectSlot(2)">Part 3</div>
-                <div class="blueprint-slot" id="slot3" onclick="selectSlot(3)">Part 4</div>
+        <!-- సేఫ్ రివార్డ్ అమౌంట్ (₹0.50 నుండి ₹1.00 మాత్రమే) -->
+        <div class="bounty-box">
+            <div>
+                <div style="font-size: 11px; color: #aaa;">Earned Reward</div>
+                <div class="money-text" id="earnedMoney">+₹1.00</div>
             </div>
-
-            <div style="font-size:12px; color:#f59e0b; margin: 5px 0;">Available Bike Parts</div>
-            
-            <!-- Parts Pool -->
-            <div class="parts-pool" id="poolContainer"></div>
-
-            <button class="action-btn" onclick="verifyPuzzle()">Check & Earn ₹50</button>
+            <div style="width: 1px; height: 25px; background: #333355;"></div>
+            <div>
+                <div style="font-size: 11px; color: #aaa;">Points</div>
+                <div class="points-text">+10 pts</div>
+            </div>
         </div>
+
+        <button class="btn-double" id="doubleBtn" onclick="doubleReward()">WATCH AD TO DOUBLE (+₹2.00)</button>
+        <button class="btn-next" onclick="nextLevel()">NEXT STAGE ➔</button>
     </div>
 
     <script>
-        let balance = 0;
-        let selectedPiece = null;
-        let puzzleState = [null, null, null, null];
-        const allParts = ['p-0', 'p-1', 'p-2', 'p-3'];
+        let currentLevel = 31;
+        let currentReward = 1.00; // ఒక రూపాయి లేదా 50 పైసలు
 
-        function initGame() {
-            document.getElementById("balance").innerText = "₹" + balance;
-            puzzleState = [null, null, null, null];
-            renderGame();
-
-            let pool = document.getElementById("poolContainer");
-            pool.innerHTML = "";
-
-            let shuffled = [...allParts].sort(() => Math.random() - 0.5);
-            shuffled.forEach(partClass => {
-                let div = document.createElement("div");
-                div.className = `pool-piece ${partClass}`;
-                div.onclick = function() {
-                    selectedPiece = partClass;
-                    div.style.borderColor = "#22c55e";
-                    alert("Part selected! Now tap any slot on the blueprint above.");
-                };
-                pool.appendChild(div);
-            });
+        function doubleReward() {
+            currentReward = currentReward * 2;
+            document.getElementById('earnedMoney').innerText = "+₹" + currentReward.toFixed(2);
+            document.getElementById('doubleBtn').style.display = 'none'; // ఒక్కసారి యాడ్ చూశాక బటన్ హైడ్ అవుతుంది
+            alert("Reward Doubled Successfully!");
         }
 
-        function renderGame() {
-            for(let i=0; i<4; i++) {
-                let slot = document.getElementById("slot" + i);
-                if(puzzleState[i]) {
-                    slot.className = `blueprint-slot ${puzzleState[i]}`;
-                    slot.innerText = "";
-                } else {
-                    slot.className = "blueprint-slot";
-                    slot.innerText = `Part ${i+1}`;
-                }
-            }
+        function nextLevel() {
+            currentLevel++;
+            // తర్వాతి లెవెల్ కోసం అమౌంట్‌ను 0.50 లేదా 1.00 మధ్య మారుస్తుంది
+            currentReward = currentLevel % 2 === 0 ? 0.50 : 1.00;
+            
+            document.getElementById('levelText').innerText = "Lv. " + currentLevel;
+            document.getElementById('earnedMoney').innerText = "+₹" + currentReward.toFixed(2);
+            document.getElementById('doubleBtn').innerText = "WATCH AD TO DOUBLE (+₹" + (currentReward * 2).toFixed(2) + ")";
+            document.getElementById('doubleBtn').style.display = 'block';
         }
-
-        function selectSlot(index) {
-            if(selectedPiece) {
-                puzzleState[index] = selectedPiece;
-                selectedPiece = null;
-                renderGame();
-            } else {
-                alert("Please select a bike part from the bottom panel first!");
-            }
-        }
-
-        function verifyPuzzle() {
-            balance += 50;
-            if(balance >= 1000) {
-                alert("🎉 అభినందనలు! మీరు ₹1000 విత్‌డ్రా లిమిట్ చేరుకున్నారు.");
-            } else {
-                alert("✨ అద్భుతం! బైక్ పజిల్ పూర్తయింది. ₹50 మీ వాలెట్‌కి జోడించబడింది!");
-            }
-            initGame();
-        }
-
-        initGame();
     </script>
+
 </body>
 </html>
