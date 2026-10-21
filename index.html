@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sameer Puzzle - Different Levels</title>
+    <title>Sameer Puzzle - Infinite Levels</title>
     <style>
         body, html {
             margin: 0;
@@ -176,37 +176,38 @@
         let puzzlePaths = [];
         let totalBalance = 0.00;
 
-        // ప్రతి లెవెల్‌కి పూర్తిగా కొత్త డిజైన్‌లు వచ్చేలా చేసే మల్టిపుల్ పజిల్ సెట్స్
+        // అన్లిమిటెడ్ లెవెల్స్ కోసం ప్రతిసారీ కొత్త లైన్లను ఆటోమేటిక్‌గా జనరేట్ చేసే ఫంక్షన్
         function generateLevelData() {
-            let levelPatterns = [
-                // Pattern 1 (Level 1, 4, 7...)
-                [
-                    { points: [{x: 40, y: 40}, {x: 180, y: 40}, {x: 180, y: 100}, {x: 80, y: 100}], dir: 'LEFT' },
-                    { points: [{x: 220, y: 40}, {x: 300, y: 40}, {x: 300, y: 140}, {x: 220, y: 140}], dir: 'LEFT' },
-                    { points: [{x: 40, y: 150}, {x: 140, y: 150}, {x: 140, y: 220}, {x: 200, y: 220}], dir: 'RIGHT' },
-                    { points: [{x: 260, y: 90}, {x: 260, y: 180}, {x: 160, y: 180}], dir: 'DOWN' },
-                    { points: [{x: 60, y: 260}, {x: 150, y: 260}, {x: 150, y: 300}, {x: 280, y: 300}], dir: 'RIGHT' }
-                ],
-                // Pattern 2 (Level 2, 5, 8...)
-                [
-                    { points: [{x: 50, y: 50}, {x: 150, y: 50}, {x: 150, y: 120}, {x: 250, y: 120}], dir: 'RIGHT' },
-                    { points: [{x: 280, y: 50}, {x: 280, y: 200}, {x: 120, y: 200}], dir: 'LEFT' },
-                    { points: [{x: 40, y: 100}, {x: 100, y: 100}, {x: 100, y: 280}, {x: 200, y: 280}], dir: 'RIGHT' },
-                    { points: [{x: 80, y: 230}, {x: 220, y: 230}, {x: 220, y: 80}], dir: 'UP' }
-                ],
-                // Pattern 3 (Level 3, 6, 9...)
-                [
-                    { points: [{x: 60, y: 40}, {x: 240, y: 40}, {x: 240, y: 110}, {x: 120, y: 110}], dir: 'LEFT' },
-                    { points: [{x: 40, y: 160}, {x: 180, y: 160}, {x: 180, y: 240}, {x: 280, y: 240}], dir: 'RIGHT' },
-                    { points: [{x: 300, y: 80}, {x: 300, y: 180}, {x: 220, y: 180}], dir: 'DOWN' },
-                    { points: [{x: 50, y: 290}, {x: 150, y: 290}, {x: 150, y: 320}, {x: 260, y: 320}], dir: 'RIGHT' },
-                    { points: [{x: 100, y: 80}, {x: 50, y: 80}], dir: 'LEFT' }
-                ]
+            puzzlePaths = [];
+            let numLines = 4 + (currentLevel % 4); // లెవెల్స్ బట్టి లైన్ల సంఖ్య మారుతుంది
+
+            let possibleDirs = ['LEFT', 'RIGHT', 'DOWN', 'UP'];
+            let startPositions = [
+                {x: 40, y: 40}, {x: 280, y: 40}, {x: 40, y: 160}, 
+                {x: 280, y: 160}, {x: 80, y: 280}, {x: 240, y: 280},
+                {x: 140, y: 40}, {x: 40, y: 220}, {x: 220, y: 100}
             ];
 
-            // ఏ లెవెల్ వస్తే ఆ లెవెల్‌కి తగిన ప్యాటర్న్ ఆటోమేటిక్‌గా సెలెక్ట్ అవుతుంది
-            let patternIndex = (currentLevel - 1) % levelPatterns.length;
-            puzzlePaths = JSON.parse(JSON.stringify(levelPatterns[patternIndex]));
+            // రాండమ్‌గా డిఫరెంట్ షేప్స్ మరియు లైన్లను సృష్టించడం
+            for (let i = 0; i < numLines; i++) {
+                let start = startPositions[(currentLevel * 3 + i) % startPositions.length];
+                let midX = 60 + ((currentLevel * 45 + i * 30) % 220);
+                let midY = 60 + ((currentLevel * 35 + i * 40) % 200);
+                let endX = 50 + ((currentLevel * 60 + i * 50) % 240);
+                let endY = 50 + ((currentLevel * 50 + i * 25) % 240);
+
+                let dir = possibleDirs[(currentLevel + i) % possibleDirs.length];
+
+                puzzlePaths.push({
+                    points: [
+                        {x: start.x, y: start.y},
+                        {x: midX, y: start.y},
+                        {x: midX, y: midY},
+                        {x: endX, y: endY}
+                    ],
+                    dir: dir
+                });
+            }
 
             document.getElementById('levelTitle').innerText = "Level " + currentLevel;
             document.getElementById('lineCount').innerText = puzzlePaths.length + " lines";
