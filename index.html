@@ -1,79 +1,252 @@
-<button class="play-btn" onclick="startGame()">
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bharat Chakravyuh</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:linear-gradient(#FF9933,#ffffff,#138808);
+min-height:100vh;
+}
+
+#home{
+padding:15px;
+text-align:center;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+}
+
+.box{
+background:#0d47a1;
+color:#fff;
+padding:12px 20px;
+border-radius:15px;
+font-size:20px;
+font-weight:bold;
+}
+
+.title{
+font-size:42px;
+font-weight:bold;
+color:#ff6f00;
+text-shadow:2px 2px 4px #000;
+}
+
+.sub{
+font-size:22px;
+color:#000;
+margin-bottom:20px;
+}
+
+.preview{
+height:250px;
+background:#fff;
+border:5px solid #0d47a1;
+border-radius:20px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:34px;
+font-weight:bold;
+}
+
+.cards{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.card{
+flex:1;
+background:#0d47a1;
+color:#fff;
+padding:20px;
+border-radius:15px;
+font-size:18px;
+}
+
+.play{
+width:100%;
+margin-top:20px;
+padding:18px;
+font-size:30px;
+background:#2ecc40;
+color:#fff;
+border:none;
+border-radius:20px;
+font-weight:bold;
+}
+
+#game{
+display:none;
+text-align:center;
+}
+
+#level{
+font-size:28px;
+font-weight:bold;
+padding:10px;
+background:#fff;
+}
+
+canvas{
+background:#fff;
+display:block;
+margin:auto;
+touch-action:none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="home">
+
+<div class="top">
+<div class="box">🪙 1250</div>
+<div class="box">❤️ 3</div>
+</div>
+
+<div class="title">🇮🇳 BHARAT</div>
+<div class="sub">🌀 Chakravyuh Puzzle</div>
+
+<div class="preview">
+🏹 1000+ Levels
+</div>
+
+<div class="cards">
+<div class="card">🎁 Reward</div>
+<div class="card">💡 Hint</div>
+</div>
+
+<button class="play" onclick="startGame()">
 ▶ PLAY
 </button>
 
-<div id="homeScreen">
-  <!-- Home UI -->
 </div>
 
-<canvas id="gameCanvas"
-width="100%"
-height="100%"
-style="display:none;background:white;">
-</canvas>
+<div id="game">
+
+<div id="level">
+Level 1
+</div>
+
+<canvas id="mazeCanvas"></canvas>
+
+</div>
 
 <script>
-let level = 1;
 
-function startGame() {
+let level=1;
 
- document.getElementById("homeScreen").style.display = "none";
- document.getElementById("gameCanvas").style.display = "block";
+const canvas=
+document.getElementById("mazeCanvas");
 
- generateLevel();
+const ctx=
+canvas.getContext("2d");
+
+function startGame(){
+
+document.getElementById("home").style.display="none";
+document.getElementById("game").style.display="block";
+
+generateMaze();
+
 }
 
-function generateLevel(){
+function generateMaze(){
 
- const canvas =
- document.getElementById("gameCanvas");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight-70;
 
- const ctx =
- canvas.getContext("2d");
+ctx.clearRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
 
- canvas.width = window.innerWidth;
- canvas.height = window.innerHeight;
+ctx.fillStyle="white";
+ctx.fillRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
 
- ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.strokeStyle="#000080";
+ctx.lineWidth=5;
 
- ctx.fillStyle="#000";
+let walls=80+(level*2);
 
- for(let i=0;i<100;i++){
+for(let i=0;i<walls;i++){
 
-   let x=Math.random()*canvas.width;
-   let y=Math.random()*canvas.height;
+let x=Math.random()*canvas.width;
+let y=Math.random()*canvas.height;
 
-   ctx.fillRect(x,y,80,8);
-   ctx.fillRect(x,y,8,80);
+ctx.beginPath();
 
- }
+ctx.moveTo(x,y);
 
- ctx.fillStyle="green";
+ctx.lineTo(
+x+Math.random()*100,
+y
+);
 
- ctx.fillRect(
- canvas.width-80,
- canvas.height-80,
- 40,
- 40
- );
+ctx.lineTo(
+x+Math.random()*100,
+y+Math.random()*100
+);
 
- ctx.font="30px Arial";
- ctx.fillText(
- "Level "+level,
- 20,
- 40
- );
+ctx.stroke();
 }
 
-function nextLevel(){
+ctx.fillStyle="green";
 
- level++;
+ctx.fillRect(
+canvas.width-60,
+canvas.height-60,
+35,
+35
+);
 
- generateLevel();
+document.getElementById(
+"level"
+).innerHTML=
+"🏹 Level "+level;
+
 }
+
+canvas.addEventListener(
+"click",
+function(){
+
+level++;
+
+generateMaze();
+
+}
+);
 
 window.addEventListener(
 "resize",
-generateLevel
+generateMaze
 );
+
 </script>
+
+</body>
+</html>
