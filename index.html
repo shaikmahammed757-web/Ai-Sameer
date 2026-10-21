@@ -1,159 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sameer Brain Puzzle</title>
-
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
-body{
-background:linear-gradient(#4da3ff,#1d6fff);
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-}
-
-.container{
-width:380px;
-background:rgba(255,255,255,0.08);
-padding:15px;
-border-radius:20px;
-color:#fff;
-text-align:center;
-}
-
-.topbar{
-display:flex;
-justify-content:space-between;
-margin-bottom:15px;
-}
-
-.box{
-background:#0b4ecf;
-padding:10px;
-border-radius:15px;
-font-size:18px;
-font-weight:bold;
-}
-
-.logo{
-font-size:42px;
-font-weight:bold;
-color:#ffd700;
-text-shadow:2px 2px 5px #000;
-margin:15px 0;
-}
-
-.subtitle{
-font-size:20px;
-margin-bottom:20px;
-}
-
-.maze{
-width:250px;
-height:250px;
-background:#fff;
-margin:auto;
-border-radius:15px;
-border:5px solid #0a2f8f;
-display:flex;
-justify-content:center;
-align-items:center;
-color:#000;
-font-size:30px;
-font-weight:bold;
-}
-
-.stats{
-display:flex;
-justify-content:space-between;
-margin-top:15px;
-}
-
-.card{
-width:48%;
-background:#0b4ecf;
-padding:15px;
-border-radius:15px;
-}
-
-.play-btn{
-margin-top:20px;
-width:100%;
-padding:15px;
-font-size:28px;
-font-weight:bold;
-background:#33cc33;
-border:none;
-border-radius:15px;
-color:white;
-cursor:pointer;
-}
-
-.menu{
-display:flex;
-justify-content:space-between;
-margin-top:20px;
-}
-
-.menu div{
-width:23%;
-background:#0b4ecf;
-padding:10px;
-border-radius:10px;
-font-size:13px;
-}
-</style>
-</head>
-<body>
-
-<div class="container">
-
-<div class="topbar">
-<div class="box">🪙 1250</div>
-<div class="box">❤️ 3</div>
-<div class="box">⚙️</div>
-</div>
-
-<div class="logo">SAMEER</div>
-<div class="subtitle">🧠 Brain Puzzle</div>
-
-<div class="maze">
-Maze Preview
-</div>
-
-<div class="stats">
-<div class="card">
-📈<br>
-1000+ Levels
-</div>
-
-<div class="card">
-💡<br>
-Hints
-</div>
-</div>
-
-<button class="play-btn">
+<button class="play-btn" onclick="startGame()">
 ▶ PLAY
 </button>
 
-<div class="menu">
-<div>🏆<br>Rank</div>
-<div>🛒<br>Shop</div>
-<div>⭐<br>Awards</div>
-<div>📤<br>Share</div>
+<div id="homeScreen">
+  <!-- Home UI -->
 </div>
 
-</div>
+<canvas id="gameCanvas"
+width="100%"
+height="100%"
+style="display:none;background:white;">
+</canvas>
 
-</body>
-</html>
+<script>
+let level = 1;
+
+function startGame() {
+
+ document.getElementById("homeScreen").style.display = "none";
+ document.getElementById("gameCanvas").style.display = "block";
+
+ generateLevel();
+}
+
+function generateLevel(){
+
+ const canvas =
+ document.getElementById("gameCanvas");
+
+ const ctx =
+ canvas.getContext("2d");
+
+ canvas.width = window.innerWidth;
+ canvas.height = window.innerHeight;
+
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ ctx.fillStyle="#000";
+
+ for(let i=0;i<100;i++){
+
+   let x=Math.random()*canvas.width;
+   let y=Math.random()*canvas.height;
+
+   ctx.fillRect(x,y,80,8);
+   ctx.fillRect(x,y,8,80);
+
+ }
+
+ ctx.fillStyle="green";
+
+ ctx.fillRect(
+ canvas.width-80,
+ canvas.height-80,
+ 40,
+ 40
+ );
+
+ ctx.font="30px Arial";
+ ctx.fillText(
+ "Level "+level,
+ 20,
+ 40
+ );
+}
+
+function nextLevel(){
+
+ level++;
+
+ generateLevel();
+}
+
+window.addEventListener(
+"resize",
+generateLevel
+);
+</script>
