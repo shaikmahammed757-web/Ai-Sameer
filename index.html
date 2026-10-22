@@ -1,252 +1,256 @@
 <!DOCTYPE html>
 <html lang="te">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bharat Chakravyuh</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ai Sameer Delivery Partner</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f5f7;
+            color: #333;
+            padding-bottom: 70px;
+        }
+        /* Top Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .profile-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #ff4757;
+            object-fit: cover;
+        }
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            background: #ffeaa7;
+            padding: 5px 15px;
+            border-radius: 30px;
+            gap: 8px;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 24px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #2ed573;
+        }
+        input:checked + .slider:before {
+            transform: translateX(21px);
+        }
+        .notification-icon {
+            font-size: 20px;
+            background: #f1f2f6;
+            padding: 10px;
+            border-radius: 50%;
+        }
 
-<style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
+        /* Earnings Banner */
+        .earnings-banner {
+            background: linear-gradient(135deg, #30336b, #130f40);
+            color: white;
+            margin: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .earnings-banner h2 {
+            font-size: 18px;
+            font-weight: 400;
+        }
+        .earnings-banner span {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2ed573;
+        }
 
-body{
-background:linear-gradient(#FF9933,#ffffff,#138808);
-min-height:100vh;
-}
+        /* Daily Incentive Card */
+        .incentive-card {
+            background: linear-gradient(135deg, #ff9f43, #ff6b6b);
+            color: white;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .incentive-card h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .incentive-card p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
 
-#home{
-padding:15px;
-text-align:center;
-}
+        /* Order Card */
+        .order-card {
+            background: white;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 5px solid #2ed573;
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2f3640;
+        }
+        .order-route {
+            font-size: 14px;
+            color: #57606f;
+            margin-bottom: 15px;
+        }
+        .accept-btn {
+            width: 100%;
+            background: #2ed573;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
-.top{
-display:flex;
-justify-content:space-between;
-margin-bottom:20px;
-}
-
-.box{
-background:#0d47a1;
-color:#fff;
-padding:12px 20px;
-border-radius:15px;
-font-size:20px;
-font-weight:bold;
-}
-
-.title{
-font-size:42px;
-font-weight:bold;
-color:#ff6f00;
-text-shadow:2px 2px 4px #000;
-}
-
-.sub{
-font-size:22px;
-color:#000;
-margin-bottom:20px;
-}
-
-.preview{
-height:250px;
-background:#fff;
-border:5px solid #0d47a1;
-border-radius:20px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:34px;
-font-weight:bold;
-}
-
-.cards{
-display:flex;
-gap:10px;
-margin-top:15px;
-}
-
-.card{
-flex:1;
-background:#0d47a1;
-color:#fff;
-padding:20px;
-border-radius:15px;
-font-size:18px;
-}
-
-.play{
-width:100%;
-margin-top:20px;
-padding:18px;
-font-size:30px;
-background:#2ecc40;
-color:#fff;
-border:none;
-border-radius:20px;
-font-weight:bold;
-}
-
-#game{
-display:none;
-text-align:center;
-}
-
-#level{
-font-size:28px;
-font-weight:bold;
-padding:10px;
-background:#fff;
-}
-
-canvas{
-background:#fff;
-display:block;
-margin:auto;
-touch-action:none;
-}
-</style>
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            font-size: 12px;
+            color: #718093;
+            text-decoration: none;
+        }
+        .nav-item.active {
+            color: #30336b;
+            font-weight: bold;
+        }
+        .nav-item div {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="home">
+    <!-- Header -->
+    <div class="header">
+        <div class="profile-section">
+            <img src="logo.png" alt="Profile" class="profile-img">
+            <strong>Shaik Mohammad</strong>
+        </div>
+        <div class="toggle-container">
+            <span style="font-size: 12px; font-weight: bold;">Offline</span>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="notification-icon">🔔</div>
+    </div>
 
-<div class="top">
-<div class="box">🪙 1250</div>
-<div class="box">❤️ 3</div>
-</div>
+    <!-- Earnings Banner -->
+    <div class="earnings-banner">
+        <div>
+            <h2>Today's Earnings</h2>
+            <span>₹ 0</span>
+        </div>
+        <div style="font-size: 22px;">➔</div>
+    </div>
 
-<div class="title">🇮🇳 BHARAT</div>
-<div class="sub">🌀 Chakravyuh Puzzle</div>
+    <!-- Daily Incentive Card -->
+    <div class="incentive-card">
+        <h3>🎁 డైలీ బోనస్ ఆఫర్ (Daily Incentive)</h3>
+        <p>ఈ రోజు 5 ఆర్డర్లు పూర్తి చేయండి, అదనంగా <strong>₹50 బోనస్</strong> పొందండి!</p>
+    </div>
 
-<div class="preview">
-🏹 1000+ Levels
-</div>
+    <!-- Active Order Card -->
+    <div class="order-card">
+        <div class="order-header">
+            <span>📦 Pickup & Drop Request</span>
+            <span style="color: #2ed573;">₹ 75</span>
+        </div>
+        <div class="order-route">
+            📍 <strong>From:</strong> MG Road, Bengaluru<br>
+            🏁 <strong>To:</strong> Indiranagar, Bengaluru <br>
+            📏 <strong>Distance:</strong> 3.5 km
+        </div>
+        <button class="accept-btn" onclick="alert('Order Accepted!')">Accept Order</button>
+    </div>
 
-<div class="cards">
-<div class="card">🎁 Reward</div>
-<div class="card">💡 Hint</div>
-</div>
-
-<button class="play" onclick="startGame()">
-▶ PLAY
-</button>
-
-</div>
-
-<div id="game">
-
-<div id="level">
-Level 1
-</div>
-
-<canvas id="mazeCanvas"></canvas>
-
-</div>
-
-<script>
-
-let level=1;
-
-const canvas=
-document.getElementById("mazeCanvas");
-
-const ctx=
-canvas.getContext("2d");
-
-function startGame(){
-
-document.getElementById("home").style.display="none";
-document.getElementById("game").style.display="block";
-
-generateMaze();
-
-}
-
-function generateMaze(){
-
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight-70;
-
-ctx.clearRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-ctx.fillStyle="white";
-ctx.fillRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-ctx.strokeStyle="#000080";
-ctx.lineWidth=5;
-
-let walls=80+(level*2);
-
-for(let i=0;i<walls;i++){
-
-let x=Math.random()*canvas.width;
-let y=Math.random()*canvas.height;
-
-ctx.beginPath();
-
-ctx.moveTo(x,y);
-
-ctx.lineTo(
-x+Math.random()*100,
-y
-);
-
-ctx.lineTo(
-x+Math.random()*100,
-y+Math.random()*100
-);
-
-ctx.stroke();
-}
-
-ctx.fillStyle="green";
-
-ctx.fillRect(
-canvas.width-60,
-canvas.height-60,
-35,
-35
-);
-
-document.getElementById(
-"level"
-).innerHTML=
-"🏹 Level "+level;
-
-}
-
-canvas.addEventListener(
-"click",
-function(){
-
-level++;
-
-generateMaze();
-
-}
-);
-
-window.addEventListener(
-"resize",
-generateMaze
-);
-
-</script>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <div>🏠</div>Home
+        </a>
+        <a href="#" class="nav-item">
+            <div>📋</div>Orders
+        </a>
+        <a href="#" class="nav-item">
+            <div>💰</div>Earnings
+        </a>
+        <a href="#" class="nav-item">
+            <div>👤</div>Profile
+        </a>
+    </div>
 
 </body>
 </html>
