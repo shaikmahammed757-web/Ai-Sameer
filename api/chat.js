@@ -21,6 +21,7 @@ export default async function handler(req, res) {
 
     const apiKey = process.env.GEMINI_API_KEY;
 
+    // ఇక్కడ !apiKey అని ఉండాలి (సవరించబడింది)
     if (!apiKey) {
       return res.status(500).json({ error: 'Gemini API Key not found' });
     }
