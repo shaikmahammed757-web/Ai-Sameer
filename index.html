@@ -29,8 +29,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 20px;
+      padding: 14px 16px;
       background: #000;
+      border-bottom: 1px solid #1a1a1a;
     }
 
     .header-left {
@@ -45,6 +46,7 @@
       color: #fff;
       font-size: 22px;
       cursor: pointer;
+      padding: 4px;
     }
 
     .model-name {
@@ -64,22 +66,22 @@
     }
 
     .sparkle {
-      font-size: 42px;
-      margin-bottom: 18px;
+      font-size: 40px;
+      margin-bottom: 16px;
       background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .greeting {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 400;
-      color: #e0e0e0;
-      margin-bottom: 8px;
+      color: #e8e8e8;
+      margin-bottom: 6px;
     }
 
     .sub-text {
-      font-size: 15px;
+      font-size: 14px;
       color: #888;
     }
 
@@ -88,17 +90,17 @@
       display: none;
       flex: 1;
       overflow-y: auto;
-      padding: 20px;
+      padding: 16px;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
     }
 
     .message {
       max-width: 85%;
-      padding: 14px 18px;
+      padding: 12px 16px;
       border-radius: 18px;
       font-size: 15px;
-      line-height: 1.5;
+      line-height: 1.45;
     }
 
     .user-msg {
@@ -109,43 +111,44 @@
 
     .ai-msg {
       align-self: flex-start;
-      background: #1e1e1e;
+      background: #1c1c1c;
       border-radius: 18px 18px 18px 4px;
     }
 
     .ai-actions {
       display: flex;
-      gap: 18px;
-      margin-top: 10px;
-      margin-left: 6px;
-      color: #888;
-      font-size: 18px;
+      gap: 16px;
+      margin-top: 8px;
+      margin-left: 4px;
+      color: #777;
+      font-size: 17px;
     }
 
     .ai-actions span {
       cursor: pointer;
+      padding: 4px;
     }
 
     .disclaimer {
-      font-size: 12px;
-      color: #666;
-      margin-top: 8px;
-      margin-left: 6px;
+      font-size: 11px;
+      color: #555;
+      margin-top: 6px;
+      margin-left: 4px;
     }
 
     /* Input Area */
     .input-area {
-      padding: 12px 16px 28px;
+      padding: 10px 12px 24px;
       background: #000;
     }
 
     .input-box {
       display: flex;
       align-items: center;
-      background: #1e1e1e;
+      background: #1c1c1c;
       border-radius: 28px;
-      padding: 8px 8px 8px 18px;
-      gap: 10px;
+      padding: 6px 6px 6px 14px;
+      gap: 6px;
     }
 
     .input-box input {
@@ -154,21 +157,21 @@
       border: none;
       outline: none;
       color: #fff;
-      font-size: 16px;
-      padding: 10px 0;
+      font-size: 15px;
+      padding: 10px 4px;
     }
 
     .input-box input::placeholder {
-      color: #777;
+      color: #666;
     }
 
     .icon-btn {
       background: none;
       border: none;
       color: #aaa;
-      font-size: 22px;
-      width: 42px;
-      height: 42px;
+      font-size: 20px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -180,10 +183,10 @@
       background: #3b82f6;
       color: white;
       border: none;
-      width: 42px;
-      height: 42px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
-      font-size: 18px;
+      font-size: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -211,27 +214,56 @@
     .menu-item {
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 14px 24px;
+      gap: 14px;
+      padding: 13px 22px;
       color: #ddd;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
     }
 
-    .menu-item:hover {
+    .menu-item:active {
       background: #1a1a1a;
     }
 
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.55);
       z-index: 999;
       display: none;
     }
 
     .overlay.show {
       display: block;
+    }
+
+    /* Plus Options Popup */
+    .plus-options {
+      position: fixed;
+      bottom: 90px;
+      left: 16px;
+      background: #1c1c1c;
+      border-radius: 16px;
+      padding: 8px 0;
+      width: 200px;
+      display: none;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .plus-options.show {
+      display: block;
+    }
+
+    .plus-item {
+      padding: 12px 18px;
+      font-size: 15px;
+      color: #ddd;
+      cursor: pointer;
+    }
+
+    .plus-item:active {
+      background: #2a2a2a;
     }
   </style>
 </head>
@@ -256,24 +288,32 @@
   <!-- Chat Area -->
   <div id="chat-area"></div>
 
+  <!-- Plus Options -->
+  <div class="plus-options" id="plus-options">
+    <div class="plus-item" onclick="alert('Photos coming soon')">📷 Photos</div>
+    <div class="plus-item" onclick="alert('Camera coming soon')">📸 Camera</div>
+    <div class="plus-item" onclick="alert('Files coming soon')">📁 Files</div>
+    <div class="plus-item" onclick="alert('Create Image coming soon')">🎨 Create Image</div>
+  </div>
+
   <!-- Input -->
   <div class="input-area">
     <div class="input-box">
-      <button class="icon-btn">+</button>
+      <button class="icon-btn" onclick="togglePlus()">+</button>
       <input type="text" id="user-input" placeholder="Ask AI Sameer..." autocomplete="off" />
-      <button class="icon-btn">🎤</button>
+      <button class="icon-btn" onclick="startMic()">🎤</button>
       <button class="send-btn" onclick="sendMessage()">➤</button>
     </div>
   </div>
 
   <!-- Side Menu -->
-  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+  <div class="overlay" id="overlay" onclick="closeAll()"></div>
   <div class="side-menu" id="side-menu">
     <div class="menu-item" onclick="newChat()">✏️ New chat</div>
     <div class="menu-item">🔍 Search chats</div>
     <div class="menu-item">🖼️ Images</div>
     <div class="menu-item">📚 Library</div>
-    <div style="height:20px"></div>
+    <div style="height:16px"></div>
     <div class="menu-item">📷 Photos</div>
     <div class="menu-item">📸 Camera</div>
     <div class="menu-item">👤 Avatar</div>
@@ -289,13 +329,30 @@
     function toggleMenu() {
       document.getElementById('side-menu').classList.toggle('open');
       document.getElementById('overlay').classList.toggle('show');
+      document.getElementById('plus-options').classList.remove('show');
+    }
+
+    function togglePlus() {
+      document.getElementById('plus-options').classList.toggle('show');
+      document.getElementById('side-menu').classList.remove('open');
+      document.getElementById('overlay').classList.remove('show');
+    }
+
+    function closeAll() {
+      document.getElementById('side-menu').classList.remove('open');
+      document.getElementById('overlay').classList.remove('show');
+      document.getElementById('plus-options').classList.remove('show');
     }
 
     function newChat() {
       document.getElementById('home-screen').style.display = 'flex';
       document.getElementById('chat-area').style.display = 'none';
       document.getElementById('chat-area').innerHTML = '';
-      toggleMenu();
+      closeAll();
+    }
+
+    function startMic() {
+      alert('Microphone feature will be added soon');
     }
 
     function sendMessage() {
@@ -306,6 +363,7 @@
       document.getElementById('home-screen').style.display = 'none';
       const chatArea = document.getElementById('chat-area');
       chatArea.style.display = 'flex';
+      document.getElementById('plus-options').classList.remove('show');
 
       // User message
       const userDiv = document.createElement('div');
@@ -316,7 +374,7 @@
       input.value = '';
       chatArea.scrollTop = chatArea.scrollHeight;
 
-      // AI reply
+      // AI reply with buttons
       setTimeout(() => {
         const wrapper = document.createElement('div');
         wrapper.style.maxWidth = '90%';
@@ -330,12 +388,12 @@
         const actions = document.createElement('div');
         actions.className = 'ai-actions';
         actions.innerHTML = `
-          <span>👍</span>
-          <span>👎</span>
-          <span>↻</span>
-          <span>📋</span>
-          <span>⋯</span>
-          <span>🔊</span>
+          <span title="Good">👍</span>
+          <span title="Bad">👎</span>
+          <span title="Regenerate">↻</span>
+          <span title="Copy">📋</span>
+          <span title="More">⋯</span>
+          <span title="Speak">🔊</span>
         `;
         wrapper.appendChild(actions);
 
@@ -346,7 +404,7 @@
 
         chatArea.appendChild(wrapper);
         chatArea.scrollTop = chatArea.scrollHeight;
-      }, 600);
+      }, 500);
     }
 
     document.getElementById('user-input').addEventListener('keypress', function(e) {
