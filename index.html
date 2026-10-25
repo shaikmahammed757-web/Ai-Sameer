@@ -308,8 +308,8 @@
       chatArea.scrollTop = chatArea.scrollHeight;
 
       try {
-        // ఇక్కడ మీ Vercel యాప్ యొక్క అసలైన URL ని ఇవ్వండి (ఉదాహరణకు: https://ai-sameer.vercel.app/api/chat)
-        const response = await fetch('https://ai-sameer.vercel.app/api/chat', {
+        // సరియైన Vercel లింక్ ఇక్కడ సెట్ చేయబడింది[span_1](start_span)[span_1](end_span)
+        const response = await fetch('https://ai-sameer-gemini-3.vercel.app/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: text, model: selectedModel })
@@ -359,4 +359,3 @@
   </script>
 </body>
 </html>
-
