@@ -48,15 +48,16 @@
     .sub-text { font-size: 14px; color: #888; }
 
     #chat-area { display: none; flex: 1; overflow-y: auto; padding: 16px; flex-direction: column; gap: 18px; }
-    .message { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.45; }
-    .user-msg { align-self: flex-end; background: #1e3a5f; border-radius: 18px 18px 4px 18px; }
-    .ai-msg { align-self: flex-start; background: #1c1c1c; border-radius: 18px 18px 18px 4px; }
+    .ai-msg-wrapper { max-width: 90%; align-self: flex-start; display: flex; flex-direction: column; gap: 4px; }
+    .message { max-width: 100%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.45; word-break: break-word; }
+    .user-msg { align-self: flex-end; background: #1e3a5f; border-radius: 18px 18px 4px 18px; max-width: 85%; }
+    .ai-msg { background: #1c1c1c; border-radius: 18px 18px 18px 4px; }
     
     /* AI ఆన్సర్ కింద వచ్చే యాక్షన్ బటన్స్ బార్ */
-    .ai-actions { display: flex; gap: 16px; margin-top: 8px; margin-left: 4px; color: #b0b0b0; font-size: 17px; }
+    .ai-actions { display: flex; gap: 16px; margin-top: 4px; margin-left: 4px; color: #b0b0b0; font-size: 16px; }
     .ai-actions span { cursor: pointer; padding: 4px; transition: color 0.2s; }
     .ai-actions span:hover { color: #ffffff; }
-    .disclaimer { font-size: 11px; color: #555; margin-top: 6px; margin-left: 4px; }
+    .disclaimer { font-size: 11px; color: #555; margin-top: 2px; margin-left: 4px; }
 
     .input-area { padding: 10px 12px 24px; background: #000; position: relative; }
     .input-box { display: flex; align-items: center; background: #1c1c1c; border-radius: 28px; padding: 6px 6px 6px 14px; gap: 6px; }
@@ -90,9 +91,30 @@
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999; display: none; }
     .overlay.show { display: block; }
 
-    .plus-options { position: fixed; bottom: 90px; left: 12px; right: 12px; background: #1c1c1c; border-radius: 18px; padding: 10px 0; max-height: 60vh; overflow-y: auto; display: none; z-index: 100; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+    /* ప్లస్ ఐకాన్ క్లిక్ చేసినప్పుడు వచ్చే బాటమ్ పాప్-అప్ (Quick Actions) */
+    .plus-options {
+      position: fixed;
+      bottom: 85px;
+      left: 16px;
+      background: #1c1c1c;
+      border-radius: 18px;
+      padding: 8px;
+      display: none;
+      z-index: 100;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      width: 220px;
+    }
     .plus-options.show { display: block; }
-    .plus-item { padding: 13px 20px; font-size: 15px; color: #ddd; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+    .plus-item {
+      padding: 11px 16px;
+      font-size: 14px;
+      color: #ddd;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-radius: 10px;
+    }
     .plus-item:active { background: #2a2a2a; }
   </style>
 </head>
@@ -140,21 +162,12 @@
   <!-- Chat Area -->
   <div id="chat-area"></div>
 
-  <!-- Plus Options -->
+  <!-- Plus Quick Options (Bottom Popup) -->
   <div class="plus-options" id="plus-options">
-    <div class="plus-item" onclick="alert('Coming soon')">📷 Photos</div>
-    <div class="plus-item" onclick="alert('Coming soon')">📸 Camera</div>
-    <div class="plus-item" onclick="alert('Coming soon')">👤 Avatar</div>
-    <div class="plus-item" onclick="alert('Coming soon')">🎨 Create images</div>
-    <div class="plus-item" onclick="alert('Coming soon')">🎵 Create music</div>
-    <div class="plus-item" onclick="alert('Coming soon')">📝 Canvas</div>
-    <div class="plus-item" onclick="alert('Coming soon')">🔬 Deep Research</div>
-    <div class="plus-item" onclick="alert('Coming soon')">📖 Guided Learning</div>
-    <div class="plus-item" onclick="alert('Coming soon')">🧠 Personal Intelligence</div>
-    <div class="plus-item" onclick="alert('Coming soon')">▶️ YouTube</div>
-    <div class="plus-item" onclick="alert('Coming soon')">📸 Instagram</div>
-    <div class="plus-item" onclick="alert('Coming soon')">📁 Files</div>
-    <div class="plus-item" onclick="alert('Coming soon')">📍 Location</div>
+    <div class="plus-item" onclick="alert('Camera clicked')">📸 Camera</div>
+    <div class="plus-item" onclick="alert('Photo clicked')">🖼️ Photo</div>
+    <div class="plus-item" onclick="alert('Create clicked')">🎨 Create</div>
+    <div class="plus-item" onclick="toggleMenu();">⋯ More</div>
   </div>
 
   <!-- Input -->
@@ -176,7 +189,7 @@
     <div class="menu-item" onclick="alert('Coming soon')">🔍 Search chats</div>
     <div class="menu-item" onclick="alert('Coming soon')">🖼️ Images</div>
     <div class="menu-item" onclick="alert('Coming soon')">📚 Library</div>
-    <div style="height:16px"></div>
+    <div style="height:12px; border-bottom:1px solid #222;"></div>
     <div class="menu-item" onclick="alert('Coming soon')">📷 Photos</div>
     <div class="menu-item" onclick="alert('Coming soon')">📸 Camera</div>
     <div class="menu-item" onclick="alert('Coming soon')">👤 Avatar</div>
@@ -186,7 +199,7 @@
     <div class="menu-item" onclick="alert('Coming soon')">🔬 Deep Research</div>
     <div class="menu-item" onclick="alert('Coming soon')">📖 Guided Learning</div>
     <div class="menu-item" onclick="alert('Coming soon')">🧠 Personal Intelligence</div>
-    <div style="height:16px"></div>
+    <div style="height:12px; border-bottom:1px solid #222;"></div>
     <div class="menu-item" onclick="alert('Coming soon')">▶️ YouTube</div>
     <div class="menu-item" onclick="alert('Coming soon')">📸 Instagram</div>
     <div class="menu-item" onclick="alert('Coming soon')">📁 Files</div>
@@ -240,11 +253,25 @@
     }
 
     function startMic() {
-      alert('Microphone feature coming soon');
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'te-IN';
+        recognition.onstart = function() { document.getElementById('user-input').placeholder = "Listening..."; };
+        recognition.onresult = function(event) {
+          document.getElementById('user-input').value = event.results[0][0].transcript;
+          document.getElementById('user-input').placeholder = "Ask AI Sameer...";
+        };
+        recognition.onerror = function() { document.getElementById('user-input').placeholder = "Ask AI Sameer..."; };
+        recognition.onend = function() { document.getElementById('user-input').placeholder = "Ask AI Sameer..."; };
+        recognition.start();
+      } else {
+        alert('Microphone feature is coming soon / not supported in this browser view.');
+      }
     }
 
     function copyText(element) {
-      const bubble = element.closest('div').previousSibling.textContent || element.closest('.ai-msg-wrapper').querySelector('.ai-msg').textContent;
+      const bubble = element.closest('.ai-msg-wrapper').querySelector('.ai-msg').textContent;
       navigator.clipboard.writeText(bubble);
       alert('Text copied to clipboard!');
     }
@@ -284,7 +311,7 @@
       chatArea.scrollTop = chatArea.scrollHeight;
 
       try {
-        // ←←← ఇక్కడ మీ Vercel URL పెట్టండి (ఉదాహరణకు: https://your-project.vercel.app/api/chat)
+        // ←←← మీ Vercel API URL ని ఇక్కడ సరిగ్గా ఉంచండి (ఉదాహరణకు: https://ai-sameer.vercel.app/api/chat)
         const response = await fetch('https://YOUR-VERCEL-URL.vercel.app/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -298,8 +325,6 @@
 
         const wrapper = document.createElement('div');
         wrapper.className = 'ai-msg-wrapper';
-        wrapper.style.maxWidth = '90%';
-        wrapper.style.alignSelf = 'flex-start';
 
         const aiDiv = document.createElement('div');
         aiDiv.className = 'message ai-msg';
@@ -313,7 +338,7 @@
           <span title="Bad response" onclick="alert('Disliked!')">👎</span>
           <span title="Retry" onclick="sendMessage()">↻</span>
           <span title="Copy" onclick="copyText(this)">📋</span>
-          <span title="More" onclick="alert('More options')">⋯</span>
+          <span title="More" onclick="toggleMenu()">⋯</span>
           <span title="Read aloud" onclick="speakText(this)">🔊</span>
         `;
         wrapper.appendChild(actions);
