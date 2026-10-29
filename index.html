@@ -1,345 +1,367 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>AI Sameer</title>
-  <meta name="theme-color" content="#000000" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="logo.png" />
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-    body { background: #000; color: #fff; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Sameer Delivery Captain</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Hind:wght@400;500;600&family=Noto+Sans+Telugu:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6f8;--navy:#0a1f5c;--deep:#061440;--blue:#1560e8;--yel:#ffc107;--green:#22c55e;--red:#ef4444;--card:#fff;--line:#e2e8f0;--tx:#1e293b;--mut:#64748b;box-sizing:border-box}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:#fff;font-family:Hind,system-ui,sans-serif;color:var(--tx);display:flex;justify-content:center}
+#app{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+main{flex:1;overflow-y:auto;padding:14px 16px 80px}
+.scr{display:none}.scr.on{display:block}
 
-    .header { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #000; border-bottom: 1px solid #1a1a1a; position: relative; }
-    .header-left { display: flex; align-items: center; gap: 12px; }
-    .menu-btn, .edit-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; padding: 4px; }
+/* Top Header */
+.top-header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.menu-btn{background:none;border:0;font-size:22px;cursor:pointer}
+.duty-toggle{background:#e2e8f0;border:0;padding:6px 16px;border-radius:99px;font:700 13px Hind;cursor:pointer;display:flex;align-items:center;gap:6px;color:#334155}
+.duty-toggle.on{background:#dcfce7;color:#166534;border:1px solid var(--green)}
+.top-icons{display:flex;gap:16px;align-items:center;font-size:20px;cursor:pointer}
 
-    .model-selector { display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 16px; font-weight: 500; }
-    .model-selector span { font-size: 12px; color: #aaa; }
-    .model-selector #current-model { font-size: 16px; color: #fff; }
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pill{display:inline-block;background:#fef3c7;color:#92400e;border-radius:99px;padding:4px 12px;font-weight:700;font-size:12px}
+.btn{background:var(--yel);color:#000;border:0;border-radius:12px;padding:12px;font:800 16px 'Baloo 2';width:100%;cursor:pointer;text-align:center}
+.in{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--tx);font:inherit;margin-top:4px}
 
-    .model-dropdown { position: absolute; top: 55px; left: 50px; background: #1c1c1c; border-radius: 14px; width: 220px; padding: 8px 0; display: none; z-index: 200; box-shadow: 0 8px 25px rgba(0,0,0,0.5); }
-    .model-dropdown.show { display: block; }
-    .model-option { padding: 12px 18px; cursor: pointer; display: flex; flex-direction: column; }
-    .model-option:active { background: #2a2a2a; }
-    .model-option .title { font-size: 15px; color: #fff; }
-    .model-option .desc { font-size: 12px; color: #888; margin-top: 2px; }
-    .model-option.selected .title::before { content: "✓ "; color: #3b82f6; }
+/* Toggle Switch Style */
+.switch{position:relative;display:inline-block;width:50px;height:26px}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;inset:0;background-color:#ccc;transition:.3s;border-radius:26px}
+.slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:white;transition:.3s;border-radius:50%}
+input:checked+.slider{background-color:var(--green)}
+input:checked+.slider:before{transform:translateX(24px)}
 
-    .main { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; }
-    .sparkle { font-size: 42px; margin-bottom: 16px; background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .greeting { font-size: 26px; font-weight: 400; color: #e8e8e8; margin-bottom: 6px; }
-    .sub-text { font-size: 14px; color: #888; }
+/* Side Drawer Menu */
+#drawer{position:absolute;inset:0;z-index:100;display:none;background:rgba(0,0,0,0.5)}
+#drawer .menu-content{width:82%;height:100%;background:#fff;padding:20px;overflow-y:auto}
+.menu-profile{background:#f8fafc;padding:14px;border-radius:12px;margin-bottom:16px;border:1px solid var(--line)}
+.menu-item{padding:14px 0;border-bottom:1px solid var(--line);font-weight:600;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#334155}
 
-    #chat-area { display: none; flex: 1; overflow-y: auto; padding: 16px; flex-direction: column; gap: 18px; }
-    .ai-msg-wrapper { max-width: 90%; align-self: flex-start; display: flex; flex-direction: column; gap: 4px; }
-    .message { max-width: 100%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.45; word-break: break-word; white-space: pre-wrap; }
-    .user-msg { align-self: flex-end; background: #1e3a5f; border-radius: 18px 18px 4px 18px; max-width: 85%; }
-    .ai-msg { background: #1c1c1c; border-radius: 18px 18px 18px 4px; }
+.sub-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;font-size:18px;font-weight:700}
+.back-btn{background:none;border:0;font-size:20px;cursor:pointer}
 
-    .ai-actions { display: flex; gap: 16px; margin-top: 4px; margin-left: 4px; color: #b0b0b0; font-size: 16px; }
-    .ai-actions span { cursor: pointer; padding: 4px; transition: color 0.2s; }
-    .ai-actions span:hover { color: #ffffff; }
-    .disclaimer { font-size: 11px; color: #555; margin-top: 2px; margin-left: 4px; }
+/* Bottom Navigation Bar */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:10;padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav-item{background:none;border:0;color:var(--mut);font:600 12px Hind;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.nav-item span{font-size:20px}
+.nav-item.on{color:#000}
+.floating-bike{position:absolute;bottom:75px;left:16px;width:45px;height:45px;background:#fff;border-radius:50%;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,0.15);cursor:pointer;font-size:22px;z-index:11}
 
-    .input-area { padding: 10px 12px 24px; background: #000; position: relative; }
-    .input-box { display: flex; align-items: center; background: #1c1c1c; border-radius: 28px; padding: 6px 6px 6px 14px; gap: 6px; }
-    .input-box input { flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: #fff; font-size: 15px; padding: 10px 4px; }
-    .input-box input::placeholder { color: #666; }
+#modal{position:absolute;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:flex-end;z-index:200}
+#modal.on{display:flex}
+#modal .sheet{background:#fff;border-radius:24px 24px 0 0;padding:20px;width:100%}
+#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:8px 18px;border-radius:99px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:300;white-space:nowrap}
+#toast.on{opacity:1}
+</style></head>
+<body><div id="app">
 
-    .icon-btn { background: none; border: none; color: #aaa; font-size: 20px; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+<!-- Top Header -->
+<div class="top-header" id="topHeader" style="display:none">
+ <button class="menu-btn" onclick="openDrawer(true)">☰</button>
+ <button class="duty-toggle" id="dutyBtn" onclick="toggleDuty()">
+  <span id="dutyDot" style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block"></span> 
+  <span id="dutyText">OFF DUTY</span>
+ </button>
+ <div class="top-icons">
+  <span onclick="toast('GPS Active')" title="Location">📍</span>
+  <span onclick="toast('No new notifications')" title="Notifications">🔔</span>
+ </div>
+</div>
 
-    .mic-wrapper { position: relative; display: inline-flex; align-items: center; justify-content: center; }
-    .mic-sparkle::after { content: '✨'; position: absolute; top: -4px; right: -2px; font-size: 11px; animation: pulseSparkle 1.5s infinite; pointer-events: none; }
-    @keyframes pulseSparkle {
-      0% { transform: scale(0.8); opacity: 0.6; }
-      50% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(0.8); opacity: 0.6; }
-    }
+<main>
+<!-- 1. DUMMY LOGIN SCREEN -->
+<section class="scr on" id="login">
+ <div class="sub-header">Login to Drive (Dummy Login)</div>
+ <div class="card" style="text-align:center;padding:24px 16px">
+  <div style="font-size:36px;margin-bottom:10px">🏍️</div>
+  <h2 style="font-size:18px">Enter Phone Number</h2>
+  <p style="font-size:13px;color:var(--mut);margin:8px 0">Click Get OTP for dummy login access</p>
+  <input class="in" id="phoneInput" value="+91 7569096917" style="font-weight:700;text-align:center">
+  <button class="btn" style="margin-top:16px" id="getOtpBtn">Get OTP</button>
+ </div>
+</section>
 
-    .send-btn { background: #3b82f6; color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .send-btn:disabled { opacity: 0.5; }
+<!-- 2. OTP VERIFICATION SCREEN -->
+<section class="scr" id="otpScreen">
+ <div class="sub-header"><button class="back-btn" onclick="go('login')">←</button> Verify OTP</div>
+ <div class="card" style="text-align:center;padding:24px 16px">
+  <h2 style="font-size:18px">Enter 4-digit OTP</h2>
+  <p style="font-size:13px;color:var(--mut);margin:8px 0">Dummy OTP: 4321</p>
+  <input class="in" id="otpInput" value="4321" style="font-weight:700;text-align:center;letter-spacing:4px;font-size:20px">
+  <button class="btn" style="margin-top:16px" id="verifyOtpBtn">Verify & Continue</button>
+ </div>
+</section>
 
-    .side-menu { position: fixed; top: 0; left: -290px; width: 290px; height: 100%; background: #111; z-index: 1000; transition: 0.3s; padding: 20px 0; overflow-y: auto; }
-    .side-menu.open { left: 0; }
-    .menu-item { display: flex; align-items: center; gap: 14px; padding: 13px 22px; color: #ddd; font-size: 15px; cursor: pointer; }
-    .menu-item:active { background: #1a1a1a; }
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 999; display: none; }
-    .overlay.show { display: block; }
+<!-- 3. KYC DOCUMENTS UPLOAD SCREEN -->
+<section class="scr" id="kyc">
+ <div class="sub-header">KYC Document Verification</div>
+ <p style="font-size:13px;color:var(--mut);margin-bottom:12px">Upload clear photos to activate your captain account.</p>
+ <div class="card">
+  <label style="font-size:13px;color:var(--mut)">1. Selfie Photo (Camera / Gallery)<input type="file" class="in" accept="image/*" capture="user" onchange="toast('Selfie uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut)">2. Aadhaar Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('Aadhaar uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut)">3. PAN Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('PAN uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut)">4. Bank Passbook / Cheque<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('Passbook uploaded!')"></label><br>
+  <button class="btn" style="margin-top:10px" id="submitKycBtn">Submit & Enter App</button>
+ </div>
+</section>
 
-    .plus-options { position: fixed; bottom: 85px; left: 16px; background: #1c1c1c; border-radius: 18px; padding: 8px; display: none; z-index: 100; box-shadow: 0 8px 30px rgba(0,0,0,0.6); width: 220px; }
-    .plus-options.show { display: block; }
-    .plus-item { padding: 11px 16px; font-size: 14px; color: #ddd; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 10px; }
-    .plus-item:active { background: #2a2a2a; }
-  </style>
-</head>
-<body>
+<!-- HOME SCREEN -->
+<section class="scr" id="home">
+ <div class="card">
+  <div class="row"><b>Today's Earnings</b><b style="color:#16a34a;font-size:20px">₹<span class="E">121</span></b></div>
+  <div class="row" style="margin-top:10px;font-size:13px;color:var(--mut)"><span>Deliveries: <b id="dl">12</b></span><span>Rating: <b>4.8 ★</b></span></div>
+ </div>
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-left">
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-      <div class="model-selector" onclick="toggleModelDropdown()">
-        <span id="current-model">AI Sameer Auto</span>
-        <span>▼</span>
-      </div>
-    </div>
-    <button class="edit-btn" onclick="newChat()">✎</button>
-
-    <div class="model-dropdown" id="model-dropdown">
-      <div class="model-option selected" onclick="selectModel(this, 'Auto')">
-        <div class="title">Auto</div>
-        <div class="desc">Best overall performance</div>
-      </div>
-      <div class="model-option" onclick="selectModel(this, 'Low')">
-        <div class="title">Low</div>
-        <div class="desc">Quick and efficient</div>
-      </div>
-      <div class="model-option" onclick="selectModel(this, 'Medium')">
-        <div class="title">Medium</div>
-        <div class="desc">Balanced depth</div>
-      </div>
-      <div class="model-option" onclick="selectModel(this, 'High')">
-        <div class="title">High</div>
-        <div class="desc">Extra thorough</div>
-      </div>
-    </div>
+ <div class="card" style="background:linear-gradient(135deg, #f0fdf4, #e0f2fe); border:1px solid #bae6fd;">
+  <div class="row">
+   <div><b style="color:#0369a1">✨ Gemini AI Assistant</b><br><small style="color:#0284c7">Ask anything about Bengaluru routes</small></div>
+   <button class="pill" style="background:#0284c7;color:#fff;border:0;cursor:pointer" onclick="openGemini()">Ask AI</button>
   </div>
+ </div>
 
-  <!-- Home Screen -->
-  <div class="main" id="home-screen">
-    <div class="sparkle">✦</div>
-    <div class="greeting">Ask away, Shaik!</div>
-    <div class="sub-text">Your personal AI assistant</div>
+ <div class="card" style="background:linear-gradient(110deg,#1560e8,#0a3aa8);color:#fff">
+  <h2 style="font-size:18px">Service Locations Active</h2>
+  <p style="font-size:13px;color:rgba(255,255,255,0.9);margin:4px 0">📍 Bengaluru & Yemmiganur Connected</p>
+ </div>
+</section>
+
+<!-- ORDERS SCREEN -->
+<section class="scr" id="orders">
+ <h2 style="font-size:22px;margin-bottom:12px">My Deliveries & Orders</h2>
+ <div id="activeOrderBox"><div class="card" style="text-align:center;color:var(--mut)">No active orders. Turn on duty to receive requests.</div></div>
+</section>
+
+<!-- EARNINGS & WITHDRAW SUB-PAGE -->
+<section class="scr" id="earnings">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Earnings & Wallet</div>
+ <div class="card" style="background:#f8fafc">
+  <div style="font-size:13px;color:var(--mut)">Wallet Balance</div>
+  <div style="font-size:32px;font-weight:800;color:#1e293b">₹<span class="E">121</span></div>
+  <button class="btn" style="margin-top:12px" onclick="withdrawMoney()">Withdraw to Bank</button>
+ </div>
+ <div class="card" onclick="toast('All Orders History opened')"><b>📦 All Orders History</b><br><small style="color:var(--mut)">View completed & past orders</small></div>
+ <div class="card" onclick="toast('Rate card loaded')"><b>📋 View Rate Card</b><br><small style="color:var(--mut)">Check per km fares</small></div>
+</section>
+
+<!-- INCENTIVES SUB-PAGE -->
+<section class="scr" id="incentives">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Incentives & More</div>
+ <div class="card"><b>🎯 Daily Incentives (Up to ₹144)</b><p style="font-size:13px;color:var(--mut);margin-top:6px">Complete 3 Rides & 3km - Earn ₹24<br>Complete 6 Rides & 7km - Earn ₹54</p></div>
+ <div class="card"><b>📅 Weekly Bonus</b><p style="font-size:13px;color:var(--mut);margin-top:6px">Complete weekly ride targets for extra rewards.</p></div>
+</section>
+
+<!-- REWARDS SUB-PAGE -->
+<section class="scr" id="rewards">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Rewards & Insurance</div>
+ <div class="card"><b>🏥 Health Insurance</b><br><small style="color:var(--mut)">For you and your family</small></div>
+ <div class="card"><b>🛡️ Accidental Insurance</b><br><small style="color:var(--mut)">Stay protected on every ride</small></div>
+</section>
+
+<!-- SERVICE MANAGER -->
+<section class="scr" id="services">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Service Manager</div>
+ <div class="card">
+  <div style="font-size:13px;color:var(--mut)">Primary Services</div>
+  <div style="font-weight:700;font-size:16px;margin-top:4px">🏍️ Bike Service Active</div>
+ </div>
+ <div class="card row">
+  <div><b>📦 Parcel Delivery</b><br><small style="color:var(--mut)">Bike & Cycle</small></div>
+  <label class="switch"><input type="checkbox" id="srvParcel" checked onchange="toggleService('Parcel')"><span class="slider"></span></label>
+ </div>
+ <div class="card row">
+  <div><b>🍽️ Food Delivery</b><br><small style="color:var(--mut)">Bike only</small></div>
+  <label class="switch"><input type="checkbox" id="srvFood" checked onchange="toggleService('Food')"><span class="slider"></span></label>
+ </div>
+ <div class="card row">
+  <div><b>🛒 Grocery & Stores</b><br><small style="color:var(--mut)">Quick delivery</small></div>
+  <label class="switch"><input type="checkbox" id="srvGrocery" checked onchange="toggleService('Grocery')"><span class="slider"></span></label>
+ </div>
+</section>
+
+<!-- HELP & SUPPORT -->
+<section class="scr" id="help">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Help & Support</div>
+ <div class="card" style="background:#fef2f2;border-color:#fca5a5"><b>🚨 Emergency Support</b><br><small style="color:var(--mut)">Safety Center - Call 112</small><br><a href="tel:112" class="btn" style="display:block;margin-top:8px;background:var(--red);color:#fff;text-decoration:none">Call 112</a></div>
+ <div class="card" onclick="toast('Issue: Earnings & Payouts')"><b>💰 Earnings & Payouts Issue</b></div>
+</section>
+
+<!-- REFER & EARN -->
+<section class="scr" id="refer">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Refer & Earn</div>
+ <div class="card" style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border-color:#f0abfc">
+  <b>Refer Captains & Earn up to ₹5000</b>
+  <p style="font-size:13px;color:var(--mut);margin-top:4px">Your referral code: <b style="color:#000">SAMEER123</b></p>
+  <button class="btn" style="margin-top:10px" onclick="toast('Referral code copied!')">Share Refer Link</button>
+ </div>
+ <div class="card"><b>Our Referrals & Rewards</b>
+  <p style="font-size:13px;color:var(--mut);margin-top:8px">
+   • 1 Referral = <b>₹5000</b> (Female Bike Captains)<br>
+   • 1 Referral = <b>₹200</b> (Auto Captain)<br>
+   • 1 Referral = <b>₹100</b> (Cab Captains)<br>
+   • 1 Referral = <b>₹200</b> (Bike Captain)
+  </p>
+ </div>
+</section>
+
+<!-- KYC VIEW -->
+<section class="scr" id="kycView">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> KYC Documents</div>
+ <div class="card">
+  <label style="font-size:13px;color:var(--mut)">Selfie Photo<input type="file" class="in" accept="image/*" capture="user" onchange="toast('Selfie uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut)">Aadhaar Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('Aadhaar uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut)">PAN Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('PAN uploaded!')"></label><br>
+  <button class="btn" onclick="go('home');toast('KYC Updated!')">Update KYC</button>
+ </div>
+</section>
+
+</main>
+
+<!-- Floating Vehicle Button -->
+<div class="floating-bike" id="floatBike" style="display:none" onclick="go('services')">🏍️</div>
+
+<!-- Bottom Navigation Bar -->
+<nav class="bottom-nav" id="bottomNav" style="display:none">
+ <button class="nav-item on" data-t="home" onclick="go('home')"><span>🏠</span>Home</button>
+ <button class="nav-item" data-t="orders" onclick="go('orders')"><span>📋</span>Orders</button>
+</nav>
+
+<!-- Side Drawer Menu -->
+<div id="drawer" onclick="openDrawer(false)">
+ <div class="menu-content" onclick="event.stopPropagation()">
+  <div class="menu-profile" onclick="openDrawer(false);go('kycView')">
+   <div class="row"><b>Shaik Mahammad</b><span class="pill">Best ★</span></div>
+   <div style="font-size:12px;color:var(--mut);margin-top:2px">Tap to view profile & KYC</div>
   </div>
+  <div class="menu-item" onclick="openDrawer(false);go('earnings')">Earnings (Wallet & History) <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('incentives')">Incentives and More <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('rewards')">Rewards & Insurance <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('services')">Service Manager (Food/Parcel/Stores) <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('help')">Help & Support (Emergency) <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('refer')">Refer friends (Earn ₹5000) <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);openGemini()">Ask Gemini AI Assistant <span>🤖</span></div>
+  <div class="menu-item" style="color:var(--red)" onclick="signOut()">Sign out <span>➔</span></div>
+ </div>
+</div>
 
-  <!-- Chat Area -->
-  <div id="chat-area"></div>
+<!-- Gemini AI Modal -->
+<div id="aiModal" style="position:absolute;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:250">
+ <div style="background:#fff;width:90%;max-width:380px;border-radius:20px;padding:20px">
+  <div class="row"><b>✨ Gemini AI Support</b><button onclick="closeGemini()" style="background:none;border:0;font-size:18px;cursor:pointer">✕</button></div>
+  <p style="font-size:12px;color:var(--mut);margin:8px 0">Ask anything about Bengaluru delivery routes or earnings.</p>
+  <input class="in" id="aiQuery" placeholder="Type your question here...">
+  <button class="btn" style="margin-top:10px" onclick="askGeminiAI()">Get AI Answer</button>
+  <div id="aiResponse" style="margin-top:12px;font-size:13px;background:#f8fafc;padding:10px;border-radius:8px;min-height:40px;color:#334155"></div>
+ </div>
+</div>
 
-  <!-- Plus Quick Options -->
-  <div class="plus-options" id="plus-options">
-    <div class="plus-item" onclick="alert('Camera clicked')">📸 Camera</div>
-    <div class="plus-item" onclick="alert('Photo clicked')">🖼️ Photo</div>
-    <div class="plus-item" onclick="alert('Create clicked')">🎨 Create</div>
-    <div class="plus-item" onclick="toggleMenu();">⋯ More</div>
-  </div>
+<div id="modal"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
 
-  <!-- Input -->
-  <div class="input-area">
-    <div class="input-box">
-      <button class="icon-btn" onclick="togglePlus()">+</button>
-      <input type="text" id="user-input" placeholder="Ask AI Sameer..." autocomplete="off" />
-      <div class="mic-wrapper mic-sparkle">
-        <button class="icon-btn" onclick="startMic()">🎤</button>
-      </div>
-      <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
-    </div>
-  </div>
+</div>
 
-  <!-- Side Menu -->
-  <div class="overlay" id="overlay" onclick="closeAll()"></div>
-  <div class="side-menu" id="side-menu">
-    <div class="menu-item" onclick="newChat()">✏️ New chat</div>
-    <div class="menu-item" onclick="alert('Coming soon')">🔍 Search chats</div>
-    <div class="menu-item" onclick="alert('Coming soon')">🖼️ Images</div>
-    <div class="menu-item" onclick="alert('Coming soon')">📚 Library</div>
-    <div style="height:12px; border-bottom:1px solid #222;"></div>
-    <div class="menu-item" onclick="alert('Coming soon')">📷 Photos</div>
-    <div class="menu-item" onclick="alert('Coming soon')">📸 Camera</div>
-    <div class="menu-item" onclick="alert('Coming soon')">👤 Avatar</div>
-    <div class="menu-item" onclick="alert('Coming soon')">🎨 Create images</div>
-    <div class="menu-item" onclick="alert('Coming soon')">🎵 Create music</div>
-    <div class="menu-item" onclick="alert('Coming soon')">📝 Canvas</div>
-    <div class="menu-item" onclick="alert('Coming soon')">🔬 Deep Research</div>
-    <div class="menu-item" onclick="alert('Coming soon')">📖 Guided Learning</div>
-    <div class="menu-item" onclick="alert('Coming soon')">🧠 Personal Intelligence</div>
-    <div style="height:12px; border-bottom:1px solid #222;"></div>
-    <div class="menu-item" onclick="alert('Coming soon')">▶️ YouTube</div>
-    <div class="menu-item" onclick="alert('Coming soon')">📸 Instagram</div>
-    <div class="menu-item" onclick="alert('Coming soon')">📁 Files</div>
-    <div class="menu-item" onclick="alert('Coming soon')">📍 Location</div>
-  </div>
+<script>
+var onDuty=false, bal=121, del=12, timer=null, currentOrder=null;
+var servicesState={parcel:true, food:true, grocery:true};
+var $=function(i){return document.getElementById(i)};
 
-  <script>
-    // Cloudflare Worker URL (కొత్త Worker)
-    const WORKER_URL = 'https://sameer-chat.shaikmahammed757.workers.dev';
+function go(s){
+ document.querySelectorAll('.scr').forEach(function(e){e.classList.toggle('on',e.id===s)});
+ document.querySelectorAll('.bottom-nav button').forEach(function(b){b.classList.toggle('on',b.dataset.t===s)});
+ document.querySelector('main').scrollTop=0;
+}
 
-    let selectedModel = 'Auto';
-    let lastUserText = '';
-    let isSending = false;
+function openDrawer(isOpen){
+ $('drawer').style.display=isOpen?'block':'none';
+}
 
-    function toggleMenu() {
-      document.getElementById('side-menu').classList.toggle('open');
-      document.getElementById('overlay').classList.toggle('show');
-      document.getElementById('plus-options').classList.remove('show');
-      document.getElementById('model-dropdown').classList.remove('show');
-    }
+function toast(m){
+ var t=$('toast'); if(!t)return;
+ t.textContent=m; t.classList.add('on');
+ setTimeout(function(){t.classList.remove('on')},1800);
+}
 
-    function togglePlus() {
-      document.getElementById('plus-options').classList.toggle('show');
-      document.getElementById('side-menu').classList.remove('open');
-      document.getElementById('overlay').classList.remove('show');
-      document.getElementById('model-dropdown').classList.remove('show');
-    }
+function money(){
+ document.querySelectorAll('.E').forEach(function(e){e.textContent=bal});
+ var d=$('dl'); if(d) d.textContent=del;
+}
 
-    function toggleModelDropdown() {
-      document.getElementById('model-dropdown').classList.toggle('show');
-      document.getElementById('plus-options').classList.remove('show');
-      document.getElementById('side-menu').classList.remove('open');
-      document.getElementById('overlay').classList.remove('show');
-    }
+/* Safe Event Bindings to completely prevent reference errors */
+window.onload = function() {
+ if($('getOtpBtn')) $('getOtpBtn').onclick = sendOtp;
+ if($('verifyOtpBtn')) $('verifyOtpBtn').onclick = verifyOtp;
+ if($('submitKycBtn')) $('submitKycBtn').onclick = completeKyc;
+};
 
-    function selectModel(element, model) {
-      selectedModel = model;
-      document.getElementById('current-model').textContent = 'AI Sameer ' + model;
-      document.querySelectorAll('.model-option').forEach(opt => opt.classList.remove('selected'));
-      element.classList.add('selected');
-      document.getElementById('model-dropdown').classList.remove('show');
-    }
+function sendOtp(){
+ toast('OTP sent successfully!');
+ go('otpScreen');
+}
 
-    function closeAll() {
-      document.getElementById('side-menu').classList.remove('open');
-      document.getElementById('overlay').classList.remove('show');
-      document.getElementById('plus-options').classList.remove('show');
-      document.getElementById('model-dropdown').classList.remove('show');
-    }
+function verifyOtp(){
+ toast('OTP verified!');
+ go('kyc');
+}
 
-    function newChat() {
-      document.getElementById('home-screen').style.display = 'flex';
-      document.getElementById('chat-area').style.display = 'none';
-      document.getElementById('chat-area').innerHTML = '';
-      lastUserText = '';
-      closeAll();
-    }
+function completeKyc(){
+ toast('KYC Submitted Successfully!');
+ $('topHeader').style.display='flex';
+ $('bottomNav').style.display='flex';
+ $('floatBike').style.display='grid';
+ go('home');
+}
 
-    function startMic() {
-      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'te-IN';
-        const input = document.getElementById('user-input');
-        recognition.onstart = function() { input.placeholder = 'Listening...'; };
-        recognition.onresult = function(event) {
-          input.value = event.results[0][0].transcript;
-          input.placeholder = 'Ask AI Sameer...';
-        };
-        recognition.onerror = function() { input.placeholder = 'Ask AI Sameer...'; };
-        recognition.onend = function() { input.placeholder = 'Ask AI Sameer...'; };
-        recognition.start();
-      } else {
-        alert('Microphone feature not supported in this browser view.');
-      }
-    }
+function signOut(){
+ openDrawer(false);
+ $('topHeader').style.display='none';
+ $('bottomNav').style.display='none';
+ $('floatBike').style.display='none';
+ go('login');
+ toast('Signed out successfully');
+}
 
-    function copyText(element) {
-      const text = element.closest('.ai-msg-wrapper').querySelector('.ai-msg').textContent;
-      navigator.clipboard.writeText(text);
-      alert('Text copied to clipboard!');
-    }
+function toggleDuty(){
+ onDuty=!onDuty;
+ var btn=$('dutyBtn'), dot=$('dutyDot'), txt=$('dutyText');
+ if(onDuty){
+  btn.classList.add('on');
+  dot.style.background='var(--green)';
+  txt.textContent='ON DUTY';
+  toast('Online in Bengaluru & Yemmiganur');
+  timer=setTimeout(triggerOrder, 3000);
+ } else {
+  btn.classList.remove('on');
+  dot.style.background='var(--red)';
+  txt.textContent='OFF DUTY';
+  toast('You are Offline.');
+  clearTimeout(timer);
+ }
+}
 
-    function speakText(element) {
-      const text = element.closest('.ai-msg-wrapper').querySelector('.ai-msg').textContent;
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
-      } else {
-        alert('Speech synthesis not supported');
-      }
-    }
+function toggleService(name){
+ var state=true;
+ if(name==='Parcel') { servicesState.parcel=!servicesState.parcel; state=servicesState.parcel; }
+ if(name==='Food') { servicesState.food=!servicesState.food; state=servicesState.food; }
+ if(name==='Grocery') { servicesState.grocery=!servicesState.grocery; state=servicesState.grocery; }
+ toast(name+' Delivery is now '+(state?'ON':'OFF'));
+}
 
-    // Retry: resend the last question
-    function retryLast() {
-      if (lastUserText) sendMessage(lastUserText, true);
-    }
+function withdrawMoney(){
+ if(bal<=0){toast('No balance to withdraw');return;}
+ bal=0; money();
+ toast('Withdrawal requested successfully!');
+}
 
-    async function sendMessage(overrideText, isRetry) {
-      if (isSending) return;
-
-      const input = document.getElementById('user-input');
-      const text = (typeof overrideText === 'string' ? overrideText : input.value).trim();
-      if (!text) return;
-
-      isSending = true;
-      document.getElementById('send-btn').disabled = true;
-      lastUserText = text;
-
-      document.getElementById('home-screen').style.display = 'none';
-      const chatArea = document.getElementById('chat-area');
-      chatArea.style.display = 'flex';
-      closeAll();
-
-      if (!isRetry) {
-        const userDiv = document.createElement('div');
-        userDiv.className = 'message user-msg';
-        userDiv.textContent = text;
-        chatArea.appendChild(userDiv);
-      }
-
-      if (typeof overrideText !== 'string') input.value = '';
-
-      const loadingDiv = document.createElement('div');
-      loadingDiv.className = 'message ai-msg';
-      loadingDiv.style.alignSelf = 'flex-start';
-      loadingDiv.textContent = 'Thinking...';
-      chatArea.appendChild(loadingDiv);
-      chatArea.scrollTop = chatArea.scrollHeight;
-
-      try {
-        const response = await fetch(WORKER_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, model: selectedModel })
-        });
-
-        const data = await response.json();
-        loadingDiv.remove();
-
-        if (data.error) {
-          throw new Error(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
-        }
-
-        const replyText = data.reply || data.response || data.text || JSON.stringify(data);
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'ai-msg-wrapper';
-
-        const aiDiv = document.createElement('div');
-        aiDiv.className = 'message ai-msg';
-        aiDiv.textContent = replyText;
-        wrapper.appendChild(aiDiv);
-
-        const actions = document.createElement('div');
-        actions.className = 'ai-actions';
-        actions.innerHTML = `
-          <span title="Good response" onclick="alert('Liked!')">👍</span>
-          <span title="Bad response" onclick="alert('Disliked!')">👎</span>
-          <span title="Retry" onclick="retryLast()">↻</span>
-          <span title="Copy" onclick="copyText(this)">📋</span>
-          <span title="More" onclick="toggleMenu()">⋯</span>
-          <span title="Read aloud" onclick="speakText(this)">🔊</span>
-        `;
-        wrapper.appendChild(actions);
-
-        const disclaimer = document.createElement('div');
-        disclaimer.className = 'disclaimer';
-        disclaimer.textContent = 'AI Sameer is AI and can make mistakes.';
-        wrapper.appendChild(disclaimer);
-
-        chatArea.appendChild(wrapper);
-        chatArea.scrollTop = chatArea.scrollHeight;
-
-      } catch (error) {
-        loadingDiv.textContent = 'Error: ' + error.message;
-      } finally {
-        isSending = false;
-        document.getElementById('send-btn').disabled = false;
-      }
-    }
-
-    document.getElementById('user-input').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') sendMessage();
-    });
-  </script>
-</body>
-</html>
+/* Demo Orders in Bengaluru & Yemmiganur */
+var blrPlaces=['Indiranagar, Bengaluru', 'Koramangala, Bengaluru', 'HSR Layout, Bengaluru', 'Whitefield, Bengaluru', 'Bellandur, Bengaluru', 'Yemmiganur, AP'];
+function triggerOrder(){
+ if(!onDuty || currentOrder) return;
+ var pickupKm=(0.8+Math.random()*2.2).toFixed(1);
+ var dropKm=(2.5+Math.random()*6.0).toFixed(1);
+ var pay=Math.floor(60 + Math.random()*80);
+ var pl=blrPlaces[Math.floor(Math.random()*blrPlaces.length)];
+ 
+ currentOrder={
+  pickup:'MG Road, Bengaluru ('+pickupKm+' km away)',
+  drop:pl+' ('
