@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="en">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AI Sameer Delivery Captain</title>
+<title>AI Sameer Captain</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Hind:wght@400;500;600&family=Noto+Sans+Telugu:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f4f6f8;--navy:#0a1f5c;--deep:#061440;--blue:#1560e8;--yel:#ffc107;--green:#22c55e;--red:#ef4444;--card:#fff;--line:#e2e8f0;--tx:#1e293b;--mut:#64748b;box-sizing:border-box}
@@ -11,53 +13,42 @@ body{background:#fff;font-family:Hind,system-ui,sans-serif;color:var(--tx);displ
 #app{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
 main{flex:1;overflow-y:auto;padding:14px 16px 80px}
 .scr{display:none}.scr.on{display:block}
-
-/* Top Header */
 .top-header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .menu-btn{background:none;border:0;font-size:22px;cursor:pointer}
 .duty-toggle{background:#e2e8f0;border:0;padding:6px 16px;border-radius:99px;font:700 13px Hind;cursor:pointer;display:flex;align-items:center;gap:6px;color:#334155}
 .duty-toggle.on{background:#dcfce7;color:#166534;border:1px solid var(--green)}
 .top-icons{display:flex;gap:16px;align-items:center;font-size:20px;cursor:pointer}
-
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .pill{display:inline-block;background:#fef3c7;color:#92400e;border-radius:99px;padding:4px 12px;font-weight:700;font-size:12px}
-.btn{background:var(--yel);color:#000;border:0;border-radius:12px;padding:12px;font:800 16px 'Baloo 2';width:100%;cursor:pointer;text-align:center}
-.in{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--tx);font:inherit;margin-top:4px}
-
-/* Toggle Switch Style */
+.btn{background:var(--yel);color:#000;border:0;border-radius:12px;padding:14px;font:800 16px 'Baloo 2';width:100%;cursor:pointer;text-align:center}
+.in{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--tx);font:inherit;margin-top:4px}
 .switch{position:relative;display:inline-block;width:50px;height:26px}
 .switch input{opacity:0;width:0;height:0}
 .slider{position:absolute;cursor:pointer;inset:0;background-color:#ccc;transition:.3s;border-radius:26px}
 .slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:white;transition:.3s;border-radius:50%}
 input:checked+.slider{background-color:var(--green)}
 input:checked+.slider:before{transform:translateX(24px)}
-
-/* Side Drawer Menu */
 #drawer{position:absolute;inset:0;z-index:100;display:none;background:rgba(0,0,0,0.5)}
 #drawer .menu-content{width:82%;height:100%;background:#fff;padding:20px;overflow-y:auto}
 .menu-profile{background:#f8fafc;padding:14px;border-radius:12px;margin-bottom:16px;border:1px solid var(--line)}
 .menu-item{padding:14px 0;border-bottom:1px solid var(--line);font-weight:600;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#334155}
-
 .sub-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;font-size:18px;font-weight:700}
 .back-btn{background:none;border:0;font-size:20px;cursor:pointer}
-
-/* Bottom Navigation Bar */
 .bottom-nav{position:absolute;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:10;padding-bottom:env(safe-area-inset-bottom,0px)}
 .nav-item{background:none;border:0;color:var(--mut);font:600 12px Hind;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
 .nav-item span{font-size:20px}
 .nav-item.on{color:#000}
 .floating-bike{position:absolute;bottom:75px;left:16px;width:45px;height:45px;background:#fff;border-radius:50%;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,0.15);cursor:pointer;font-size:22px;z-index:11}
-
 #modal{position:absolute;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:flex-end;z-index:200}
 #modal.on{display:flex}
 #modal .sheet{background:#fff;border-radius:24px 24px 0 0;padding:20px;width:100%}
-#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:8px 18px;border-radius:99px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:300;white-space:nowrap}
+#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 20px;border-radius:99px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:300;white-space:nowrap}
 #toast.on{opacity:1}
-</style></head>
-<body><div id="app">
-
-<!-- Top Header -->
+</style>
+</head>
+<body>
+<div id="app">
 <div class="top-header" id="topHeader" style="display:none">
  <button class="menu-btn" onclick="openDrawer(true)">☰</button>
  <button class="duty-toggle" id="dutyBtn" onclick="toggleDuty()">
@@ -66,303 +57,270 @@ input:checked+.slider:before{transform:translateX(24px)}
  </button>
  <div class="top-icons">
   <span onclick="toast('GPS Active')" title="Location">📍</span>
-  <span onclick="toast('No new notifications')" title="Notifications">🔔</span>
+  <span onclick="toast('No notifications')" title="Notifications">🔔</span>
  </div>
 </div>
-
 <main>
-<!-- 1. DUMMY LOGIN SCREEN -->
 <section class="scr on" id="login">
- <div class="sub-header">Login to Drive (Dummy Login)</div>
+ <div class="sub-header">AI Sameer Captain Login</div>
  <div class="card" style="text-align:center;padding:24px 16px">
   <div style="font-size:36px;margin-bottom:10px">🏍️</div>
   <h2 style="font-size:18px">Enter Phone Number</h2>
-  <p style="font-size:13px;color:var(--mut);margin:8px 0">Click Get OTP for dummy login access</p>
   <input class="in" id="phoneInput" value="+91 7569096917" style="font-weight:700;text-align:center">
+  <div style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;text-align:left;font-size:12px;color:var(--mut)">
+   <input type="checkbox" id="termsCheck" checked style="margin-top:2px;accent-color:var(--blue);cursor:pointer">
+   <label for="termsCheck" style="cursor:pointer">I agree to the <b style="color:var(--tx)">Terms of Service</b> & <b style="color:var(--tx)">Privacy Policy</b>.</label>
+  </div>
   <button class="btn" style="margin-top:16px" onclick="sendOtp()">Get OTP</button>
  </div>
 </section>
-
-<!-- 2. OTP VERIFICATION SCREEN -->
 <section class="scr" id="otpScreen">
  <div class="sub-header"><button class="back-btn" onclick="go('login')">←</button> Verify OTP</div>
  <div class="card" style="text-align:center;padding:24px 16px">
-  <h2 style="font-size:18px">Enter 4-digit OTP</h2>
-  <p style="font-size:13px;color:var(--mut);margin:8px 0">Dummy OTP: 4321</p>
+  <h2 style="font-size:18px">Enter 4-digit OTP (4321)</h2>
   <input class="in" id="otpInput" value="4321" style="font-weight:700;text-align:center;letter-spacing:4px;font-size:20px">
   <button class="btn" style="margin-top:16px" onclick="verifyOtp()">Verify & Continue</button>
  </div>
 </section>
-
-<!-- 3. KYC DOCUMENTS UPLOAD SCREEN -->
 <section class="scr" id="kyc">
  <div class="sub-header">KYC Document Verification</div>
- <p style="font-size:13px;color:var(--mut);margin-bottom:12px">Upload clear photos to activate your captain account.</p>
  <div class="card">
-  <label style="font-size:13px;color:var(--mut)">1. Selfie Photo (Camera / Gallery)<input type="file" class="in" accept="image/*" capture="user" onchange="toast('Selfie uploaded!')"></label><br>
-  <label style="font-size:13px;color:var(--mut)">2. Aadhaar Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('Aadhaar uploaded!')"></label><br>
-  <label style="font-size:13px;color:var(--mut)">3. PAN Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('PAN uploaded!')"></label><br>
-  <label style="font-size:13px;color:var(--mut)">4. Bank Passbook / Cheque<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('Passbook uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut);font-weight:600">1. Selfie Photo<input type="file" class="in" accept="image/*" capture="user" onchange="toast('Selfie uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut);font-weight:600">2. Aadhaar Front<input type="file" class="in" accept="image/*" onchange="toast('Aadhaar Front uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut);font-weight:600">3. Driving License<input type="file" class="in" accept="image/*" onchange="toast('DL uploaded!')"></label><br>
   <button class="btn" style="margin-top:10px" onclick="completeKyc()">Submit & Enter App</button>
  </div>
 </section>
-
-<!-- HOME SCREEN -->
 <section class="scr" id="home">
  <div class="card">
-  <div class="row"><b>Today's Earnings</b><b style="color:#16a34a;font-size:20px">₹<span class="E">121</span></b></div>
-  <div class="row" style="margin-top:10px;font-size:13px;color:var(--mut)"><span>Deliveries: <b id="dl">12</b></span><span>Rating: <b>4.8 ★</b></span></div>
+  <div class="row"><b>Today's Earnings</b><b style="color:#16a34a;font-size:20px">₹<span class="E">328</span></b></div>
+  <div class="row" style="margin-top:10px;font-size:13px;color:var(--mut)"><span>Deliveries: <b id="dl">15</b></span><span>Rating: <b>4.8 ★</b></span></div>
  </div>
-
  <div class="card" style="background:linear-gradient(135deg, #f0fdf4, #e0f2fe); border:1px solid #bae6fd;">
   <div class="row">
-   <div><b style="color:#0369a1">✨ Gemini AI Assistant</b><br><small style="color:#0284c7">Ask anything about Bengaluru routes</small></div>
+   <div><b style="color:#0369a1">✨ AI Sameer Captain AI</b><br><small style="color:#0284c7">Ask anything about Bengaluru routes</small></div>
    <button class="pill" style="background:#0284c7;color:#fff;border:0;cursor:pointer" onclick="openGemini()">Ask AI</button>
   </div>
  </div>
-
- <div class="card" style="background:linear-gradient(110deg,#1560e8,#0a3aa8);color:#fff">
-  <h2 style="font-size:18px">Service Locations Active</h2>
-  <p style="font-size:13px;color:rgba(255,255,255,0.9);margin:4px 0">📍 Bengaluru & Yemmiganur Connected</p>
+ <div class="card" style="background:#fff;display:flex;align-items:center;gap:14px;border:1px solid var(--line)">
+  <div style="width:55px;height:55px;background:#f1f5f9;border-radius:12px;display:grid;place-items:center;font-size:28px">📱</div>
+  <div>
+   <div style="font-size:15px;font-weight:700;color:var(--tx)">Hi Shaik Mahammad</div>
+   <div style="font-size:13px;color:var(--mut);font-weight:600">AI Sameer Captain Online</div>
+  </div>
  </div>
 </section>
-
-<!-- ORDERS SCREEN -->
 <section class="scr" id="orders">
- <h2 style="font-size:22px;margin-bottom:12px">My Deliveries & Orders</h2>
- <div id="activeOrderBox"><div class="card" style="text-align:center;color:var(--mut)">No active orders. Turn on duty to receive requests.</div></div>
+ <div class="row" style="margin-bottom:12px;align-items:center">
+  <h2 style="font-size:20px" id="orderHeaderTitle">0 Orders</h2>
+  <button class="duty-toggle on" id="orderDutyToggle" onclick="toggleDuty()" style="padding:4px 12px;font-size:12px"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span> ON</button>
+ </div>
+ <div id="activeOrderBox">
+  <div class="card" style="text-align:center;color:var(--mut)">No active orders. Turn on duty to receive requests.</div>
+ </div>
 </section>
-
-<!-- EARNINGS & WITHDRAW SUB-PAGE -->
+<section class="scr" id="allOrdersHistory">
+ <div class="sub-header"><button class="back-btn" onclick="go('earnings')">←</button> All Orders History</div>
+ <div id="historyOrdersList"><div class="card" style="text-align:center;color:var(--mut)">No completed history yet.</div></div>
+</section>
+<section class="scr" id="languageSettings">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Language Settings</div>
+ <div class="card" onclick="go('appLanguage')" style="cursor:pointer"><b>App Language</b></div>
+ <div class="card" onclick="go('notifLanguage')" style="cursor:pointer"><b>Notification Language</b></div>
+</section>
+<section class="scr" id="appLanguage">
+ <div class="sub-header"><button class="back-btn" onclick="go('languageSettings')">←</button> App Language</div>
+ <div class="card">
+  <label class="row" style="cursor:pointer"><input type="radio" name="appLang" checked onchange="toast('English Selected')"> English</label><br>
+  <label class="row" style="cursor:pointer"><input type="radio" name="appLang" onchange="toast('తెలుగు Selected')"> తెలుగు (Telugu)</label>
+ </div>
+</section>
+<section class="scr" id="notifLanguage">
+ <div class="sub-header"><button class="back-btn" onclick="go('languageSettings')">←</button> Notification Language</div>
+ <div class="card">
+  <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" checked onchange="toast('English Selected')"> English</label><br>
+  <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" onchange="toast('తెలుగు Selected')"> తెలుగు (Telugu)</label>
+ </div>
+</section>
 <section class="scr" id="earnings">
  <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Earnings & Wallet</div>
  <div class="card" style="background:#f8fafc">
   <div style="font-size:13px;color:var(--mut)">Wallet Balance</div>
-  <div style="font-size:32px;font-weight:800;color:#1e293b">₹<span class="E">121</span></div>
-  <button class="btn" style="margin-top:12px" onclick="withdrawMoney()">Withdraw to Bank</button>
+  <div style="font-size:32px;font-weight:800;color:#1e293b">₹<span class="E">328</span></div>
+  <button class="btn" style="margin-top:12px" onclick="withdrawMoney()">Withdraw to Bank / UPI</button>
  </div>
- <div class="card" onclick="toast('All Orders History opened')"><b>📦 All Orders History</b><br><small style="color:var(--mut)">View completed & past orders</small></div>
- <div class="card" onclick="toast('Rate card loaded')"><b>📋 View Rate Card</b><br><small style="color:var(--mut)">Check per km fares</small></div>
+ <div class="card" onclick="go('allOrdersHistory')" style="cursor:pointer"><b>📦 All Orders History</b></div>
 </section>
-
-<!-- INCENTIVES SUB-PAGE -->
 <section class="scr" id="incentives">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Incentives & More</div>
- <div class="card"><b>🎯 Daily Incentives (Up to ₹144)</b><p style="font-size:13px;color:var(--mut);margin-top:6px">Complete 3 Rides & 3km - Earn ₹24<br>Complete 6 Rides & 7km - Earn ₹54</p></div>
- <div class="card"><b>📅 Weekly Bonus</b><p style="font-size:13px;color:var(--mut);margin-top:6px">Complete weekly ride targets for extra rewards.</p></div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Incentives</div>
+ <div class="card"><b>🎯 Daily Incentives (Up to ₹144)</b></div>
 </section>
-
-<!-- REWARDS SUB-PAGE -->
 <section class="scr" id="rewards">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Rewards & Insurance</div>
- <div class="card"><b>🏥 Health Insurance</b><br><small style="color:var(--mut)">For you and your family</small></div>
- <div class="card"><b>🛡️ Accidental Insurance</b><br><small style="color:var(--mut)">Stay protected on every ride</small></div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Rewards</div>
+ <div class="card"><b>🏥 Health & Accidental Insurance</b></div>
 </section>
-
-<!-- SERVICE MANAGER -->
 <section class="scr" id="services">
  <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Service Manager</div>
- <div class="card">
-  <div style="font-size:13px;color:var(--mut)">Primary Services</div>
-  <div style="font-weight:700;font-size:16px;margin-top:4px">🏍️ Bike Service Active</div>
- </div>
- <div class="card row">
-  <div><b>📦 Parcel Delivery</b><br><small style="color:var(--mut)">Bike & Cycle</small></div>
-  <label class="switch"><input type="checkbox" id="srvParcel" checked onchange="toggleService('Parcel')"><span class="slider"></span></label>
- </div>
- <div class="card row">
-  <div><b>🍽️ Food Delivery</b><br><small style="color:var(--mut)">Bike only</small></div>
-  <label class="switch"><input type="checkbox" id="srvFood" checked onchange="toggleService('Food')"><span class="slider"></span></label>
- </div>
- <div class="card row">
-  <div><b>🛒 Grocery & Stores</b><br><small style="color:var(--mut)">Quick delivery</small></div>
-  <label class="switch"><input type="checkbox" id="srvGrocery" checked onchange="toggleService('Grocery')"><span class="slider"></span></label>
- </div>
+ <div class="card row"><div><b>📦 Parcel Delivery</b></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+ <div class="card row"><div><b>🍽️ Food Delivery</b></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
 </section>
-
-<!-- HELP & SUPPORT -->
 <section class="scr" id="help">
  <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Help & Support</div>
- <div class="card" style="background:#fef2f2;border-color:#fca5a5"><b>🚨 Emergency Support</b><br><small style="color:var(--mut)">Safety Center - Call 112</small><br><a href="tel:112" class="btn" style="display:block;margin-top:8px;background:var(--red);color:#fff;text-decoration:none">Call 112</a></div>
- <div class="card" onclick="toast('Issue: Earnings & Payouts')"><b>💰 Earnings & Payouts Issue</b></div>
+ <div class="card" style="background:#fef2f2"><b>🚨 Emergency Support</b><br><a href="tel:112" class="btn" style="display:block;margin-top:8px;background:var(--red);color:#fff;text-decoration:none">Call 112</a></div>
 </section>
-
-<!-- REFER & EARN -->
 <section class="scr" id="refer">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Refer & Earn</div>
- <div class="card" style="background:linear-gradient(135deg,#fdf4ff,#fae8ff);border-color:#f0abfc">
-  <b>Refer Captains & Earn up to ₹5000</b>
-  <p style="font-size:13px;color:var(--mut);margin-top:4px">Your referral code: <b style="color:#000">SAMEER123</b></p>
-  <button class="btn" style="margin-top:10px" onclick="toast('Referral code copied!')">Share Refer Link</button>
- </div>
- <div class="card"><b>Our Referrals & Rewards</b>
-  <p style="font-size:13px;color:var(--mut);margin-top:8px">
-   • 1 Referral = <b>₹5000</b> (Female Bike Captains)<br>
-   • 1 Referral = <b>₹200</b> (Auto Captain)<br>
-   • 1 Referral = <b>₹100</b> (Cab Captains)<br>
-   • 1 Referral = <b>₹200</b> (Bike Captain)
-  </p>
- </div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Refer and Earn</div>
+ <div class="card"><b>Refer code: R4ZFE4L</b><br><button class="btn" style="margin-top:10px" onclick="toast('Copied!')">Refer Friends</button></div>
 </section>
-
-<!-- KYC VIEW -->
 <section class="scr" id="kycView">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> KYC Documents</div>
- <div class="card">
-  <label style="font-size:13px;color:var(--mut)">Selfie Photo<input type="file" class="in" accept="image/*" capture="user" onchange="toast('Selfie uploaded!')"></label><br>
-  <label style="font-size:13px;color:var(--mut)">Aadhaar Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('Aadhaar uploaded!')"></label><br>
-  <label style="font-size:13px;color:var(--mut)">PAN Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('PAN uploaded!')"></label><br>
-  <button class="btn" onclick="go('home');toast('KYC Updated!')">Update KYC</button>
- </div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> KYC Docs</div>
+ <div class="card"><b>KYC Verified Successfully</b></div>
 </section>
-
 </main>
-
-<!-- Floating Vehicle Button -->
 <div class="floating-bike" id="floatBike" style="display:none" onclick="go('services')">🏍️</div>
-
-<!-- Bottom Navigation Bar -->
 <nav class="bottom-nav" id="bottomNav" style="display:none">
  <button class="nav-item on" data-t="home" onclick="go('home')"><span>🏠</span>Home</button>
  <button class="nav-item" data-t="orders" onclick="go('orders')"><span>📋</span>Orders</button>
 </nav>
-
-<!-- Side Drawer Menu -->
 <div id="drawer" onclick="openDrawer(false)">
  <div class="menu-content" onclick="event.stopPropagation()">
-  <div class="menu-profile" onclick="openDrawer(false);go('kycView')">
-   <div class="row"><b>Shaik Mahammad</b><span class="pill">Best ★</span></div>
-   <div style="font-size:12px;color:var(--mut);margin-top:2px">Tap to view profile & KYC</div>
-  </div>
-  <div class="menu-item" onclick="openDrawer(false);go('earnings')">Earnings (Wallet & History) <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('incentives')">Incentives and More <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('rewards')">Rewards & Insurance <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('services')">Service Manager (Food/Parcel/Stores) <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('help')">Help & Support (Emergency) <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('refer')">Refer friends (Earn ₹5000) <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);openGemini()">Ask Gemini AI Assistant <span>🤖</span></div>
+  <div class="menu-profile" onclick="openDrawer(false);go('kycView')"><b>Shaik Mahammad</b><br><small>AI Sameer Captain</small></div>
+  <div class="menu-item" onclick="openDrawer(false);go('earnings')">Earnings <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('incentives')">Incentives <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('rewards')">Rewards <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('services')">Services <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('languageSettings')">Language Settings <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('help')">Help & Support <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('refer')">Refer & Earn <span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);openGemini()">Ask AI Assistant <span>🤖</span></div>
   <div class="menu-item" style="color:var(--red)" onclick="signOut()">Sign out <span>➔</span></div>
  </div>
 </div>
-
-<!-- Gemini AI Modal -->
 <div id="aiModal" style="position:absolute;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:250">
  <div style="background:#fff;width:90%;max-width:380px;border-radius:20px;padding:20px">
-  <div class="row"><b>✨ Gemini AI Support</b><button onclick="closeGemini()" style="background:none;border:0;font-size:18px;cursor:pointer">✕</button></div>
-  <p style="font-size:12px;color:var(--mut);margin:8px 0">Ask anything about Bengaluru delivery routes or earnings.</p>
-  <input class="in" id="aiQuery" placeholder="Type your question here...">
-  <button class="btn" style="margin-top:10px" onclick="askGeminiAI()">Get AI Answer</button>
-  <div id="aiResponse" style="margin-top:12px;font-size:13px;background:#f8fafc;padding:10px;border-radius:8px;min-height:40px;color:#334155"></div>
+  <div class="row"><b>✨ AI Sameer Captain Support</b><button onclick="closeGemini()" style="background:none;border:0;font-size:18px">✕</button></div>
+  <input class="in" id="aiQuery" placeholder="Ask about routes..." style="margin-top:10px">
+  <button class="btn" style="margin-top:10px" onclick="askAI()">Ask</button>
+  <div id="aiResponse" style="margin-top:12px;font-size:13px;background:#f8fafc;padding:10px;border-radius:8px"></div>
  </div>
 </div>
-
 <div id="modal"><div class="sheet" id="sheet"></div></div>
 <div id="toast"></div>
-
 </div>
-
 <script>
-var onDuty=false, bal=121, del=12, timer=null, currentOrder=null;
-var servicesState={parcel:true, food:true, grocery:true};
+var onDuty=false, bal=328, del=15, timer=null;
+var activeOrders=[], completedOrdersHistory=[];
+var ringingInterval=null;
 var $=function(i){return document.getElementById(i)};
-
 function go(s){
  document.querySelectorAll('.scr').forEach(function(e){e.classList.toggle('on',e.id===s)});
  document.querySelectorAll('.bottom-nav button').forEach(function(b){b.classList.toggle('on',b.dataset.t===s)});
  document.querySelector('main').scrollTop=0;
 }
-
-function openDrawer(isOpen){
- $('drawer').style.display=isOpen?'block':'none';
-}
-
+function openDrawer(isOpen){ $('drawer').style.display=isOpen?'block':'none'; }
 function toast(m){
  var t=$('toast'); if(!t)return;
  t.textContent=m; t.classList.add('on');
  setTimeout(function(){t.classList.remove('on')},1800);
 }
-
 function money(){
  document.querySelectorAll('.E').forEach(function(e){e.textContent=bal});
  var d=$('dl'); if(d) d.textContent=del;
 }
-
 function sendOtp(){
+ var check = $('termsCheck');
+ if(check && !check.checked){
+  toast('Please agree to Terms');
+  return;
+ }
  toast('OTP sent successfully!');
  go('otpScreen');
 }
-
 function verifyOtp(){
- toast('OTP verified!');
+ toast('OTP Verified!');
  go('kyc');
 }
-
 function completeKyc(){
- toast('KYC Submitted Successfully!');
+ toast('KYC Submitted!');
  $('topHeader').style.display='flex';
  $('bottomNav').style.display='flex';
  $('floatBike').style.display='grid';
  go('home');
 }
-
 function signOut(){
  openDrawer(false);
  $('topHeader').style.display='none';
  $('bottomNav').style.display='none';
  $('floatBike').style.display='none';
  go('login');
- toast('Signed out successfully');
+ toast('Signed out');
 }
-
 function toggleDuty(){
  onDuty=!onDuty;
  var btn=$('dutyBtn'), dot=$('dutyDot'), txt=$('dutyText');
+ var orderToggle=$('orderDutyToggle');
  if(onDuty){
-  btn.classList.add('on');
-  dot.style.background='var(--green)';
-  txt.textContent='ON DUTY';
-  toast('Online in Bengaluru & Yemmiganur');
+  if(btn){btn.classList.add('on'); dot.style.background='var(--green)'; txt.textContent='ON DUTY';}
+  if(orderToggle){orderToggle.classList.add('on'); orderToggle.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span> ON';}
+  toast('Online in Bengaluru');
   timer=setTimeout(triggerOrder, 3000);
  } else {
-  btn.classList.remove('on');
-  dot.style.background='var(--red)';
-  txt.textContent='OFF DUTY';
-  toast('You are Offline.');
-  clearTimeout(timer);
+  if(btn){btn.classList.remove('on'); dot.style.background='var(--red)'; txt.textContent='OFF DUTY';}
+  if(orderToggle){orderToggle.classList.remove('on'); orderToggle.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block"></span> OFF';}
+  toast('Offline.');
+  clearTimeout(timer); stopAlarm();
  }
 }
-
-function toggleService(name){
- var state=true;
- if(name==='Parcel') { servicesState.parcel=!servicesState.parcel; state=servicesState.parcel; }
- if(name==='Food') { servicesState.food=!servicesState.food; state=servicesState.food; }
- if(name==='Grocery') { servicesState.grocery=!servicesState.grocery; state=servicesState.grocery; }
- toast(name+' Delivery is now '+(state?'ON':'OFF'));
-}
-
 function withdrawMoney(){
- if(bal<=0){toast('No balance to withdraw');return;}
- bal=0; money();
- toast('Withdrawal requested successfully!');
+ if(bal<=0){toast('No balance');return;}
+ var amt=bal; bal=0; money();
+ toast('Withdrawn ₹'+amt+' successfully!');
 }
-
-/* Demo Orders in Bengaluru & Yemmiganur */
-var blrPlaces=['Indiranagar, Bengaluru', 'Koramangala, Bengaluru', 'HSR Layout, Bengaluru', 'Whitefield, Bengaluru', 'Bellandur, Bengaluru', 'Yemmiganur, AP'];
+function playAlarm(){
+ try{
+  var ctx=new(window.AudioContext||window.webkitAudioContext)();
+  var osc=ctx.createOscillator(); var g=ctx.createGain();
+  osc.type='square'; osc.frequency.setValueAtTime(1200, ctx.currentTime);
+  g.gain.setValueAtTime(0.9, ctx.currentTime);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(); osc.stop(ctx.currentTime+0.3);
+ }catch(e){}
+}
+function startAlarm(){ stopAlarm(); playAlarm(); ringingInterval=setInterval(playAlarm, 2000); }
+function stopAlarm(){ if(ringingInterval){ clearInterval(ringingInterval); ringingInterval=null; } }
+var currentCandidate=null;
 function triggerOrder(){
- if(!onDuty || currentOrder) return;
- var pickupKm=(0.8+Math.random()*2.2).toFixed(1);
- var dropKm=(2.5+Math.random()*6.0).toFixed(1);
- var pay=Math.floor(60 + Math.random()*80);
- var pl=blrPlaces[Math.floor(Math.random()*blrPlaces.length)];
- 
- currentOrder={
-  pickup:'MG Road, Bengaluru ('+pickupKm+' km away)',
-  drop:pl+' ('+dropKm+' km delivery)',
-  pay:pay, pl:pl
+ if(!onDuty || currentCandidate) return;
+ startAlarm();
+ var pay=Math.floor(70 + Math.random()*50);
+ currentCandidate={
+  id:Date.now(), restaurantName:"Wendy's Burgers",
+  pickupKm:"1.2 km", pickupAddr:"HSR Layout, Bengaluru",
+  dropKm:"4.5 km", dropAddr:"Kasavanahalli, Bengaluru", pay:pay
  };
-
  var sheet=$('sheet');
  if(sheet){
   sheet.innerHTML=`
-   <div class="row"><h2 style="font-size:18px">New Delivery Request</h2><span class="pill">₹${pay}</span></div>
-   <div style="margin:14px 0;display:flex;flex-di
+   <div class="row"><h2>New Order</h2><span class="pill" style="background:#dcfce7;color:#166534">₹${pay}</span></div>
+   <div class="card" style="margin:12px 0;background:#f8fafc">
+    <b>🍽️ Wendy's Burgers</b><br><small>Pickup: HSR Layout</small><br><small>Drop: Kasavanahalli</small>
+   </div>
+   <div class="row"><button class="btn" style="background:#f1f5f9;color:#64748b" onclick="rejectOrder()">Reject</button>
+   <button class="btn" onclick="acceptOrder()">Accept</button></div>`;
+  $('modal').classList.add('on');
+ }
+}
+function rejectOrder(){ stopAlarm(); $('modal').classList.remove('on'); currentCandidate=null; if(onDuty) timer=setTimeout(triggerOrder, 5000); }
+function acceptOrder(){
+ stopAlarm(); $('modal').classList.remove('on');
+ if(currentCandidate){ activeOrders.push(currentCandidate); currentCandidate=null; }
+ renderActive(); go('orders'); toast('Order Accepted!');
+ if(onDuty) timer=setTimeout(triggerOrder, 8000);
+}
+function renderActive(){
+ var box=$('activeOrderBox'), ht=$('orderHeaderTitle');
+ if(ht) ht.textContent = activeOrders.length + (activeOrders.length===1?' Order':' Orders');
+ if(activeOrders.length===0){ box.innerHTML='<div class="card" style="text-align:center;color:var(--mut)">No active orders.</div>'; return; }
+ var html='';
+ activeOrders.forEach(function(o, i){
+  html
