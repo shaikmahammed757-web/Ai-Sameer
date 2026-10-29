@@ -79,7 +79,7 @@ input:checked+.slider:before{transform:translateX(24px)}
   <h2 style="font-size:18px">Enter Phone Number</h2>
   <p style="font-size:13px;color:var(--mut);margin:8px 0">Click Get OTP for dummy login access</p>
   <input class="in" id="phoneInput" value="+91 7569096917" style="font-weight:700;text-align:center">
-  <button class="btn" style="margin-top:16px" id="getOtpBtn">Get OTP</button>
+  <button class="btn" style="margin-top:16px" onclick="sendOtp()">Get OTP</button>
  </div>
 </section>
 
@@ -90,7 +90,7 @@ input:checked+.slider:before{transform:translateX(24px)}
   <h2 style="font-size:18px">Enter 4-digit OTP</h2>
   <p style="font-size:13px;color:var(--mut);margin:8px 0">Dummy OTP: 4321</p>
   <input class="in" id="otpInput" value="4321" style="font-weight:700;text-align:center;letter-spacing:4px;font-size:20px">
-  <button class="btn" style="margin-top:16px" id="verifyOtpBtn">Verify & Continue</button>
+  <button class="btn" style="margin-top:16px" onclick="verifyOtp()">Verify & Continue</button>
  </div>
 </section>
 
@@ -103,7 +103,7 @@ input:checked+.slider:before{transform:translateX(24px)}
   <label style="font-size:13px;color:var(--mut)">2. Aadhaar Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('Aadhaar uploaded!')"></label><br>
   <label style="font-size:13px;color:var(--mut)">3. PAN Card Photo<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('PAN uploaded!')"></label><br>
   <label style="font-size:13px;color:var(--mut)">4. Bank Passbook / Cheque<input type="file" class="in" accept="image/*" capture="environment" onchange="toast('Passbook uploaded!')"></label><br>
-  <button class="btn" style="margin-top:10px" id="submitKycBtn">Submit & Enter App</button>
+  <button class="btn" style="margin-top:10px" onclick="completeKyc()">Submit & Enter App</button>
  </div>
 </section>
 
@@ -287,13 +287,6 @@ function money(){
  var d=$('dl'); if(d) d.textContent=del;
 }
 
-/* Safe Event Bindings to completely prevent reference errors */
-window.onload = function() {
- if($('getOtpBtn')) $('getOtpBtn').onclick = sendOtp;
- if($('verifyOtpBtn')) $('verifyOtpBtn').onclick = verifyOtp;
- if($('submitKycBtn')) $('submitKycBtn').onclick = completeKyc;
-};
-
 function sendOtp(){
  toast('OTP sent successfully!');
  go('otpScreen');
@@ -364,4 +357,12 @@ function triggerOrder(){
  
  currentOrder={
   pickup:'MG Road, Bengaluru ('+pickupKm+' km away)',
-  drop:pl+' ('
+  drop:pl+' ('+dropKm+' km delivery)',
+  pay:pay, pl:pl
+ };
+
+ var sheet=$('sheet');
+ if(sheet){
+  sheet.innerHTML=`
+   <div class="row"><h2 style="font-size:18px">New Delivery Request</h2><span class="pill">₹${pay}</span></div>
+   <div style="margin:14px 0;display:flex;flex-di
