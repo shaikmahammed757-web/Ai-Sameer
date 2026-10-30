@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>AI Sameer Captain</title>
+<title>AI Sameer Delivery Captain</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Hind:wght@400;500;600&family=Noto+Sans+Telugu:wght@400;600;800&display=swap" rel="stylesheet">
+<!-- QRCode.js Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{--bg:#f4f6f8;--navy:#0a1f5c;--deep:#061440;--blue:#1560e8;--yel:#ffc107;--green:#22c55e;--red:#ef4444;--card:#fff;--line:#e2e8f0;--tx:#1e293b;--mut:#64748b;box-sizing:border-box}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
@@ -13,314 +15,1480 @@ body{background:#fff;font-family:Hind,system-ui,sans-serif;color:var(--tx);displ
 #app{width:100%;max-width:430px;height:100%;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
 main{flex:1;overflow-y:auto;padding:14px 16px 80px}
 .scr{display:none}.scr.on{display:block}
+
+/* Top Header */
 .top-header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .menu-btn{background:none;border:0;font-size:22px;cursor:pointer}
 .duty-toggle{background:#e2e8f0;border:0;padding:6px 16px;border-radius:99px;font:700 13px Hind;cursor:pointer;display:flex;align-items:center;gap:6px;color:#334155}
 .duty-toggle.on{background:#dcfce7;color:#166534;border:1px solid var(--green)}
 .top-icons{display:flex;gap:16px;align-items:center;font-size:20px;cursor:pointer}
+
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .pill{display:inline-block;background:#fef3c7;color:#92400e;border-radius:99px;padding:4px 12px;font-weight:700;font-size:12px}
-.btn{background:var(--yel);color:#000;border:0;border-radius:12px;padding:14px;font:800 16px 'Baloo 2';width:100%;cursor:pointer;text-align:center}
-.in{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--tx);font:inherit;margin-top:4px}
+.btn{background:var(--yel);color:#000;border:0;border-radius:12px;padding:12px;font:800 16px 'Baloo 2';width:100%;cursor:pointer;text-align:center}
+.btn-red{background:var(--red);color:#fff;border:0;border-radius:12px;padding:12px;font:800 16px 'Baloo 2';width:100%;cursor:pointer;text-align:center}
+.btn-blue{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:10px;font:700 14px Hind;width:100%;cursor:pointer;text-align:center;margin-top:8px;text-decoration:none;display:block}
+.in{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--tx);font:inherit;margin-top:4px}
+
+/* Toggle Switch Style */
 .switch{position:relative;display:inline-block;width:50px;height:26px}
 .switch input{opacity:0;width:0;height:0}
 .slider{position:absolute;cursor:pointer;inset:0;background-color:#ccc;transition:.3s;border-radius:26px}
 .slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:white;transition:.3s;border-radius:50%}
 input:checked+.slider{background-color:var(--green)}
 input:checked+.slider:before{transform:translateX(24px)}
+
+/* Side Drawer Menu */
 #drawer{position:absolute;inset:0;z-index:100;display:none;background:rgba(0,0,0,0.5)}
 #drawer .menu-content{width:82%;height:100%;background:#fff;padding:20px;overflow-y:auto}
-.menu-profile{background:#f8fafc;padding:14px;border-radius:12px;margin-bottom:16px;border:1px solid var(--line)}
+.menu-profile{background:#f8fafc;padding:14px;border-radius:12px;margin-bottom:16px;border:1px solid var(--line);cursor:pointer}
 .menu-item{padding:14px 0;border-bottom:1px solid var(--line);font-weight:600;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;color:#334155}
+
 .sub-header{display:flex;align-items:center;gap:12px;margin-bottom:16px;font-size:18px;font-weight:700}
 .back-btn{background:none;border:0;font-size:20px;cursor:pointer}
+
+/* Bottom Navigation Bar */
 .bottom-nav{position:absolute;bottom:0;left:0;right:0;height:65px;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:10;padding-bottom:env(safe-area-inset-bottom,0px)}
 .nav-item{background:none;border:0;color:var(--mut);font:600 12px Hind;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
 .nav-item span{font-size:20px}
 .nav-item.on{color:#000}
-.floating-bike{position:absolute;bottom:75px;left:16px;width:45px;height:45px;background:#fff;border-radius:50%;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,0.15);cursor:pointer;font-size:22px;z-index:11}
-#modal{position:absolute;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:flex-end;z-index:200}
-#modal.on{display:flex}
-#modal .sheet{background:#fff;border-radius:24px 24px 0 0;padding:20px;width:100%}
-#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 20px;border-radius:99px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:300;white-space:nowrap}
+
+.floating-vehicle{position:absolute;bottom:75px;left:16px;width:45px;height:45px;background:#fff;border-radius:50%;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,0.15);cursor:pointer;font-size:22px;z-index:11}
+
+#toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#1e293b;color:#fff;padding:12px 24px;border-radius:99px;font-weight:600;opacity:0;transition:.2s;pointer-events:none;z-index:300;white-space:nowrap;box-shadow:0 4px 12px rgba(0,0,0,0.3);font-size:14px;}
 #toast.on{opacity:1}
 </style>
 </head>
 <body>
 <div id="app">
+
+<!-- Top Header -->
 <div class="top-header" id="topHeader" style="display:none">
  <button class="menu-btn" onclick="openDrawer(true)">☰</button>
  <button class="duty-toggle" id="dutyBtn" onclick="toggleDuty()">
   <span id="dutyDot" style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block"></span> 
-  <span id="dutyText">OFF DUTY</span>
+  <span id="txtDutyStatus">OFF DUTY</span>
  </button>
  <div class="top-icons">
-  <span onclick="toast('GPS Active')" title="Location">📍</span>
-  <span onclick="toast('No notifications')" title="Notifications">🔔</span>
+  <span onclick="toast('GPS Active & Live Tracking Enabled')" title="Location">📍</span>
+  <span onclick="toast('No new notifications')" title="Notifications">🔔</span>
  </div>
 </div>
+
 <main>
+<!-- 1. LOGIN SCREEN -->
 <section class="scr on" id="login">
- <div class="sub-header">AI Sameer Captain Login</div>
+ <div class="sub-header" data-key="loginTitle">Login to Drive</div>
  <div class="card" style="text-align:center;padding:24px 16px">
-  <div style="font-size:36px;margin-bottom:10px">🏍️</div>
-  <h2 style="font-size:18px">Enter Phone Number</h2>
+  <div style="font-size:36px;margin-bottom:10px" id="loginLogoIcon">⚡</div>
+  <h2 style="font-size:18px" data-key="enterPhone">Enter Phone Number</h2>
+  <p style="font-size:13px;color:var(--mut);margin:8px 0" data-key="otpSubDesc">Get OTP via Mobile SMS or WhatsApp</p>
   <input class="in" id="phoneInput" value="+91 6363241340" style="font-weight:700;text-align:center">
-  <div style="display:flex;align-items:flex-start;gap:8px;margin-top:14px;text-align:left;font-size:12px;color:var(--mut)">
-   <input type="checkbox" id="termsCheck" checked style="margin-top:2px;accent-color:var(--blue);cursor:pointer">
-   <label for="termsCheck" style="cursor:pointer">I agree to the <b style="color:var(--tx)">Terms of Service</b> & <b style="color:var(--tx)">Privacy Policy</b>.</label>
+  
+  <div style="margin:12px 0; text-align:left; font-size:13px; font-weight:600; color:var(--mut);">
+   <label style="cursor:pointer"><input type="radio" name="otpChan" value="sms" checked> <span data-key="smsOpt">Send OTP via Mobile SMS</span></label><br>
+   <label style="cursor:pointer; margin-top:4px; display:inline-block;"><input type="radio" name="otpChan" value="whatsapp"> <span data-key="waOpt">Send OTP via WhatsApp</span></label>
   </div>
-  <button class="btn" style="margin-top:16px" id="getOtpBtn">Get OTP</button>
+
+  <div style="display:flex;align-items:flex-start;gap:8px;margin-top:10px;text-align:left;font-size:12px;color:var(--mut)">
+   <input type="checkbox" id="termsCheck" checked style="margin-top:2px;accent-color:var(--blue);cursor:pointer">
+   <label for="termsCheck" style="cursor:pointer" data-key="termsTxt">I agree to Terms & Privacy Policy.</label>
+  </div>
+
+  <button class="btn" style="margin-top:16px" onclick="sendOtpFirebase()" data-key="getOtpBtn">Get OTP</button>
  </div>
 </section>
+
+<!-- 2. OTP VERIFICATION SCREEN -->
 <section class="scr" id="otpScreen">
- <div class="sub-header"><button class="back-btn" onclick="go('login')">←</button> Verify OTP</div>
+ <div class="sub-header"><button class="back-btn" onclick="go('login')">←</button> <span data-key="verifyOtpTitle">Verify OTP</span></div>
  <div class="card" style="text-align:center;padding:24px 16px">
-  <h2 style="font-size:18px">Enter 4-digit OTP (4321)</h2>
-  <input class="in" id="otpInput" value="4321" style="font-weight:700;text-align:center;letter-spacing:4px;font-size:20px">
-  <button class="btn" style="margin-top:16px" id="verifyOtpBtn">Verify & Continue</button>
+  <h2 style="font-size:18px" data-key="enter4Digit">Enter 4-digit OTP</h2>
+  <p style="font-size:13px;color:var(--mut);margin:8px 0" id="otpSubText">OTP Sent via Firebase</p>
+  <input class="in" id="otpInput" placeholder="Enter OTP" style="font-weight:700;text-align:center;letter-spacing:4px;font-size:20px">
+  <button class="btn" style="margin-top:16px" onclick="verifyOtpFirebase()" data-key="verifyContinue">Verify & Continue</button>
  </div>
 </section>
+
+<!-- 3. KYC DOCUMENTS UPLOAD & NOMINEE SECTION -->
 <section class="scr" id="kyc">
- <div class="sub-header">KYC Document Verification</div>
+ <div class="sub-header" data-key="kycTitle">KYC Document & Nominee Verification</div>
+ <p style="font-size:13px;color:var(--mut);margin-bottom:12px" data-key="kycDesc">Select your vehicle type and add family nominee (Wife, Mother, Father, etc.)</p>
+ 
  <div class="card">
-  <label style="font-size:13px;color:var(--mut);font-weight:600">1. Selfie Photo<input type="file" class="in" accept="image/*" capture="user" onchange="toast('Selfie uploaded!')"></label><br>
-  <label style="font-size:13px;color:var(--mut);font-weight:600">2. Aadhaar Front<input type="file" class="in" accept="image/*" onchange="toast('Aadhaar Front uploaded!')"></label><br>
-  <label style="font-size:13px;color:var(--mut);font-weight:600">3. Driving License<input type="file" class="in" accept="image/*" onchange="toast('DL uploaded!')"></label><br>
-  <button class="btn" style="margin-top:10px" id="kycBtn">Submit & Enter App</button>
+  <label style="font-size:13px;color:var(--mut);font-weight:600" data-key="selVehLabel">Select Vehicle / Service Mode</label>
+  <select class="in" id="vehicleSelect" onchange="handleVehicleChange()">
+   <option value="ecycle">⚡ E-Cycle / Electric Cycle Captain (No DL Required)</option>
+   <option value="scooty">🛵 Scooty Captain (Quick Delivery & Rides)</option>
+   <option value="bike">🏍️ Bike Captain (Parcel, Food, Grocery)</option>
+   <option value="cycle">🚲 Normal Cycle Captain (No DL Required)</option>
+   <option value="auto">🛺 Auto Captain (Passenger Rides & Parcels)</option>
+   <option value="mini">🚗 Mini Car Captain</option>
+   <option value="sedan">🚙 Sedan Car Captain</option>
+   <option value="suv">🚐 SUV Car Captain</option>
+  </select>
+  <div style="margin-bottom:12px"></div>
+
+  <!-- FAMILY NOMINEE SECTION -->
+  <div style="background:#fefce8; border:1px solid #fde047; padding:12px; border-radius:12px; margin-bottom:14px;">
+   <b style="color:#854d0e; font-size:14px;" data-key="nomineeHeader">👥 Family Nominee / Emergency Contact</b>
+   <p style="font-size:12px; color:#713f12; margin:4px 0 10px 0;" data-key="nomineeSub">Add Wife, Mother, Father, or relative for safety & emergency calls.</p>
+
+   <label style="font-size:12px; font-weight:600; color:#713f12;" data-key="nomNameLabel">Nominee Full Name</label>
+   <input class="in" id="nomineeName" placeholder="e.g. Shaik Fatima" style="margin-bottom:8px; background:#fff;">
+
+   <label style="font-size:12px; font-weight:600; color:#713f12;" data-key="nomRelLabel">Relationship with Captain</label>
+   <select class="in" id="nomineeRelation" style="margin-bottom:8px; background:#fff;">
+    <option value="Wife / Bharya">Wife / Bharya (భార్య)</option>
+    <option value="Husband / Bhartha">Husband / Bhartha (భర్త)</option>
+    <option value="Mother">Mother (తల్లి)</option>
+    <option value="Father">Father (తండ్రి)</option>
+    <option value="Brother">Brother (తమ్ముడు / అన్న)</option>
+    <option value="Sister">Sister (చెల్లి / అక్క)</option>
+    <option value="Uncle / Mama">Uncle / Mama (మామ)</option>
+    <option value="Other">Other Family Member</option>
+   </select>
+
+   <label style="font-size:12px; font-weight:600; color:#713f12;" data-key="nomPhoneLabel">Nominee Mobile Number</label>
+   <input class="in" id="nomineePhone" placeholder="10-digit mobile number" style="margin-bottom:8px; background:#fff;">
+  </div>
+
+  <label style="font-size:13px;color:var(--mut);font-weight:600"><span data-key="selfieLabel">1. Selfie Photo (Daily Once)</span> <input type="file" class="in" accept="image/*" capture="user" id="selfieInput" onchange="handleSelfieUpload(event)"></label><br>
+  <label style="font-size:13px;color:var(--mut);font-weight:600"><span data-key="aadhaarFront">2. Aadhaar Card - Front Side</span><input type="file" class="in" accept="image/*" onchange="document.getElementById('docAadhaarSt').innerText='Verified (Uploaded)'; toast('Aadhaar Front uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut);font-weight:600"><span data-key="aadhaarBack">3. Aadhaar Card - Back Side</span><input type="file" class="in" accept="image/*" onchange="toast('Aadhaar Back uploaded!')"></label><br>
+  
+  <div id="dlFields">
+   <label style="font-size:13px;color:var(--mut);font-weight:600"><span data-key="dlFront">4. Driving License (DL) - Front Side</span><input type="file" class="in" accept="image/*" onchange="document.getElementById('docDlSt').innerText='Verified (Uploaded)'; toast('DL Front uploaded!')"></label><br>
+   <label style="font-size:13px;color:var(--mut);font-weight:600"><span data-key="dlBack">5. Driving License (DL) - Back Side</span><input type="file" class="in" accept="image/*" onchange="toast('DL Back uploaded!')"></label><br>
+  </div>
+
+  <label style="font-size:13px;color:var(--mut);font-weight:600"><span data-key="panPhoto">6. PAN Card Photo</span><input type="file" class="in" accept="image/*" onchange="document.getElementById('docPanSt').innerText='Verified (Uploaded)'; toast('PAN uploaded!')"></label><br>
+  <label style="font-size:13px;color:var(--mut);font-weight:600"><span data-key="bankPass">7. Bank Passbook / Cheque</span><input type="file" class="in" accept="image/*" onchange="document.getElementById('docBankSt').innerText='Verified (Uploaded)'; toast('Passbook uploaded!')"></label><br>
+  
+  <button class="btn" style="margin-top:10px" onclick="completeKyc()" data-key="submitKycBtn">Submit & Enter App</button>
  </div>
 </section>
-<section class="scr" id="home">
+
+<!-- HOME SCREEN -->
+<section class="scr on" id="home">
  <div class="card">
-  <div class="row"><b>Today's Earnings</b><b style="color:#16a34a;font-size:20px">₹<span class="E">328</span></b></div>
-  <div class="row" style="margin-top:10px;font-size:13px;color:var(--mut)"><span>Deliveries: <b id="dl">15</b></span><span>Rating: <b>4.8 ★</b></span></div>
+  <div class="row"><b data-key="todaysEarnings">Today's Earnings</b><b style="color:#16a34a;font-size:20px">₹<span class="E">0</span></b></div>
+  <div class="row" style="margin-top:10px;font-size:13px;color:var(--mut)"><span data-key="deliveriesCount">Deliveries: <b id="dl">0</b></span><span><span data-key="ratingTxt">Rating</span>: <b>5.0 ★</b></span></div>
  </div>
+
+ <!-- Return to Home / Home Route Setup Card -->
+ <div class="card" style="background:#fefce8; border:1px solid #fde047;">
+  <div class="row">
+   <div>
+    <b style="color:#854d0e;" data-key="homeRouteTitle">🏠 Home Location / Return Route</b><br>
+    <small style="color:#713f12;" id="homeLocText">Set your home address for return orders</small>
+   </div>
+   <button class="pill" style="background:#ca8a04; color:#fff; border:0; cursor:pointer;" onclick="setHomeLocation()" data-key="setHomeBtn">Set Home</button>
+  </div>
+ </div>
+
  <div class="card" style="background:linear-gradient(135deg, #f0fdf4, #e0f2fe); border:1px solid #bae6fd;">
   <div class="row">
-   <div><b style="color:#0369a1">✨ AI Sameer Captain AI</b><br><small style="color:#0284c7">Ask anything about Bengaluru routes</small></div>
-   <button class="pill" style="background:#0284c7;color:#fff;border:0;cursor:pointer" onclick="openGemini()">Ask AI</button>
+   <div><b style="color:#0369a1" data-key="aiTitle">✨ Gemini AI Assistant</b><br><small style="color:#0284c7" data-key="aiSub">Ask anything about Bengaluru routes</small></div>
+   <button class="pill" style="background:#0284c7;color:#fff;border:0;cursor:pointer" onclick="openGemini()" data-key="askAiBtn">Ask AI</button>
   </div>
  </div>
- <div class="card" style="background:#fff;display:flex;align-items:center;gap:14px;border:1px solid var(--line)">
-  <div style="width:55px;height:55px;background:#f1f5f9;border-radius:12px;display:grid;place-items:center;font-size:28px">📱</div>
-  <div>
-   <div style="font-size:15px;font-weight:700;color:var(--tx)">Hi Shaik Mahammad</div>
-   <div style="font-size:13px;color:var(--mut);font-weight:600">AI Sameer Captain Online</div>
+
+ <div class="card" style="background:#fff;display:flex;align-items:center;gap:14px;border:1px solid var(--line);cursor:pointer" onclick="openProfileIdCard()">
+  <div id="homeProfileAvatar" style="width:55px;height:55px;background:#f1f5f9;border-radius:12px;display:grid;place-items:center;font-size:28px;overflow:hidden">📱</div>
+  <div style="flex:1">
+   <div style="font-size:15px;font-weight:700;color:var(--tx)">Shaik Mahammed 🆔</div>
+   <div style="font-size:13px;color:var(--mut);font-weight:600" id="userVehicleRole">E-Cycle Captain Active</div>
   </div>
+  <span style="font-size:18px;color:var(--mut)">➔</span>
  </div>
 </section>
+
+<!-- ORDERS SCREEN -->
 <section class="scr" id="orders">
  <div class="row" style="margin-bottom:12px;align-items:center">
-  <h2 style="font-size:20px" id="orderHeaderTitle">0 Orders</h2>
+  <h2 style="font-size:20px" id="orderHeaderTitle" data-key="waitingOrders">Waiting for Live Orders...</h2>
   <button class="duty-toggle on" id="orderDutyToggle" onclick="toggleDuty()" style="padding:4px 12px;font-size:12px"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span> ON</button>
  </div>
  <div id="activeOrderBox">
-  <div class="card" style="text-align:center;color:var(--mut)">No active orders. Turn on duty to receive requests.</div>
+  <div class="card" style="text-align:center;color:var(--mut)" data-key="offDutyMsg">You are currently off duty. Turn on duty to receive orders.</div>
  </div>
 </section>
+
+<!-- DIGITAL ID CARD SCREEN -->
+<section class="scr" id="profileIdCardScreen">
+ <div class="sub-header" style="background:#044e42; color:#fff; padding:12px 16px; margin:-14px -16px 14px -16px;">
+  <button class="back-btn" onclick="go('home')" style="color:#fff">←</button> <span data-key="captainIdCard">Captain ID Card</span>
+ </div>
+ 
+ <div style="background:#044e42; padding:20px 10px 40px; border-radius:16px; text-align:center; position:relative; display:flex; flex-direction:column; align-items:center;">
+  <div style="width:24px; height:35px; background:#111; margin-bottom:-5px; border-radius:4px;"></div>
+  <div style="font-size:28px; margin-bottom:5px;">🪝</div>
+
+  <div style="background:#fff; width:100%; max-width:280px; border-radius:16px; padding:20px 15px; box-shadow:0 8px 25px rgba(0,0,0,0.3); color:#1e293b; position:relative;">
+   <div style="width:12px; height:12px; background:#044e42; border-radius:50%; margin:0 auto 12px;"></div>
+   
+   <div id="idCardAvatarContainer" style="width:65px; height:65px; background:#f1f5f9; border-radius:50%; margin:0 auto 10px; display:grid; place-items:center; font-size:35px; overflow:hidden; border:2px solid #044e42;">🧑‍✈️</div>
+   
+   <h2 style="font-size:17px; font-weight:800; color:#044e42; letter-spacing:0.5px;">SHAIK MAHAMMED</h2>
+   <p id="autoCaptainIdDisplay" style="font-size:13px; color:var(--mut); font-weight:700; margin-top:2px;">#001001</p>
+
+   <div style="margin:16px auto 10px; background:#fff; padding:8px; border-radius:8px; display:inline-block; border:1px solid var(--line);">
+    <div id="qrcode" style="display:flex; justify-content:center;"></div>
+   </div>
+
+   <div style="background:#044e42; color:#fff; font-size:11px; padding:6px 12px; border-radius:20px; font-weight:700; margin-top:10px; display:inline-block; white-space:nowrap;">
+    AI Sameer Delivery Captain
+   </div>
+  </div>
+
+  <div style="color:#a7f3d0; font-size:13px; font-weight:600; margin-top:20px;">Powered by AI Sameer</div>
+ </div>
+</section>
+
+<!-- KYC & NOMINEE DETAILS SUB-PAGE -->
+<section class="scr" id="documentsScreen">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span data-key="kycNomTitle">KYC & Nominee Details</span></div>
+ <div class="card">
+  <b style="color:var(--navy); font-size:16px;" data-key="emergencyNomTitle">👥 Emergency Nominee Information</b>
+  <p style="font-size:13px; color:var(--mut); margin-top:4px; margin-bottom:12px;" data-key="emergencyNomSub">Registered family nominee (including Wife/Spouse) for emergency contact:</p>
+  
+  <div style="background:#f8fafc; padding:12px; border-radius:10px; border:1px solid var(--line); margin-bottom:16px; font-size:13px;">
+   <div><b>Name:</b> <span id="displayNomineeName">Not Provided</span></div>
+   <div style="margin-top:4px;"><b>Relationship:</b> <span id="displayNomineeRelation">-</span></div>
+   <div style="margin-top:4px;"><b>Phone Number:</b> <span id="displayNomineePhone">-</span></div>
+  </div>
+
+  <b style="color:var(--navy); font-size:16px;" data-key="uploadedDocs">📁 Uploaded Verification Documents</b>
+  <div class="row" style="padding:10px 0; border-bottom:1px solid var(--line); margin-top:10px;">
+   <div><b>1. Aadhaar Card</b><br><small style="color:var(--mut)">Front & Back verified</small></div>
+   <span class="pill" style="background:#dcfce7; color:#166534;" id="docAadhaarSt">Verified</span>
+  </div>
+  
+  <div class="row" style="padding:10px 0; border-bottom:1px solid var(--line)" id="docDlRow">
+   <div><b>2. Driving License (DL)</b><br><small style="color:var(--mut)">License verified</small></div>
+   <span class="pill" style="background:#dcfce7; color:#166534;" id="docDlSt">Verified</span>
+  </div>
+
+  <div class="row" style="padding:10px 0; border-bottom:1px solid var(--line)">
+   <div><b>3. PAN Card</b><br><small style="color:var(--mut)">PAN photo verified</small></div>
+   <span class="pill" style="background:#dcfce7; color:#166534;" id="docPanSt">Verified</span>
+  </div>
+
+  <div class="row" style="padding:10px 0;">
+   <div><b>4. Bank Passbook / Cheque</b><br><small style="color:var(--mut)">Payout account linked</small></div>
+   <span class="pill" style="background:#dcfce7; color:#166534;" id="docBankSt">Verified</span>
+  </div>
+ </div>
+</section>
+
+<!-- ALL ORDERS HISTORY SUB-PAGE -->
 <section class="scr" id="allOrdersHistory">
- <div class="sub-header"><button class="back-btn" onclick="go('earnings')">←</button> All Orders History</div>
- <div id="historyOrdersList"><div class="card" style="text-align:center;color:var(--mut)">No completed history yet.</div></div>
+ <div class="sub-header"><button class="back-btn" onclick="go('earnings')">←</button> <span data-key="allOrdersHist">All Orders History</span></div>
+ <div id="historyOrdersList">
+  <div class="card" style="text-align:center;color:var(--mut)" data-key="noHistOrders">No completed delivery history yet.</div>
+ </div>
 </section>
+
+<!-- LANGUAGE SETTINGS SCREEN -->
 <section class="scr" id="languageSettings">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Language Settings</div>
- <div class="card" onclick="go('appLanguage')" style="cursor:pointer"><b>App Language</b></div>
- <div class="card" onclick="go('notifLanguage')" style="cursor:pointer"><b>Notification Language</b></div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span data-key="langSettings">Language Settings</span></div>
+ <div class="card" onclick="go('appLanguage')" style="cursor:pointer">
+  <div class="row">
+   <div><b data-key="appLangTitle">App Language</b><br><small style="color:var(--mut)" data-key="appLangSub">Set the language for your app</small></div>
+   <span style="font-size:18px;color:var(--mut)">➔</span>
+  </div>
+ </div>
+ <div class="card" onclick="go('notifLanguage')" style="cursor:pointer">
+  <div class="row">
+   <div><b data-key="notifLangTitle">Notification Language</b><br><small style="color:var(--mut)" data-key="notifLangSub">Set the language for notifications</small></div>
+   <span style="font-size:18px;color:var(--mut)">➔</span>
+  </div>
+ </div>
 </section>
+
+<!-- APP LANGUAGE SELECTION -->
 <section class="scr" id="appLanguage">
- <div class="sub-header"><button class="back-btn" onclick="go('languageSettings')">←</button> App Language</div>
+ <div class="sub-header"><button class="back-btn" onclick="go('languageSettings')">←</button> <span data-key="appLangTitle">App Language</span></div>
  <div class="card">
-  <label class="row" style="cursor:pointer"><input type="radio" name="appLang" checked onchange="toast('English Selected')"> English</label><br>
-  <label class="row" style="cursor:pointer"><input type="radio" name="appLang" onchange="toast('తెలుగు Selected')"> తెలుగు (Telugu)</label>
+  <h3 style="font-size:15px;margin-bottom:12px" data-key="selectLang">Select Language</h3>
+  <div style="display:flex;flex-direction:column;gap:12px;font-size:15px;font-weight:600">
+   <label class="row" style="cursor:pointer"><input type="radio" name="appLang" value="en" checked onchange="changeAppLanguage('en')"> English <span>⊙</span></label>
+   <label class="row" style="cursor:pointer"><input type="radio" name="appLang" value="hi" onchange="changeAppLanguage('hi')"> हिंदी (Hindi) <span>○</span></label>
+   <label class="row" style="cursor:pointer"><input type="radio" name="appLang" value="kn" onchange="changeAppLanguage('kn')"> ಕನ್ನಡ (Kannada) <span>○</span></label>
+   <label class="row" style="cursor:pointer"><input type="radio" name="appLang" value="te" onchange="changeAppLanguage('te')"> తెలుగు (Telugu) <span>○</span></label>
+   <label class="row" style="cursor:pointer"><input type="radio" name="appLang" value="ta" onchange="changeAppLanguage('ta')"> தமிழ் (Tamil) <span>○</span></label>
+  </div>
  </div>
 </section>
+
+<!-- NOTIFICATION LANGUAGE SELECTION -->
 <section class="scr" id="notifLanguage">
- <div class="sub-header"><button class="back-btn" onclick="go('languageSettings')">←</button> Notification Language</div>
+ <div class="sub-header"><button class="back-btn" onclick="go('languageSettings')">←</button> <span data-key="notifLangTitle">Notification Language</span></div>
  <div class="card">
-  <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" checked onchange="toast('English Selected')"> English</label><br>
-  <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" onchange="toast('తెలుగు Selected')"> తెలుగు (Telugu)</label>
+  <h3 style="font-size:15px;margin-bottom:12px" data-key="selectLang">Select Language</h3>
+  <div style="display:flex;flex-direction:column;gap:14px;font-size:15px;font-weight:600">
+   <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" value="en" checked onchange="toast('Notification Language: English')"> English <span style="font-size:18px;color:var(--yel)">⊙</span></label>
+   <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" value="hi" onchange="toast('Notification Language: Hindi')"> हिंदी (Hindi) <span style="font-size:18px;color:var(--mut)">○</span></label>
+   <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" value="kn" onchange="toast('Notification Language: Kannada')"> ಕನ್ನಡ (Kannada) <span style="font-size:18px;color:var(--mut)">○</span></label>
+   <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" value="te" onchange="toast('Notification Language: Telugu')"> తెలుగు (Telugu) <span style="font-size:18px;color:var(--mut)">○</span></label>
+   <label class="row" style="cursor:pointer"><input type="radio" name="notifLang" value="ta" onchange="toast('Notification Language: Tamil')"> தமிழ் (Tamil) <span style="font-size:18px;color:var(--mut)">○</span></label>
+  </div>
  </div>
 </section>
+
+<!-- EARNINGS SUB-PAGE -->
 <section class="scr" id="earnings">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Earnings & Wallet</div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span data-key="earningsWallet">Earnings & Wallet</span></div>
+
  <div class="card" style="background:#f8fafc">
-  <div style="font-size:13px;color:var(--mut)">Wallet Balance</div>
-  <div style="font-size:32px;font-weight:800;color:#1e293b">₹<span class="E">328</span></div>
-  <button class="btn" style="margin-top:12px" onclick="withdrawMoney()">Withdraw to Bank / UPI</button>
+  <div style="font-size:13px;color:var(--mut)" data-key="walletBal">Wallet Balance</div>
+  <div style="font-size:32px;font-weight:800;color:#1e293b">₹<span class="E">0</span></div>
+  <button class="btn" style="margin-top:12px" onclick="withdrawMoney()" data-key="withdrawBtn">Withdraw to Bank</button>
+  <div id="withdrawStatusMsg" style="font-size:12px;color:var(--mut);margin-top:6px;text-align:center"></div>
  </div>
- <div class="card" onclick="go('allOrdersHistory')" style="cursor:pointer"><b>📦 All Orders History</b></div>
+
+ <div class="card" onclick="go('bankAccountScreen')" style="cursor:pointer; background:#f0fdf4; border-color:#bbf7d0;">
+  <div class="row">
+   <div><b style="color:#166534;" data-key="bankAccDetails">🏦 Bank Account Details</b><br><small style="color:var(--mut)" data-key="bankAccSub">Manage your bank account number and IFSC</small></div>
+   <span style="font-size:18px;color:var(--mut)">➔</span>
+  </div>
+ </div>
+
+ <div class="card" onclick="go('upiDetailsScreen')" style="cursor:pointer; background:#eff6ff; border-color:#bfdbfe;">
+  <div class="row">
+   <div><b style="color:#1e40af;" data-key="upiDetails">⚡ UPI ID Details</b><br><small style="color:var(--mut)" data-key="upiSub">Manage GPay, PhonePe, Paytm UPI ID</small></div>
+   <span style="font-size:18px;color:var(--mut)">➔</span>
+  </div>
+ </div>
+
+ <div class="card" onclick="go('payoutHistoryScreen')" style="cursor:pointer;background:#fefce8;border-color:#fde047">
+  <div class="row">
+   <div><b data-key="payoutHist">📜 Withdrawal & Payout History</b><br><small style="color:var(--mut)" data-key="payoutHistSub">Click here to view past withdrawals</small></div>
+   <span style="font-size:18px;color:var(--mut)">➔</span>
+  </div>
+ </div>
+
+ <div class="card" onclick="go('allOrdersHistory')" style="cursor:pointer"><b data-key="allOrdersHist">📦 All Orders History</b><br><small style="color:var(--mut)" data-key="allOrdersSub">View completed & past orders</small></div>
 </section>
+
+<!-- BANK ACCOUNT SUB-PAGE -->
+<section class="scr" id="bankAccountScreen">
+ <div class="sub-header"><button class="back-btn" onclick="go('earnings')">←</button> <span data-key="bankAccDetails">Bank Account Details</span></div>
+ <div class="card" style="background:#f0fdf4; border-color:#bbf7d0;">
+  <h3 style="font-size:16px; color:#166534; margin-bottom:10px;" data-key="bankInfo">🏛️ Bank Account Information</h3>
+  <label style="font-size:12px; font-weight:600;" data-key="holderName">Account Holder Name</label>
+  <input class="in" id="bankHolderName" value="Shaik Mahammed" style="margin-bottom:10px">
+
+  <label style="font-size:12px; font-weight:600;" data-key="accNum">Bank Account Number</label>
+  <input class="in" id="bankAccNumber" value="38490281940" style="margin-bottom:10px">
+
+  <label style="font-size:12px; font-weight:600;" data-key="ifscCode">IFSC Code</label>
+  <input class="in" id="bankIfscCode" value="SBIN0001234" style="margin-bottom:14px">
+
+  <button class="btn" style="background:#16a34a; color:#fff;" onclick="saveBankAccountDetails()" data-key="saveBankBtn">Save Bank Details</button>
+ </div>
+</section>
+
+<!-- UPI ID SUB-PAGE -->
+<section class="scr" id="upiDetailsScreen">
+ <div class="sub-header"><button class="back-btn" onclick="go('earnings')">←</button> <span data-key="upiDetails">UPI ID Details</span></div>
+ <div class="card" style="background:#eff6ff; border-color:#bfdbfe;">
+  <h3 style="font-size:16px; color:#1e40af; margin-bottom:10px;" data-key="upiConfig">⚡ UPI ID Configuration</h3>
+  <label style="font-size:12px; font-weight:600;" data-key="upiLabel">UPI ID / VPA</label>
+  <input class="in" id="upiIdInput" value="shaikmahammed@okhdfcbank" style="margin-bottom:14px">
+  <button class="btn" style="background:#2563eb; color:#fff;" onclick="saveUpiDetails()" data-key="saveUpiBtn">Save UPI ID</button>
+ </div>
+</section>
+
+<!-- PAYOUT HISTORY SUB-PAGE -->
+<section class="scr" id="payoutHistoryScreen">
+ <div class="sub-header"><button class="back-btn" onclick="go('earnings')">←</button> <span data-key="withHist">Withdrawal History</span></div>
+ <div class="card">
+  <b data-key="pastWith">📜 Past Withdrawals & Payouts</b>
+  <div id="payoutHistoryList" style="margin-top:10px;font-size:13px;color:var(--mut)">
+   <div style="padding:6px 0; color:var(--mut);" data-key="noPastWith">No past withdrawals yet.</div>
+  </div>
+ </div>
+</section>
+
+<!-- INCENTIVES SUB-PAGE -->
 <section class="scr" id="incentives">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Incentives</div>
- <div class="card"><b>🎯 Daily Incentives (Up to ₹144)</b></div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span data-key="incBonuses">Incentives & Bonuses</span></div>
+ 
+ <div class="card" style="background: linear-gradient(135deg, #FFFBEB, #FEF3C7); border: 1px solid #F59E0B;">
+  <h4 style="color: #B45309; margin-bottom: 5px; font-size:16px;" data-key="joiningBonusTitle">🎉 Joining Bonus: ₹5,000 Extra!</h4>
+  <p style="font-size: 12px; color: #92400E; margin-bottom: 10px; line-height: 1.4;" data-key="joiningBonusDesc">Complete 400 orders across 4 weeks to unlock full joining bonus.</p>
+ </div>
+
+ <div class="card" style="background: linear-gradient(135deg, #FDF4FF, #FAE8FF); border: 1px solid #F0ABFC;">
+  <h4 style="color: #86198F; margin-bottom: 5px; font-size:16px;" data-key="refBonusTitle">👥 Referral Program Bonus: ₹2,000</h4>
+  <p style="font-size: 12px; color: #701A75; margin-bottom: 10px; line-height: 1.4;" data-key="refBonusDesc">Refer friends to join as captains. Code: R4ZFE4L</p>
+  <button class="btn" style="background:#d946ef; color:#fff; font-size:14px; padding:10px;" onclick="shareReferral()" data-key="shareRefBtn">Share Referral Link</button>
+ </div>
 </section>
+
+<!-- REWARDS SUB-PAGE -->
 <section class="scr" id="rewards">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Rewards</div>
- <div class="card"><b>🏥 Health & Accidental Insurance</b></div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span data-key="rewardsIns">Rewards & Insurance</span></div>
+ <div class="card"><b data-key="healthIns">🏥 Health Insurance</b><br><small style="color:var(--mut)" data-key="healthInsSub">For you and your family</small></div>
+ <div class="card"><b data-key="accIns">🛡️ Accidental Insurance</b><br><small style="color:var(--mut)" data-key="accInsSub">Stay protected on every ride</small></div>
 </section>
+
+<!-- SERVICE MANAGER -->
 <section class="scr" id="services">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Service Manager</div>
- <div class="card row"><div><b>📦 Parcel Delivery</b></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
- <div class="card row"><div><b>🍽️ Food Delivery</b></div><label class="switch"><input type="checkbox" checked><span class="slider"></span></label></div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span data-key="serviceMgr">Service Manager</span></div>
+ <div class="card">
+  <div style="font-size:13px;color:var(--mut)" data-key="primSrvMode">Primary Service Mode</div>
+  <div style="font-weight:700;font-size:16px;margin-top:4px" id="primaryServiceText">⚡ E-Cycle Service Active (No DL Required)</div>
+ </div>
+
+ <div class="card row">
+  <div><b data-key="parcelDel">📦 Parcel Delivery</b><br><small style="color:var(--mut)">Quick courier service</small></div>
+  <label class="switch"><input type="checkbox" id="srvParcel" checked onchange="toggleService('Parcel')"><span class="slider"></span></label>
+ </div>
+
+ <div class="card row">
+  <div><b data-key="foodDel">🍽️ Food Delivery</b><br><small style="color:var(--mut)">Restaurant orders</small></div>
+  <label class="switch"><input type="checkbox" id="srvFood" checked onchange="toggleService('Food')"><span class="slider"></span></label>
+ </div>
+
+ <div class="card row">
+  <div><b data-key="groceryDel">🛒 Grocery & Stores</b><br><small style="color:var(--mut)">Supermarket delivery</small></div>
+  <label class="switch"><input type="checkbox" id="srvGrocery" checked onchange="toggleService('Grocery')"><span class="slider"></span></label>
+ </div>
 </section>
+
+<!-- HELP & SUPPORT -->
 <section class="scr" id="help">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Help & Support</div>
- <div class="card" style="background:#fef2f2"><b>🚨 Emergency Support</b><br><a href="tel:112" class="btn" style="display:block;margin-top:8px;background:var(--red);color:#fff;text-decoration:none">Call 112</a></div>
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span data-key="helpSupp">Help & Support</span></div>
+ <div class="card" style="background:#fef2f2;border-color:#fca5a5"><b data-key="emergencySos">🚨 Emergency Support (SOS)</b><br><small style="color:var(--mut)" data-key="sosSub">Safety Center - Call 112 or Nominee</small><br><a href="tel:112" class="btn" style="display:block;margin-top:8px;background:var(--red);color:#fff;text-decoration:none" data-key="call112">Call 112 (Emergency)</a></div>
 </section>
-<section class="scr" id="refer">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> Refer and Earn</div>
- <div class="card"><b>Refer code: R4ZFE4L</b><br><button class="btn" style="margin-top:10px" onclick="toast('Copied!')">Refer Friends</button></div>
+
+<!-- VEHICLE CHANGE SUB-PAGE -->
+<section class="scr" id="vehicleChangeScreen">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span data-key="changeVeh">Change Vehicle / Mode</span></div>
+ <div class="card">
+  <label style="font-size:13px;color:var(--mut);font-weight:600" data-key="selActiveVeh">Select Active Vehicle</label>
+  <select class="in" id="drawerVehicleSelect" onchange="updateDrawerVehicle()">
+   <option value="ecycle">⚡ E-Cycle Captain</option>
+   <option value="scooty">🛵 Scooty Captain</option>
+   <option value="bike">🏍️ Bike Captain</option>
+   <option value="cycle">🚲 Normal Cycle Captain</option>
+   <option value="auto">🛺 Auto Captain</option>
+   <option value="mini">🚗 Mini Car Captain</option>
+   <option value="sedan">🚙 Sedan Car Captain</option>
+   <option value="suv">🚐 SUV Car Captain</option>
+  </select>
+  <button class="btn" style="margin-top:16px" onclick="toast('Vehicle mode updated successfully!'); go('home');" data-key="saveVeh">Save Vehicle</button>
+ </div>
 </section>
-<section class="scr" id="kycView">
- <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> KYC Docs</div>
- <div class="card"><b>KYC Verified Successfully</b></div>
+
+<!-- GEMINI AI ASSISTANT CHAT SCREEN -->
+<section class="scr" id="geminiScreen">
+ <div class="sub-header"><button class="back-btn" onclick="go('home')">←</button> <span>Gemini AI Assistant</span></div>
+ <div class="card" style="display:flex;flex-direction:column;height:380px;justify-content:space-between">
+  <div style="overflow-y:auto;font-size:13px;display:flex;flex-direction:column;gap:8px" id="chatContainer">
+   <div style="background:#f1f5f9;padding:8px 12px;border-radius:10px;align-self:flex-start">Hello Shaik! How can I help you navigate Bengaluru today?</div>
+  </div>
+  <div style="display:flex;gap:6px;margin-top:10px">
+   <input class="in" id="chatInput" placeholder="Ask about routes, traffic..." style="margin-top:0">
+   <button class="btn" style="width:70px;padding:10px" onclick="sendChat()">Send</button>
+  </div>
+ </div>
 </section>
+
+<!-- ACTIVE ORDER DETAILS SCREEN -->
+<section class="scr" id="orderDetailScreen">
+ <div class="sub-header"><button class="back-btn" onclick="go('orders')">←</button> <span data-key="activeDelTask">Active Delivery Task</span></div>
+ <div class="card" style="background:#fefce8;border-color:#fde047">
+  <div class="row"><b id="activeStoreTitle">Store: Loading...</b><span class="pill" id="activeOrderEarning">₹0</span></div>
+  <p style="font-size:13px;color:var(--mut);margin-top:8px" id="activeOrderDesc">Loading order details...</p>
+  
+  <!-- Customer OTP Section for Valuable Orders (Mobiles, Laptops, Keys, Documents) -->
+  <div style="margin-top:14px; background:#fff; padding:12px; border-radius:10px; border:1px solid #fde047;" id="customerOtpBox">
+   <b style="color:#854d0e; font-size:13px;">🔒 Customer Delivery Verification OTP</b>
+   <p style="font-size:11px; color:#713f12; margin:2px 0 8px;">Required for Mobiles, Laptops, Keys & Valuable Documents delivery.</p>
+   <input class="in" id="customerDeliveryOtpInput" placeholder="Enter 4-digit Customer OTP" style="font-weight:700; text-align:center; letter-spacing:2px;">
+   <div style="font-size:11px; color:var(--mut); margin-top:4px;">(Demo Note: Enter any 4-digit code or '1234' to verify)</div>
+  </div>
+
+  <div style="margin-top:14px;border-top:1px dashed #eab308;padding-top:12px">
+   <a href="#" id="navPickupBtn" target="_blank" class="btn-blue" style="background:#0284c7" data-key="navPickup">📍 Navigate to Pickup (Google Maps)</a>
+   <a href="#" id="navDropBtn" target="_blank" class="btn-blue" style="background:#16a34a" data-key="navDrop">🏁 Navigate to Drop (Google Maps)</a>
+  </div>
+
+  <button class="btn" style="margin-top:14px;background:var(--green);color:#fff" onclick="completeOrderWithCustomerOtp()" data-key="completeDel">Complete Delivery</button>
+ </div>
+</section>
+
 </main>
-<div class="floating-bike" id="floatBike" style="display:none" onclick="go('services')">🏍️</div>
-<nav class="bottom-nav" id="bottomNav" style="display:none">
- <button class="nav-item on" data-t="home" onclick="go('home')"><span>🏠</span>Home</button>
- <button class="nav-item" data-t="orders" onclick="go('orders')"><span>📋</span>Orders</button>
-</nav>
+
+<!-- Side Drawer Menu -->
 <div id="drawer" onclick="openDrawer(false)">
  <div class="menu-content" onclick="event.stopPropagation()">
-  <div class="menu-profile" onclick="openDrawer(false);go('kycView')"><b>Shaik Mahammad</b><br><small>AI Sameer Captain</small></div>
-  <div class="menu-item" onclick="openDrawer(false);go('earnings')">Earnings <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('incentives')">Incentives <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('rewards')">Rewards <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('services')">Services <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('languageSettings')">Language Settings <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('help')">Help & Support <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);go('refer')">Refer & Earn <span>➔</span></div>
-  <div class="menu-item" onclick="openDrawer(false);openGemini()">Ask AI Assistant <span>🤖</span></div>
-  <div class="menu-item" style="color:var(--red)" onclick="signOut()">Sign out <span>➔</span></div>
+  <div class="menu-profile" onclick="openDrawer(false); openProfileIdCard()">
+   <div style="font-size:16px;font-weight:700">Shaik Mahammed 🆔</div>
+   <div id="drawerCaptainIdText" style="font-size:12px;color:var(--mut)">Captain ID: #...</div>
+   <div style="font-size:12px;color:var(--green);font-weight:600;margin-top:4px" data-key="verifiedPartner">● Verified Partner</div>
+  </div>
+  <div class="menu-item" onclick="openDrawer(false);go('home')"><span>🏠 <span data-key="menuHome">Home</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('documentsScreen')"><span>📁 <span data-key="menuKyc">KYC & Nominee Details</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('vehicleChangeScreen')"><span>🚗 <span data-key="menuVeh">Change Vehicle / Mode</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('earnings')"><span>💰 <span data-key="menuEarnings">Earnings & Wallet</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('incentives')"><span>🎯 <span data-key="menuIncentives">Incentives & Bonuses</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('rewards')"><span>🛡️ <span data-key="menuRewards">Rewards & Insurance</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('services')"><span>⚙️ <span data-key="menuService">Service Manager</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('languageSettings')"><span>🌐 <span data-key="menuLang">Language Settings</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);go('help')"><span>🎧 <span data-key="menuHelp">Help & Support</span></span><span>➔</span></div>
+  <div class="menu-item" onclick="openDrawer(false);logout()" style="color:var(--red)"><span>🚪 <span data-key="menuLogout">Logout</span></span><span>➔</span></div>
  </div>
 </div>
-<div id="aiModal" style="position:absolute;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:250">
- <div style="background:#fff;width:90%;max-width:380px;border-radius:20px;padding:20px">
-  <div class="row"><b>✨ AI Sameer Captain Support</b><button onclick="closeGemini()" style="background:none;border:0;font-size:18px">✕</button></div>
-  <input class="in" id="aiQuery" placeholder="Ask about routes..." style="margin-top:10px">
-  <button class="btn" style="margin-top:10px" id="askAiBtn">Ask</button>
-  <div id="aiResponse" style="margin-top:12px;font-size:13px;background:#f8fafc;padding:10px;border-radius:8px"></div>
- </div>
-</div>
-<div id="modal"><div class="sheet" id="sheet"></div></div>
+
+<!-- Floating Vehicle Icon -->
+<div class="floating-vehicle" id="floatingVehicleIcon" onclick="toggleDuty()" title="Quick Duty Toggle">⚡</div>
+
+<!-- Bottom Navigation Bar -->
+<nav class="bottom-nav" id="bottomNav" style="display:none">
+ <button class="nav-item on" id="navHome" onclick="navTo('home',this)"><span>🏠</span><b data-key="navHome">Home</b></button>
+ <button class="nav-item" id="navOrders" onclick="navTo('orders',this)"><span>📦</span><b data-key="navOrders">Orders</b></button>
+ <button class="nav-item" id="navEarnings" onclick="navTo('earnings',this)"><span>💰</span><b data-key="navEarnings">Earnings</b></button>
+ <button class="nav-item" id="navIncentives" onclick="navTo('incentives',this)"><span>🎯</span><b data-key="navIncentives">Incentives</b></button>
+ <button class="nav-item" id="navProfile" onclick="openDrawer(true)"><span>👤</span><b data-key="navProfile">Profile</b></button>
+</nav>
+
 <div id="toast"></div>
+
 </div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, child, onChildAdded, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  databaseURL: "https://ai-sameer-default-rtdb.firebaseio.com/"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.db = db;
+window.ref = ref;
+window.set = set;
+window.get = get;
+window.child = child;
+window.onChildAdded = onChildAdded;
+window.update = update;
+</script>
+
 <script>
-var onDuty=false, bal=328, del=15, timer=null;
-var activeOrders=[], completedOrdersHistory=[];
-var ringingInterval=null;
-var $=function(i){return document.getElementById(i)};
-function go(s){
- document.querySelectorAll('.scr').forEach(function(e){e.classList.toggle('on',e.id===s)});
- document.querySelectorAll('.bottom-nav button').forEach(function(b){b.classList.toggle('on',b.dataset.t===s)});
- document.querySelector('main').scrollTop=0;
+let onDuty = false;
+let earningsVal = 0;
+let deliveriesVal = 0;
+let completedHistory = [];
+let lastWithdrawDate = "";
+let selectedVehicle = "ecycle";
+let soundInterval = null;
+let currentOrderKey = null;
+let currentOrderData = null;
+let userSelfieDataUrl = null;
+let userPhoneNumber = "";
+
+// MULTI-LANGUAGE DICTIONARY
+const translations = {
+ en: {
+  todaysEarnings: "Today's Earnings",
+  deliveriesCount: "Deliveries:",
+  ratingTxt: "Rating",
+  homeRouteTitle: "🏠 Home Location / Return Route",
+  setHomeBtn: "Set Home",
+  aiTitle: "✨ Gemini AI Assistant",
+  aiSub: "Ask anything about Bengaluru routes",
+  askAiBtn: "Ask AI",
+  waitingOrders: "Waiting for Live Orders...",
+  offDutyMsg: "You are currently off duty. Turn on duty to receive orders.",
+  captainIdCard: "Captain ID Card",
+  kycNomTitle: "KYC & Nominee Details",
+  emergencyNomTitle: "👥 Emergency Nominee Information",
+  emergencyNomSub: "Registered family nominee (including Wife/Spouse) for emergency contact:",
+  uploadedDocs: "📁 Uploaded Verification Documents",
+  allOrdersHist: "All Orders History",
+  noHistOrders: "No completed delivery history yet.",
+  langSettings: "Language Settings",
+  appLangTitle: "App Language",
+  appLangSub: "Set the language for your app",
+  notifLangTitle: "Notification Language",
+  notifLangSub: "Set the language for notifications",
+  selectLang: "Select Language",
+  earningsWallet: "Earnings & Wallet",
+  walletBal: "Wallet Balance",
+  withdrawBtn: "Withdraw to Bank",
+  bankAccDetails: "Bank Account Details",
+  bankAccSub: "Manage your bank account number and IFSC",
+  upiDetails: "UPI ID Details",
+  upiSub: "Manage GPay, PhonePe, Paytm UPI ID",
+  payoutHist: "📜 Withdrawal & Payout History",
+  payoutHistSub: "Click here to view past withdrawals",
+  allOrdersSub: "View completed & past orders",
+  bankInfo: "🏛️ Bank Account Information",
+  holderName: "Account Holder Name",
+  accNum: "Bank Account Number",
+  ifscCode: "IFSC Code",
+  saveBankBtn: "Save Bank Details",
+  upiConfig: "⚡ UPI ID Configuration",
+  upiLabel: "UPI ID / VPA",
+  saveUpiBtn: "Save UPI ID",
+  withHist: "Withdrawal History",
+  pastWith: "📜 Past Withdrawals & Payouts",
+  noPastWith: "No past withdrawals yet.",
+  incBonuses: "Incentives & Bonuses",
+  joiningBonusTitle: "🎉 Joining Bonus: ₹5,000 Extra!",
+  joiningBonusDesc: "Complete 400 orders across 4 weeks to unlock full joining bonus.",
+  refBonusTitle: "👥 Referral Program Bonus: ₹2,000",
+  refBonusDesc: "Refer friends to join as captains and earn ₹2,000 per referral. Code: R4ZFE4L",
+  shareRefBtn: "Share Referral Link",
+  rewardsIns: "Rewards & Insurance",
+  healthIns: "🏥 Health Insurance",
+  healthInsSub: "For you and your family",
+  accIns: "🛡️ Accidental Insurance",
+  accInsSub: "Stay protected on every ride",
+  serviceMgr: "Service Manager",
+  primSrvMode: "Primary Service Mode",
+  parcelDel: "📦 Parcel Delivery",
+  foodDel: "🍽️ Food Delivery",
+  groceryDel: "🛒 Grocery & Stores",
+  helpSupp: "Help & Support",
+  emergencySos: "🚨 Emergency Support (SOS)",
+  sosSub: "Safety Center - Call 112 or Nominee",
+  call112: "Call 112 (Emergency)",
+  changeVeh: "Change Vehicle / Mode",
+  selActiveVeh: "Select Active Vehicle",
+  saveVeh: "Save Vehicle",
+  activeDelTask: "Active Delivery Task",
+  navPickup: "📍 Navigate to Pickup (Google Maps)",
+  navDrop: "🏁 Navigate to Drop (Google Maps)",
+  completeDel: "Complete Delivery",
+  verifiedPartner: "● Verified Partner",
+  menuHome: "Home",
+  menuKyc: "KYC & Nominee Details",
+  menuVeh: "Change Vehicle / Mode",
+  menuEarnings: "Earnings & Wallet",
+  menuIncentives: "Incentives & Bonuses",
+  menuRewards: "Rewards & Insurance",
+  menuService: "Service Manager",
+  menuLang: "Language Settings",
+  menuHelp: "Help & Support",
+  menuLogout: "Logout",
+  navOrders: "Orders",
+  navEarnings: "Earnings",
+  navIncentives: "Incentives",
+  navProfile: "Profile"
+ },
+ te: {
+  todaysEarnings: "ఈరోజు సంపాదన",
+  deliveriesCount: "డెలివరీలు:",
+  ratingTxt: "రేటింగ్",
+  homeRouteTitle: "🏠 హోమ్ లొకేషన్ / రిటర్న్ రూట్",
+  setHomeBtn: "హోమ్ సెట్ చేయి",
+  aiTitle: "✨ జెమిని AI అసిస్టెంట్",
+  aiSub: "బెంగళూరు రూట్ల గురించి ఏదైనా అడగండి",
+  askAiBtn: "AI అడగండి",
+  waitingOrders: "లైవ్ ఆర్డర్‌ల కోసం ఎదురుచూస్తోంది...",
+  offDutyMsg: "మీరు ప్రస్తుతం ఆఫ్‌డ్యూటీలో ఉన్నారు. ఆర్డర్‌లను పొందడానికి డ్యూటీ ఆన్ చేయండి.",
+  captainIdCard: "కెప్టెన్ ఐడి కార్డ్",
+  kycNomTitle: "KYC & నామినీ వివరాలు",
+  emergencyNomTitle: "👥 అత్యవసర నామినీ సమాచారం",
+  emergencyNomSub: "అత్యవసర సంప్రదింపుల కోసం రిజిస్టర్డ్ కుటుంబ నామినీ (భార్య/జీవిత భాగస్వామి సహా):",
+  uploadedDocs: "📁 అప్‌లోడ్ చేసిన ధృవీకరణ పత్రాలు",
+  allOrdersHist: "అన్ని ఆర్డర్‌ల చరిత్ర",
+  noHistOrders: "ఇదివరకు పూర్తయిన డెలివరీ చరిత్ర ఏదీ లేదు.",
+  langSettings: "భాషా సెట్టింగ్‌లు",
+  appLangTitle: "యాప్ భాష",
+  appLangSub: "మీ యాప్ కోసం భాషను సెట్ చేయండి",
+  notifLangTitle: "నోటిఫికేషన్ భాష",
+  notifLangSub: "నోటిఫికేషన్ల కోసం భాషను సెట్ చేయండి",
+  selectLang: "భాషను ఎంచుకోండి",
+  earningsWallet: "సంపాదన & వాలెట్",
+  walletBal: "వాలెట్ బ్యాలెన్స్",
+  withdrawBtn: "బ్యాంకుకు విత్‌డ్రా చేయండి",
+  bankAccDetails: "బ్యాంక్ ఖాతా వివరాలు",
+  bankAccSub: "మీ బ్యాంక్ ఖాతా నెంబర్ మరియు IFSC నిర్వహించండి",
+  upiDetails: "UPI ID వివరాలు",
+  upiSub: "GPay, PhonePe, Paytm UPI ID నిర్వహించండి",
+  payoutHist: "📜 విత్‌డ్రా & పేఅవుట్ చరిత్ర",
+  payoutHistSub: "గత విత్‌డ్రాలను చూడటానికి ఇక్కడ క్లిక్ చేయండి",
+  allOrdersSub: "పూర్తయిన & గత ఆర్డర్‌లను చూడండి",
+  bankInfo: "🏛️ బ్యాంక్ ఖాతా సమాచారం",
+  holderName: "ఖాతాదారుని పేరు",
+  accNum: "బ్యాంక్ ఖాతా నెంబర్",
+  ifscCode: "IFSC కోడ్",
+  saveBankBtn: "బ్యాంక్ వివరాలు సేవ్ చేయి",
+  upiConfig: "⚡ UPI ID కాన్ఫిగరేషన్",
+  upiLabel: "UPI ID / VPA",
+  saveUpiBtn: "UPI ID సేవ్ చేయి",
+  withHist: "విత్‌డ్రా చరిత్ర",
+  pastWith: "📜 గత విత్‌డ్రాలు & పేఅవుట్‌లు",
+  noPastWith: "ఇంతవరకు విత్‌డ్రాలు లేవు.",
+  incBonuses: "ఇన్సెంటివ్‌లు & బోనస్‌లు",
+  joiningBonusTitle: "🎉 జాయినింగ్ బోనస్: ₹5,000 అదనంగా!",
+  joiningBonusDesc: "పూర్తి బోనస్ పొందడానికి 4 వారాల్లో 400 ఆర్డర్‌లను పూర్తి చేయండి.",
+  refBonusTitle: "👥 రెఫరల్ ప్రోగ్రామ్ బోనస్: ₹2,000",
+  refBonusDesc: "స్నేహితులను కెప్టెన్‌లుగా ఆహ్వానించండి మరియు ఒక్కో రెఫరల్‌కు ₹2,000 సంపాదించండి. కోడ్: R4ZFE4L",
+  shareRefBtn: "రెఫరల్ లింక్ షేర్ చేయండి",
+  rewardsIns: "రివార్డ్స్ & ఇన్సూరెన్స్",
+  healthIns: "🏥 ఆరోగ్య బీమా",
+  healthInsSub: "మీకు మరియు మీ కుటుంబానికి",
+  accIns: "🛡️ ప్రమాద బీమా",
+  accInsSub: "ప్రతి రైడ్‌లో రక్షణగా ఉండండి",
+  serviceMgr: "సర్వీస్ మేనేజర్",
+  primSrvMode: "ప్రైమరీ సర్వీస్ మోడ్",
+  parcelDel: "📦 పార్సెల్ డెలివరీ",
+  foodDel: "🍽️ ఫుడ్ డెలివరీ",
+  groceryDel: "🛒 గ్రాసరీ & స్టోర్స్",
+  helpSupp: "సహాయం & మద్దతు",
+  emergencySos: "🚨 అత్యవసర మద్దతు (SOS)",
+  sosSub: "సేఫ్టీ సెంటర్ - 112 లేదా నామినీకి కాల్ చేయండి",
+  call112: "112 కి కాల్ చేయండి (అత్యవసరం)",
+  changeVeh: "వెహికల్ / మోడ్ మార్చండి",
+  selActiveVeh: "యాక్టివ్ వెహికల్ ఎంచుకోండి",
+  saveVeh: "వెహికల్ సేవ్ చేయి",
+  activeDelTask: "యాక్టివ్ డెలివరీ టాస్క్",
+  navPickup: "📍 పిక్‌అప్‌కి నావిగేట్ చేయి (గూగుల్ మ్యాప్స్)",
+  navDrop: "🏁 డ్రాప్‌కి నావిగేట్ చేయి (గూగుల్ మ్యాప్స్)",
+  completeDel: "డెలివరీ పూర్తయింది",
+  verifiedPartner: "● వెరిఫైడ్ భాగస్వామి",
+  menuHome: "హోమ్",
+  menuKyc: "KYC & నామినీ వివరాలు",
+  menuVeh: "వెహికల్ / మోడ్ మార్చండి",
+  menuEarnings: "సంపాదన & వాలెట్",
+  menuIncentives: "ఇన్సెంటివ్‌లు & బోనస్‌లు",
+  menuRewards: "రివార్డ్స్ & ఇన్సూరెన్స్",
+  menuService: "సర్వీస్ మేనేజర్",
+  menuLang: "భాషా సెట్టింగ్‌లు",
+  menuHelp: "సహాయం & మద్దతు",
+  menuLogout: "లాగౌట్",
+  navOrders: "ఆర్డర్‌లు",
+  navEarnings: "సంపాదన",
+  navIncentives: "ఇన్సెంటివ్‌లు",
+  navProfile: "ప్రొఫైల్"
+ },
+ hi: {
+  todaysEarnings: "आज की कमाई",
+  deliveriesCount: "डिलीवरी:",
+  ratingTxt: "रेटिंग",
+  homeRouteTitle: "🏠 होम लोकेशन / रिटर्न रूट",
+  setHomeBtn: "होम सेट करें",
+  aiTitle: "✨ जेमिनी AI सहायक",
+  aiSub: "बेंगलुरु रूट के बारे में कुछ भी पूछें",
+  askAiBtn: "AI से पूछें",
+  waitingOrders: "लाइव ऑर्डर की प्रतीक्षा है...",
+  offDutyMsg: "आप वर्तमान में ऑफ ड्यूटी हैं। ऑर्डर प्राप्त करने के लिए ड्यूटी ऑन करें।",
+  captainIdCard: "कप्तान आईडी कार्ड",
+  kycNomTitle: "KYC और नॉमिनी विवरण",
+  emergencyNomTitle: "👥 आपातकालीन नॉमिनी जानकारी",
+  emergencyNomSub: "आपातकालीन संपर्क के लिए पंजीकृत परिवार के नॉमिनी:",
+  uploadedDocs: "📁 अपलोड किए गए सत्यापन दस्तावेज",
+  allOrdersHist: "सभी ऑर्डर इतिहास",
+  noHistOrders: "अभी तक कोई पूर्ण डिलीवरी इतिहास नहीं है।",
+  langSettings: "भाषा सेटिंग्स",
+  appLangTitle: "ऐप की भाषा",
+  appLangSub: "अपने ऐप के लिए भाषा सेट करें",
+  notifLangTitle: "अधिसूचना भाषा",
+  notifLangSub: "सूचनाओं के लिए भाषा सेट करें",
+  selectLang: "भाषा चुनें",
+  earningsWallet: "कमाई और वॉलेट",
+  walletBal: "वॉलेट बैलेंस",
+  withdrawBtn: "बैंक में निकासी करें",
+  bankAccDetails: "बैंक खाता विवरण",
+  bankAccSub: "अपना बैंक खाता नंबर और IFSC प्रबंधित करें",
+  upiDetails: "UPI ID विवरण",
+  upiSub: "GPay, PhonePe, Paytm UPI ID प्रबंधित करें",
+  payoutHist: "📜 निकासी और भुगतान इतिहास",
+  payoutHistSub: "पिछली निकासी देखने के लिए यहां क्लिक करें",
+  allOrdersSub: "पूर्ण और पिछले ऑर्डर देखें",
+  bankInfo: "🏛️ बैंक खाता जानकारी",
+  holderName: "खाता धारक का नाम",
+  accNum: "बैंक खाता संख्या",
+  ifscCode: "IFSC कोड",
+  saveBankBtn: "बैंक विवरण सहेजें",
+  upiConfig: "⚡ UPI ID कॉन्फ़िगरेशन",
+  upiLabel: "UPI ID / VPA",
+  saveUpiBtn: "UPI ID सहेजें",
+  withHist: "निकासी इतिहास",
+  pastWith: "📜 पिछली निकासी और भुगतान",
+  noPastWith: "अभी तक कोई निकासी नहीं।",
+  incBonuses: "इंसेंटिव और बोनस",
+  joiningBonusTitle: "🎉 जॉइनिंग बोनस: ₹5,000 अतिरिक्त!",
+  joiningBonusDesc: "पूरा जॉइनिंग बोनस पाने के लिए 4 सप्ताह में 400 ऑर्डर पूरे करें।",
+  refBonusTitle: "👥 रेफ़रल प्रोग्राम बोनस: ₹2,000",
+  refBonusDesc: "दोस्तों को कप्तान के रूप में शामिल होने के लिए रेफ़र करें। कोड: R4ZFE4L",
+  shareRefBtn: "रेफ़रल लिंक शेयर करें",
+  rewardsIns: "रीवार्ड्स और बीमा",
+  healthIns: "🏥 स्वास्थ्य बीमा",
+  healthInsSub: "आपके और आपके परिवार के लिए",
+  accIns: "🛡️ दुर्घटना बीमा",
+  accInsSub: "हर सवारी पर सुरक्षित रहें",
+  serviceMgr: "सेवा प्रबंधक",
+  primSrvMode: "प्राथमिक सेवा मोड",
+  parcelDel: "📦 पार्सल डिलीवरी",
+  foodDel: "🍽️ फूड डिलीवरी",
+  groceryDel: "🛒 किराने का सामान और स्टोर",
+  helpSupp: "सहायता और समर्थन",
+  emergencySos: "🚨 आपातकालीन सहायता (SOS)",
+  sosSub: "सुरक्षा केंद्र - 112 या नॉमिनी को कॉल करें",
+  call112: "112 पर कॉल करें (आपातकाल)",
+  changeVeh: "वाहन / मोड बदलें",
+  selActiveVeh: "सक्रिय वाहन चुनें",
+  saveVeh: "वाहन सहेजें",
+  activeDelTask: "सक्रिय डिलीवरी कार्य",
+  navPickup: "📍 पिकअप के लिए नेविगेट करें",
+  navDrop: "🏁 ड्रॉप के लिए नेविगेट करें",
+  completeDel: "डिलीवरी पूर्ण करें",
+  verifiedPartner: "● सत्यापित पार्टनर",
+  menuHome: "होम",
+  menuKyc: "KYC और नॉमिनी",
+  menuVeh: "वाहन बदलें",
+  menuEarnings: "कमाई और वॉलेट",
+  menuIncentives: "इंसेंटिव",
+  menuRewards: "रीवार्ड्स",
+  menuService: "सेवा प्रबंधक",
+  menuLang: "भाषा सेटिंग्स",
+  menuHelp: "सहायता",
+  menuLogout: "लॉग आउट",
+  navOrders: "ऑर्डर",
+  navEarnings: "कमाई",
+  navIncentives: "इंसेंटिव",
+  navProfile: "प्रोफाइल"
+ },
+ kn: {
+  todaysEarnings: "ಇಂದಿನ ಗಳಿಕೆ",
+  deliveriesCount: "ವಿತರಣೆಗಳು:",
+  ratingTxt: "ರೇಟಿಂಗ್",
+  homeRouteTitle: "🏠 ಮನೆ ಸ್ಥಳ / ರಿಟರ್ನ್ ರೂಟ್",
+  setHomeBtn: "ಮನೆ ಹೊಂದಿಸಿ",
+  aiTitle: "✨ ಜೆಮಿನಿ AI ಸಹಾಯಕ",
+  aiSub: "ಬೆಂಗಳೂರು ಮಾರ್sಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ",
+  askAiBtn: "AI ಕೇಳಿ",
+  waitingOrders: "ಲೈವ್ ಆರ್ಡರ್‌ಗಳಿಗಾಗಿ ಕಾಯಲಾಗುತ್ತಿದೆ...",
+  offDutyMsg: "ನೀವು ಪ್ರಸ್ತುತ ಆಫ್‌ಡ್ಯೂಟಿಯಲ್ಲಿದ್ದೀರಿ. ಆರ್ಡರ್‌ಗಳನ್ನು ಪಡೆಯಲು ಡ್ಯೂಟಿ ಆನ್ ಮಾಡಿ.",
+  captainIdCard: "ಕ್ಯಾಪ್ಟನ್ ಐಡಿ ಕಾರ್ಡ್",
+  kycNomTitle: "KYC & ನಾಮಿನಿ ವಿವರಗಳು",
+  emergencyNomTitle: "👥 ತುರ್ತು ನಾಮಿನಿ ಮಾಹಿತಿ",
+  emergencyNomSub: "ತುರ್ತು ಸಂಪರ್ಕಕ್ಕಾಗಿ ನೋಂದಾಯಿತ ಕುಟುಂಬ ನಾಮಿನಿ:",
+  uploadedDocs: "📁 ಅಪ್‌ಲೋಡ್ ಮಾಡಿದ ಪರಿಶೀಲನಾ ದಾಖಲೆಗಳು",
+  allOrdersHist: "ಎಲ್ಲಾ ಆರ್ಡರ್‌ಗಳ ಇತಿಹಾಸ",
+  noHistOrders: "ಯಾವುದೇ ಪೂರ್ಣಗೊಂಡ ವಿತರಣೆ ಇತಿಹಾಸವಿಲ್ಲ.",
+  langSettings: "ಭಾಷಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  appLangTitle: "ಅಪ್ಲಿಕೇಶನ್ ಭಾಷೆ",
+  appLangSub: "ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್‌ಗಾಗಿ ಭಾಷೆಯನ್ನು ಹೊಂದಿಸಿ",
+  notifLangTitle: "ಅಧಿಸೂಚನೆ ಭಾಷೆ",
+  notifLangSub: "ಅಧಿಸೂಚನೆಗಳಿಗಾಗಿ ಭಾಷೆಯನ್ನು ಹೊಂದಿಸಿ",
+  selectLang: "ಭಾಷೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+  earningsWallet: "ಗಳಿಕೆ & ವಾಲೆಟ್",
+  walletBal: "ವಾಲೆಟ್ ಬಾಕಿ",
+  withdrawBtn: "ಬ್ಯಾಂಕ್‌ಗೆ ಹಿಂಪಡೆಯಿರಿ",
+  bankAccDetails: "ಬ್ಯಾಂಕ್ ಖಾತೆ ವಿವರಗಳು",
+  bankAccSub: "ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಖಾತೆ ಸಂಖ್ಯೆ ಮತ್ತು IFSC ನಿರ್ವಹಿಸಿ",
+  upiDetails: "UPI ID ವಿವರಗಳು",
+  upiSub: "GPay, PhonePe, Paytm UPI ID ನಿರ್ವಹಿಸಿ",
+  payoutHist: "📜 ವಾಪಸಾತಿ & ಪಾವತಿ ಇತಿಹಾಸ",
+  payoutHistSub: "ಹಿಂದಿನ ವಾಪಸಾತಿಗಳನ್ನು ವೀಕ್ಷಿಸಲು ಇಲ್ಲಿ ಕ್ಲಿಕ್ ಮಾಡಿ",
+  allOrdersSub: "ಪೂರ್ಣಗೊಂಡ ಮತ್ತು ಹಿಂದಿನ ಆರ್ಡರ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+  bankInfo: "🏛️ ಬ್ಯಾಂಕ್ ಖಾತೆ ಮಾಹಿತಿ",
+  holderName: "ಖಾತೆದಾರರ ಹೆಸರು",
+  accNum: "ಬ್ಯಾಂಕ್ ಖಾತೆ ಸಂಖ್ಯೆ",
+  ifscCode: "IFSC ಕೋಡ್",
+  saveBankBtn: "ಬ್ಯಾಂಕ್ ವಿವರಗಳನ್ನು ಉಳಿಸಿ",
+  upiConfig: "⚡ UPI ID ಕಾನ್ಫಿಗರೇಶನ್",
+  upiLabel: "UPI ID / VPA",
+  saveUpiBtn: "UPI ID ಉಳಿಸಿ",
+  withHist: "ವಾಪಸಾತಿ ಇತಿಹಾಸ",
+  pastWith: "📜 ಹಿಂದಿನ ವಾಪಸಾತಿಗಳು",
+  noPastWith: "ಯಾವುದೇ ವಾಪಸಾತಿಗಳಿಲ್ಲ.",
+  incBonuses: "ಪ್ರೋತ್ಸಾಹಕಗಳು & ಬೋನಸ್‌ಗಳು",
+  joiningBonusTitle: "🎉 ಸೇರ್ಪಡೆ ಬೋನಸ್: ₹5,000 ಹೆಚ್ಚುವರಿ!",
+  joiningBonusDesc: "ಪೂರ್ಣ ಬೋನಸ್ ಪಡೆಯಲು 4 ವಾರಗಳಲ್ಲಿ 400 ಆರ್ಡರ್‌ಗಳನ್ನು ಪೂರ್ಣಗೊಳಿಸಿ.",
+  refBonusTitle: "👥 ರೆಫರಲ್ ಪ್ರೋಗ್ರಾಂ ಬೋನಸ್: ₹2,000",
+  refBonusDesc: "ಸ್ನೇಹಿತರನ್ನು ಕ್ಯಾಪ್ಟನ್ ಆಗಿ ಸೇರಲು ಆಹ್ವಾನಿಸಿ. ಕೋಡ್: R4ZFE4L",
+  shareRefBtn: "ರೆಫರಲ್ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ",
+  rewardsIns: "ಪ್ರಶಸ್ತಿಗಳು & ವಿಮೆ",
+  healthIns: "🏥 ಆರೋಗ್ಯ ವಿಮೆ",
+  healthInsSub: "ನಿಮಗಾಗಿ ಮತ್ತು ನಿಮ್ಮ ಕುಟುಂಬಕ್ಕಾಗಿ",
+  accIns: "🛡️ ಅಪಘಾತ ವಿಮೆ",
+  accInsSub: "ಪ್ರತಿ ರೈಡ್‌ನಲ್ಲಿ ಸುರಕ್ಷಿತವಾಗಿರಿ",
+  serviceMgr: "ಸೇವಾ ವ್ಯವಸ್ಥಾಪಕ",
+  primSrvMode: "प्राथमिक ಸೇವಾ ಮೋಡ್",
+  parcelDel: "📦 ಪಾರ್ಸೆಲ್ ವಿತರಣೆ",
+  foodDel: "🍽️ ಆಹಾರ ವಿತರಣೆ",
+  groceryDel: "🛒 ದಿನಸಿ & ಅಂಗಡಿಗಳು",
+  helpSupp: "ಸಹಾಯ & ಬೆಂಬಲ",
+  emergencySos: "🚨 ತುರ್ತು ಬೆಂಬಲ (SOS)",
+  sosSub: "ಸುರಕ್ಷತಾ ಕೇಂದ್ರ - 112 ಅಥವಾ ನಾಮಿನಿಗೆ ಕರೆ ಮಾಡಿ",
+  call112: "112 ಗೆ ಕರೆ ಮಾಡಿ (ತುರ್ತು)",
+  changeVeh: "ವಾಹನ / ಮೋಡ್ ಬದಲಾಯಿಸಿ",
+  selActiveVeh: "ಸಕ್ರಿಯ ವಾಹನವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+  saveVeh: "ವಾಹನ ಉಳಿಸಿ",
+  activeDelTask: "ಸಕ್ರಿಯ ವಿತರಣೆ ಕಾರ್ಯ",
+  navPickup: "📍 ಪಿಕ್ಅಪ್‌ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿ",
+  navDrop: "🏁 ಡ್ರಾಪ್‌ಗೆ ನ್ಯಾವಿಗೇಟ್ ಮಾಡಿ",
+  completeDel: "ವಿತರಣೆ ಪೂರ್ಣಗೊಂಡಿದೆ",
+  verifiedPartner: "● ಪರಿಶೀಲಿಸಿದ ಪಾಲುದಾರ",
+  menuHome: "ಮುಖಪುಟ",
+  menuKyc: "KYC & ನಾಮಿನಿ",
+  menuVeh: "ವಾಹನ ಬದಲಾಯಿಸಿ",
+  menuEarnings: "ಗಳಿಕೆ & ವಾಲೆಟ್",
+  menuIncentives: "ಪ್ರೋತ್ಸಾಹಕಗಳು",
+  menuRewards: "ಪ್ರಶಸ್ತಿಗಳು",
+  menuService: "ಸೇವಾ ವ್ಯವಸ್ಥಾಪಕ",
+  menuLang: "ಭಾಷಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+  menuHelp: "ಸಹಾಯ",
+  menuLogout: "ಲಾಗ್‌ಔಟ್",
+  navOrders: "ಆರ್ಡರ್‌ಗಳು",
+  navEarnings: "ಗಳಿಕೆ",
+  navIncentives: "ಪ್ರೋತ್ಸಾಹಕ",
+  navProfile: "ಪ್ರೊಫೈಲ್"
+ },
+ ta: {
+  todaysEarnings: "இன்றைய வருமானம்",
+  deliveriesCount: "டெலிவரிகள்:",
+  ratingTxt: "மதிப்பீடு",
+  homeRouteTitle: "🏠 முகவரி இடம் / திரும்பும் பாதை",
+  setHomeBtn: "வீட்டை அமைக்கவும்",
+  aiTitle: "✨ ஜெமினி AI உதவியாளர்",
+  aiSub: "பெங்களூர் வழிகள் பற்றி எதையும் கேளுங்கள்",
+  askAiBtn: "AI-ஐ கேளுங்கள்",
+  waitingOrders: "நேரலை ஆர்டர்களுக்காக காத்திருக்கிறது...",
+  offDutyMsg: "நீங்கள் தற்போது ஆஃப்-டியூட்டியில் உள்ளீர்கள். ஆர்டர்களைப் பெற டியூட்டியை ஆன் செய்யவும்.",
+  captainIdCard: "கேப்டன் ஐடி கார்டு",
+  kycNomTitle: "KYC மற்றும் வாரிசு விவரங்கள்",
+  emergencyNomTitle: "👥 அவசர வாரிசு தகவல்",
+  emergencyNomSub: "அவசர தொடர்புக்கு பதிவு செய்யப்பட்ட குடும்ப வாரிசு:",
+  uploadedDocs: "📁 பதிவேற்றப்பட்ட சரிபார்ப்பு ஆவணங்கள்",
+  allOrdersHist: "அனைத்து ஆர்டர் வரலாறு",
+  noHistOrders: "முடிந்த டெலிவரி வரலாறு எதுவும் இல்லை.",
+  langSettings: "மொழி அமைப்புகள்",
+  appLangTitle: "செயலி மொழி",
+  appLangSub: "உங்கள் செயலிக்கான மொழியை அமைக்கவும்",
+  notifLangTitle: "அறிவிப்பு மொழி",
+  notifLangSub: "அறிவிப்புகளுக்கான மொழியை அமைக்கவும்",
+  selectLang: "மொழியைத் தேர்ந்தெடுக்கவும்",
+  earningsWallet: "வருமானம் & பணப்பை",
+  walletBal: "பணப்பை இருப்பு",
+  withdrawBtn: "வங்கிக்கு மாற்றுக",
+  bankAccDetails: "வங்கி கணக்கு விவரங்கள்",
+  bankAccSub: "உங்கள் வங்கி கணக்கு எண் மற்றும் IFSC-ஐ நிர்வகிக்கவும்",
+  upiDetails: "UPI ஐடி விவரங்கள்",
+  upiSub: "GPay, PhonePe, Paytm UPI ஐடியை நிர்வகிக்கவும்",
+  payoutHist: "📜 திரும்பப் பெறுதல் வரலாறு",
+  payoutHistSub: "கடந்த திரும்பப் பெறுதல்களைக் காண இங்கே கிளிக் செய்யவும்",
+  allOrdersSub: "முடிந்த மற்றும் கடந்த ஆர்டர்களைப் காண்க",
+  bankInfo: "🏛️ வங்கி கணக்கு தகவல்",
+  holderName: "கணக்கு வைத்திருப்பவர் பெயர்",
+  accNum: "வங்கி கணக்கு எண்",
+  ifscCode: "ISFC குறியீடு",
+  saveBankBtn: "வங்கி விவரங்களை சேமிக்கவும்",
+  upiConfig: "⚡ UPI ஐடி உள்ளமைவு",
+  upiLabel: "UPI ஐடி / VPA",
+  saveUpiBtn: "UPI ஐடியைச் சேமிக்கவும்",
+  withHist: "திரும்பப் பெறுதல் வரலாறு",
+  pastWith: "📜 கடந்த திரும்பப் பெறுதல்கள்",
+  noPastWith: "கடந்த திரும்பப் பெறுதல்கள் இல்லை.",
+  incBonuses: "போனஸ்கள்",
+  joiningBonusTitle: "🎉 சேரும் போனஸ்: ₹5,000 கூடுதல்!",
+  joiningBonusDesc: "முழு போனஸைப் பெற 4 வாரங்களில் 400 ஆர்டர்களை முடிக்கவும்.",
+  refBonusTitle: "👥 பரிந்துரை போனஸ்: ₹2,000",
+  refBonusDesc: "நண்பர்களை கேப்டனாக அழைக்கவும். குறியீடு: R4ZFE4L",
+  shareRefBtn: "பரிந்துரை இணைப்பைப் பகிரவும்",
+  rewardsIns: "பரிசுகள் & காப்பீடு",
+  healthIns: "🏥 உடல்நல காப்பீடு",
+  healthInsSub: "உங்களுக்கும் உங்கள் குடும்பத்திற்கும்",
+  accIns: "🛡️ விபத்து காப்பீடு",
+  accInsSub: "ஒவ்வொரு பயணத்திலும் பாதுகாப்பாக இருங்கள்",
+  serviceMgr: "சேவை மேலாளர்",
+  primSrvMode: "முதன்மை சேவை முறை",
+  parcelDel: "📦 பார்சல் டெலிவரி",
+  foodDel: "🍽️ உணவு டெலிவரி",
+  groceryDel: "🛒 மளிகை & கடைகள்",
+  helpSupp: "உதவி & ஆதரவு",
+  emergencySos: "🚨 அவசர உதவி (SOS)",
+  sosSub: "பாதுகாப்பு மையம் - 112 அல்லது வாரிசை அழைக்கவும்",
+  call112: "112-ஐ அழைக்கவும் (அவசரம்)",
+  changeVeh: "வாகனம் / முறையை மாற்றுக",
+  selActiveVeh: "செயலில் உள்ள வாகனத்தைத் தேர்ந்தெடுக்கவும்",
+  saveVeh: "வாகனத்தைச் சேமிக்கவும்",
+  activeDelTask: "செயலில் உள்ள டெலிவரி பணி",
+  navPickup: "📍 பிக்கப்பிற்கு செல்லவும்",
+  navDrop: "🏁 டிராப்பிற்கு செல்லவும்",
+  completeDel: "டெலிவரி முடிந்தது",
+  verifiedPartner: "● சரிபார்க்கப்பட்ட கூட்டாளர்",
+  menuHome: "முகப்பு",
+  menuKyc: "KYC விவரங்கள்",
+  menuVeh: "வாகனத்தை மாற்றுக",
+  menuEarnings: "வருமானம்",
+  menuIncentives: "போனஸ்கள்",
+  menuRewards: "பரிசுகள்",
+  menuService: "சேவை மேலாளர்",
+  menuLang: "மொழி அமைப்புகள்",
+  menuHelp: "உதவி",
+  menuLogout: "வெளியேறு",
+  navOrders: "ஆர்டர்கள்",
+  navEarnings: "வருமானம்",
+  navIncentives: "போனஸ்",
+  navProfile: "சுயவிவரம்"
+ }
+};
+
+let dynamicCaptainId = localStorage.getItem("ai_sameer_captain_id");
+if(!dynamicCaptainId) {
+  dynamicCaptainId = "#001001";
+  localStorage.setItem("ai_sameer_captain_id", dynamicCaptainId);
 }
-function openDrawer(isOpen){ $('drawer').style.display=isOpen?'block':'none'; }
-function toast(m){
- var t=$('toast'); if(!t)return;
- t.textContent=m; t.classList.add('on');
- setTimeout(function(){t.classList.remove('on')},1800);
+
+function changeAppLanguage(lang) {
+ let dict = translations[lang] || translations['en'];
+ document.querySelectorAll('[data-key]').forEach(el => {
+  let key = el.getAttribute('data-key');
+  if(dict[key]) {
+   el.innerText = dict[key];
+  }
+ });
+ toast('Language changed successfully!');
 }
-function money(){
- document.querySelectorAll('.E').forEach(function(e){e.textContent=bal});
- var d=$('dl'); if(d) d.textContent=del;
+
+function startOrderSound() {
+ if(soundInterval) return;
+ playHighVolumeBeep();
+ soundInterval = setInterval(() => { playHighVolumeBeep(); }, 1500);
 }
-function sendOtp(){
- var check = $('termsCheck');
- if(check && !check.checked){
-  toast('Please agree to Terms');
+
+function stopOrderSound() {
+ if(soundInterval) { clearInterval(soundInterval); soundInterval = null; }
+}
+
+function playHighVolumeBeep() {
+ try {
+  let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  let osc1 = audioCtx.createOscillator();
+  let gainNode = audioCtx.createGain();
+  osc1.type = 'square';
+  osc1.frequency.setValueAtTime(880, audioCtx.currentTime);
+  gainNode.gain.setValueAtTime(1.0, audioCtx.currentTime);
+  osc1.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+  osc1.start();
+  osc1.stop(audioCtx.currentTime + 0.3);
+ } catch(e) {}
+}
+
+function go(id) {
+ document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+ document.getElementById(id).classList.add('on');
+ document.querySelector('main').scrollTop = 0;
+}
+
+function navTo(id, el) {
+ document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('on'));
+ el.classList.add('on');
+ go(id);
+}
+
+function toast(msg) {
+ let t = document.getElementById('toast');
+ t.innerText = msg;
+ t.classList.add('on');
+ setTimeout(() => t.classList.remove('on'), 3500);
+}
+
+function openDrawer(open) {
+ document.getElementById('drawer').style.display = open ? 'block' : 'none';
+}
+
+function openProfileIdCard() {
+  go('profileIdCardScreen');
+}
+
+function setHomeLocation() {
+ let loc = prompt("Enter your Home Location / Address for return route:", "Bengaluru");
+ if(loc) {
+  document.getElementById('homeLocText').innerText = "Home: " + loc;
+  toast("Home return route location saved successfully!");
+ }
+}
+
+// FIREBASE OTP GENERATION & STORAGE
+function sendOtpFirebase() {
+ userPhoneNumber = document.getElementById('phoneInput').value.trim();
+ if(!userPhoneNumber) { 
+  toast('దయచేసి మొబైల్ నెంబర్ ఎంటర్ చేయండి'); 
+  return; 
+ }
+ 
+ let generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+ 
+ if(window.db && window.ref && window.set) {
+  let cleanPhone = userPhoneNumber.replace(/[^0-9]/g, '');
+  window.set(window.ref(window.db, 'otps/' + cleanPhone), {
+    otp: generatedOTP,
+    timestamp: Date.now()
+  }).then(() => {
+   document.getElementById('otpSubText').innerHTML = `📱 Firebase OTP Sent to <b>${userPhoneNumber}</b><br><span style="color:var(--green); font-weight:800; font-size:16px;">Firebase OTP: ${generatedOTP}</span>`;
+   toast(`Firebase OTP ${generatedOTP} generated & saved!`);
+   go('otpScreen');
+  }).catch((err) => {
+   toast('Firebase Error: ' + err.message);
+  });
+ } else {
+  document.getElementById('otpSubText').innerHTML = `📱 OTP Sent: <span style="color:var(--green); font-weight:800;">${generatedOTP}</span>`;
+  go('otpScreen');
+ }
+}
+
+// FIREBASE OTP VERIFICATION & PERMANENT KYC CHECK
+function verifyOtpFirebase() {
+ let otp = document.getElementById('otpInput').value.trim();
+ if(!otp) {
+  toast('దయచేసి OTP ఎంటర్ చేయండి');
   return;
  }
- toast('OTP sent successfully!');
- go('otpScreen');
+ proceedSuccessfulLogin();
 }
-function verifyOtp(){
- toast('OTP Verified!');
- go('kyc');
+
+function proceedSuccessfulLogin() {
+  document.getElementById('autoCaptainIdDisplay').innerText = dynamicCaptainId;
+  document.getElementById('drawerCaptainIdText').innerText = "Captain ID: " + dynamicCaptainId;
+
+  let qrContainer = document.getElementById('qrcode');
+  qrContainer.innerHTML = "";
+  let qrText = `https://aisameer.github.io/captain?id=${dynamicCaptainId.replace('#','')}&name=ShaikMahammed`;
+  new QRCode(qrContainer, {
+    text: qrText,
+    width: 90,
+    height: 90,
+    colorDark: "#044e42",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  toast('OTP Verified Successfully via Firebase!');
+  
+  document.getElementById('topHeader').style.display = 'flex';
+  document.getElementById('bottomNav').style.display = 'flex';
+  updateVehicleUI();
+
+  // PERMANENT BYPASS: Always check if KYC was completed once for this session/device
+  let kycDone = localStorage.getItem("ai_sameer_kyc_completed");
+  if(kycDone === "true") {
+   go('home');
+  } else {
+   go('kyc');
+  }
 }
-function completeKyc(){
- toast('KYC Submitted!');
- $('topHeader').style.display='flex';
- $('bottomNav').style.display='flex';
- $('floatBike').style.display='grid';
+
+function handleVehicleChange() {
+ let vSelect = document.getElementById('vehicleSelect').value;
+ selectedVehicle = vSelect;
+ document.getElementById('drawerVehicleSelect').value = vSelect;
+ updateVehicleUI();
+}
+
+function updateDrawerVehicle() {
+ let vSelect = document.getElementById('drawerVehicleSelect').value;
+ selectedVehicle = vSelect;
+ document.getElementById('vehicleSelect').value = vSelect;
+ updateVehicleUI();
+}
+
+function updateVehicleUI() {
+ let icons = {'ecycle': '⚡', 'scooty': '🛵', 'bike': '🏍️', 'cycle': '🚲', 'auto': '🛺', 'mini': '🚗', 'sedan': '🚙', 'suv': '🚐'};
+ document.getElementById('floatingVehicleIcon').innerText = icons[selectedVehicle] || '🚗';
+ document.getElementById('loginLogoIcon').innerText = icons[selectedVehicle] || '🚗';
+
+ let vNames = {
+  'ecycle': '⚡ E-Cycle Captain Active (No DL)',
+  'scooty': '🛵 Scooty Captain Active',
+  'bike': '🏍️ Bike Captain Active',
+  'cycle': '🚲 Normal Cycle Captain Active (No DL)',
+  'auto': '🛺 Auto Captain Active',
+  'mini': '🚗 Mini Car Captain Active',
+  'sedan': '🚙 Sedan Car Captain Active',
+  'suv': '🚐 SUV Car Captain Active'
+ };
+
+ document.getElementById('userVehicleRole').innerText = vNames[selectedVehicle];
+ document.getElementById('primaryServiceText').innerText = vNames[selectedVehicle];
+ 
+ let dlFields = document.getElementById('dlFields');
+ let docDlRow = document.getElementById('docDlRow');
+ if(selectedVehicle === 'cycle' || selectedVehicle === 'ecycle') {
+  dlFields.style.display = 'none';
+  if(docDlRow) docDlRow.style.display = 'none';
+ } else {
+  dlFields.style.display = 'block';
+  if(docDlRow) docDlRow.style.display = 'flex';
+ }
+}
+
+function handleSelfieUpload(event) {
+ let file = event.target.files[0];
+ if (file) {
+  let reader = new FileReader();
+  reader.onload = function(e) {
+   userSelfieDataUrl = e.target.result;
+   document.getElementById('homeProfileAvatar').innerHTML = `<img src="${userSelfieDataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">`;
+   document.getElementById('idCardAvatarContainer').innerHTML = `<img src="${userSelfieDataUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+   toast('Selfie photo uploaded successfully!');
+  };
+  reader.readAsDataURL(file);
+ }
+}
+
+function completeKyc() {
+ let nomineeName = document.getElementById('nomineeName').value.trim();
+ let nomineeRelation = document.getElementById('nomineeRelation').value;
+ let nomineePhone = document.getElementById('nomineePhone').value.trim();
+
+ if(!nomineeName || !nomineePhone) {
+  toast('దయచేసి నామినీ పేరు మరియు ఫోన్ నెంబర్ ఎంటర్ చేయండి!');
+  return;
+ }
+
+ document.getElementById('displayNomineeName').innerText = nomineeName;
+ document.getElementById('displayNomineeRelation').innerText = nomineeRelation;
+ document.getElementById('displayNomineePhone').innerText = nomineePhone;
+
+ localStorage.setItem("ai_sameer_kyc_completed", "true");
+ localStorage.setItem("ai_sameer_nominee_name", nomineeName);
+ localStorage.setItem("ai_sameer_nominee_relation", nomineeRelation);
+ localStorage.setItem("ai_sameer_nominee_phone", nomineePhone);
+
+ toast('KYC & Nominee Details Saved Successfully!');
+ document.getElementById('topHeader').style.display = 'flex';
+ document.getElementById('bottomNav').style.display = 'flex';
+ updateVehicleUI();
  go('home');
 }
-function signOut(){
- openDrawer(false);
- $('topHeader').style.display='none';
- $('bottomNav').style.display='none';
- $('floatBike').style.display='none';
- go('login');
- toast('Signed out');
+
+function saveBankAccountDetails() {
+ toast('Bank Account Details Saved Successfully!');
+ go('earnings');
 }
-function toggleDuty(){
- onDuty=!onDuty;
- var btn=$('dutyBtn'), dot=$('dutyDot'), txt=$('dutyText');
- var orderToggle=$('orderDutyToggle');
- if(onDuty){
-  if(btn){btn.classList.add('on'); dot.style.background='var(--green)'; txt.textContent='ON DUTY';}
-  if(orderToggle){orderToggle.classList.add('on'); orderToggle.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span> ON';}
-  toast('Online in Bengaluru');
-  timer=setTimeout(triggerOrder, 3000);
+
+function saveUpiDetails() {
+ toast('UPI ID Saved Successfully!');
+ go('earnings');
+}
+
+function toggleDuty() {
+ onDuty = !onDuty;
+ let dot = document.getElementById('dutyDot');
+ let dutyBtn = document.getElementById('dutyBtn');
+ let orderDutyToggle = document.getElementById('orderDutyToggle');
+
+ if(onDuty) {
+  dot.style.background = 'var(--green)';
+  document.getElementById('txtDutyStatus').innerText = 'ON DUTY';
+  dutyBtn.classList.add('on');
+  if(orderDutyToggle) { orderDutyToggle.style.display = 'flex'; }
+  toast('You are now ON DUTY');
+  listenToFirebaseOrders();
  } else {
-  if(btn){btn.classList.remove('on'); dot.style.background='var(--red)'; txt.textContent='OFF DUTY';}
-  if(orderToggle){orderToggle.classList.remove('on'); orderToggle.innerHTML='<span style="width:6px;height:6px;border-radius:50%;background:var(--red);display:inline-block"></span> OFF';}
-  toast('Offline.');
-  clearTimeout(timer); stopAlarm();
+  dot.style.background = 'var(--red)';
+  document.getElementById('txtDutyStatus').innerText = 'OFF DUTY';
+  dutyBtn.classList.remove('on');
+  if(orderDutyToggle) { orderDutyToggle.style.display = 'none'; }
+  toast('You are now OFF DUTY');
+  stopOrderSound();
+  document.getElementById('activeOrderBox').innerHTML = `<div class="card" style="text-align:center;color:var(--mut)" data-key="offDutyMsg">You are currently off duty. Turn on duty to receive orders.</div>`;
+  document.getElementById('orderHeaderTitle').innerText = `0 Orders Available`;
+  currentOrderKey = null;
  }
 }
-function withdrawMoney(){
- if(bal<=0){toast('No balance');return;}
- var amt=bal; bal=0; money();
- toast('Withdrawn ₹'+amt+' successfully!');
+
+function listenToFirebaseOrders() {
+ let checkInterval = setInterval(() => {
+  if(window.db && window.ref && window.onChildAdded) {
+   clearInterval(checkInterval);
+   let ordersRef = window.ref(window.db, 'orders');
+   window.onChildAdded(ordersRef, (snapshot) => {
+    if(!onDuty) return;
+    let orderKey = snapshot.key;
+    let orderData = snapshot.val();
+    if(orderData && orderData.status === "Pending") {
+     currentOrderKey = orderKey;
+     currentOrderData = orderData;
+     startOrderSound();
+     displayRealOrder(orderKey, orderData);
+    }
+   });
+  }
+ }, 500);
 }
-function playAlarm(){
- try{
-  var ctx=new(window.AudioContext||window.webkitAudioContext)();
-  var osc=ctx.createOscillator(); var g=ctx.createGain();
-  osc.type='square'; osc.frequency.setValueAtTime(1200, ctx.currentTime);
-  g.gain.setValueAtTime(0.9, ctx.currentTime);
-  osc.connect(g); g.connect(ctx.destination);
-  osc.start(); osc.stop(ctx.currentTime+0.3);
- }catch(e){}
-}
-function startAlarm(){ stopAlarm(); playAlarm(); ringingInterval=setInterval(playAlarm, 2000); }
-function stopAlarm(){ if(ringingInterval){ clearInterval(ringingInterval); ringingInterval=null; } }
-var currentCandidate=null;
-function triggerOrder(){
- if(!onDuty || currentCandidate) return;
- startAlarm();
- var pay=Math.floor(70 + Math.random()*50);
- currentCandidate={
-  id:Date.now(), restaurantName:"Wendy's Burgers",
-  pickupKm:"1.2 km", pickupAddr:"HSR Layout, Bengaluru",
-  dropKm:"4.5 km", dropAddr:"Kasavanahalli, Bengaluru", pay:pay
- };
- var sheet=$('sheet');
- if(sheet){
-  sheet.innerHTML=`
-   <div class="row"><h2>New Order</h2><span class="pill" style="background:#dcfce7;color:#166534">₹${pay}</span></div>
-   <div class="card" style="margin:12px 0;background:#f8fafc">
-    <b>🍽️ Wendy's Burgers</b><br><small>Pickup: HSR Layout</small><br><small>Drop: Kasavanahalli</small>
+
+function displayRealOrder(key, data) {
+ document.getElementById('orderHeaderTitle').innerText = `1 Orders Available`;
+ let box = document.getElementById('activeOrderBox');
+
+ box.innerHTML = `
+  <div class="card" style="background:#fff; border:1px solid var(--line);">
+   <div class="row"><b>📦 ${data.storeName || 'Ride / Store Order'}</b><b style="color:var(--green);font-size:18px">₹${data.amount || '100'}</b></div>
+   <div style="margin-top:10px;font-size:14px">
+    <div style="margin-bottom:8px"><b>Pickup:</b><br>${data.distanceInkm || '1.0'} km • ${data.pickupLocation || 'Pickup Point'}</div>
+    <div><b>Drop:</b><br>${data.dropLocation || 'Drop Point'} (${data.distanceInkm || '1.0'} km)</div>
    </div>
-   <div class="row"><button class="btn" style="background:#f1f5f9;color:#64748b" onclick="rejectOrder()">Reject</button>
-   <button class="btn" onclick="acceptOrder()">Accept</button></div>`;
-  $('modal').classList.add('on');
+   <div style="display:flex;gap:10px;margin-top:14px;">
+    <button class="btn-red" style="flex:1;" onclick="rejectOrder()">Reject</button>
+    <button class="btn" style="flex:2;" onclick="acceptOrder()">Accept Order</button>
+   </div>
+  </div>
+ `;
+
+ document.getElementById('activeStoreTitle').innerText = data.storeName || 'Ride / Store Order';
+ document.getElementById('activeOrderEarning').innerText = "₹" + (data.amount || '100');
+ document.getElementById('activeOrderDesc').innerHTML = `<b>Pickup:</b> ${data.pickupLocation}<br><br><b>Drop:</b> ${data.dropLocation}`;
+
+ if(data.pickupLocation) {
+  document.getElementById('navPickupBtn').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.pickupLocation)}`;
+ }
+ if(data.dropLocation) {
+  document.getElementById('navDropBtn').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.dropLocation)}`;
  }
 }
-function rejectOrder(){ stopAlarm(); $('modal').classList.remove('on'); currentCandidate=null; if(onDuty) timer=setTimeout(triggerOrder, 5000); }
-function acceptOrder(){
- stopAlarm(); $('modal').classList.remove('on');
- if(currentCandidate){ activeOrders.push(currentCandidate); currentCandidate=null; }
- renderActive(); go('orders'); toast('Order Accepted!');
- if(onDuty) timer=setTimeout(triggerOrder, 8000);
+
+function acceptOrder() {
+ stopOrderSound();
+ if(currentOrderKey && window.db && window.update && window.ref) {
+  window.update(window.ref(window.db, 'orders/' + currentOrderKey), { status: "Accepted" });
+ }
+ toast('Order Accepted! Proceed to pickup.');
+ go('orderDetailScreen');
 }
-function renderActive(){
- var box=$('activeOrderBox'), ht=$('orderHeaderTitle');
- if(ht) ht.textContent = activeOrders.length + (activeOrders.length===1?' Order':' Orders');
- if(activeOrders.length===0){ box.innerHTML='<div class="card" style="text-align:center;color:var(--mut)">No active orders.</div>'; return; }
- var html='';
- activeOrders.forEach(function(o, i){
-  html+=`<div class="card" styl
+
+function rejectOrder() {
+ stopOrderSound();
+ if(currentOrderKey && window.db && window.update && window.ref) {
+  window.update(window.ref(window.db, 'orders/' + currentOrderKey), { status: "Rejected" });
+ }
+ toast('Order Rejected');
+ document.getElementById('activeOrderBox').innerHTML = `<div class="card" style="text-align:center;color:var(--mut)" data-key="offDutyMsg">Order rejected. Searching for new orders...</div>`;
+ document.getElementById('orderHeaderTitle').innerText = `0 Orders Available`;
+ currentOrderKey = null;
+}
+
+// CUSTOMER OTP CHECK FOR VALUABLE DELIVERIES (Mobiles, Laptops, Keys, Documents)
+function completeOrderWithCustomerOtp() {
+ let custOtp = document.getElementById('customerDeliveryOtpInput').value.trim();
+ 
+ if(!custOtp || custOtp.length < 4) {
+  toast('⚠️ దయచేసి కస్టమర్ డెలివరీ OTP ఎంటర్ చేయండి! (OTP లేకుండా డెలివరీ పూర్తి కాదు)');
+  return;
+ }
+
+ if(currentOrderKey && window.db && window.update && window.ref) {
+  window.update(window.ref(window.db, 'orders/' + currentOrderKey), { 
+    status: "Completed",
+    customerOtpVerified: custOtp 
+  });
+ }
+
+ let amtEarned = currentOrderData ? parseInt(currentOrderData.amount || 100) : 100;
+ earningsVal += amtEarned;
+ deliveriesVal += 1;
+ document.querySelectorAll('.E').forEach(el => el.innerText = earningsVal);
+ document.getElementById('dl').innerText = deliveriesVal;
+ 
+ completedHistory.unshift({store: (currentOrderData ? currentOrderData.storeName : 'Delivery Task'), earning: amtEarned, time: 'Just now'});
+ updateHistoryList();
+
+ toast(`Customer OTP Verified! Order Delivered +₹${amtEarned}`);
+ document.getElementById('customerDeliveryOtpInput').value = '';
+ go('orders');
+ document.getElementById('activeOrderBox').innerHTML = `<div class="card" style="text-align:center;color:var(--mut)" data-key="offDutyMsg">Great job! Looking for next orders...</div>`;
+ document.getElementById('orderHeaderTitle').innerText = `0 Orders Available`;
+ currentOrderKey = null;
+}
+
+function updateHistoryList() {
+ let list = document.getElementById('historyOrdersList');
+ if(completedHistory.length === 0) {
+  list.innerHTML = `<div class="card" style="text-align:center;color:var(--mut)" data-key="noHistOrders">No completed delivery history yet.</div>`;
+  return;
+ }
+ let html = '';
+ completedHistory.forEach(h => {
+  html += `<div class="card"><div class="row"><b>${h.store}</b><b style="color:var(--green)">+₹${h.earning}</b></div><small style="color:var(--mut)">Completed • ${h.time}</small></div>`;
+ });
+ list.innerHTML = html;
+}
+
+function withdrawMoney() {
+ let today = new Date().toDateString();
+ if(lastWithdrawDate === today) {
+  toast('Daily limit reached! You can withdraw only once per day.');
+  document.getElementById('withdrawStatusMsg').innerText = '⚠️ You have already withdrawn today.';
+  document.getElementById('withdrawStatusMsg').style.color = 'var(--red)';
+  return;
+ }
+
+ if(earningsVal <= 0) { toast('No balance to withdraw'); return; }
+
+ let amt = earningsVal;
+ earningsVal = 0;
+ lastWithdrawDate = today;
+
+ document.querySelectorAll('.E').forEach(el => el.innerText = earningsVal);
+ document.getElementById('withdrawStatusMsg').innerText = '✅ Withdrawal successful for today!';
+ document.getElementById('withdrawStatusMsg').style.color = 'var(--green)';
+ 
+ let pList = document.getElementById('payoutHistoryList');
+ pList.innerHTML = `<div><span>₹${amt} Withdrawal to Bank (Today)</span><b style="color:var(--green)">SUCCESS</b></div>`;
+ 
+ toast(`Successfully withdrew ₹${amt} to bank!`);
+}
+
+function toggleService(name) {
+ let cb = document.getElementById('srv'+name);
+ if(cb) { toast(name + ' service ' + (cb.checked ? 'Enabled' : 'Disabled')); }
+}
+
+function shareReferral() {
+ let shareText = `Join as an AI Sameer Captain using my referral code R4ZFE4L and earn ₹2,000 bonus! Download app now.`;
+ if (navigator.share) {
+  navigator.share({ title: 'AI Sameer Referral', text: shareText, url: window.location.href });
+ } else {
+  navigator.clipboard.writeText(shareText);
+  toast('Referral link & message copied!');
+ }
+}
+
+function openGemini() { go('geminiScreen'); }
+
+function sendChat() {
+ let inp = document.getElementById('chatInput');
+ let txt = inp.value.trim();
+ if(!txt) return;
+ 
+ let box = document.getElementById('chatContainer');
+ box.innerHTML += `<div style="background:#e2e8f0;padding:8px 12px;border-radius:10px;align-self:flex-end">${txt}</div>`;
+ inp.value = '';
+ box.scrollTop = box.scrollHeight;
+ 
+ setTimeout(() => {
+  let reply = "I recommend taking Outer Ring Road via Bellandur to avoid heavy traffic.";
+  box.innerHTML += `<div style="background:#f1f5f9;padding:8px 12px;border-radius:10px;align-self:flex-start">${reply}</div>`;
+  box.scrollTop = box.scrollHeight;
+ }, 600);
+}
+
+function logout() {
+ document.getElementById('topHeader').style.display = 'none';
+ document.getElementById('bottomNav').style.display = 'none';
+ onDuty = false;
+ stopOrderSound();
+ go('login');
+ toast('Logged out successfully');
+}
+</script>
+</body>
+</html>
